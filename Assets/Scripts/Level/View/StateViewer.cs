@@ -7,7 +7,7 @@ namespace DPong.Level.View {
     private float _frameTimeTotal = 1.0f / 60;
     private float _frameTimeCurrent;
 
-    public void Init(IDisplayingStateHolder stateHolder, float frameTime) {
+    public void Initialize(IDisplayingStateHolder stateHolder, float frameTime) {
       _stateHolder = stateHolder;
       _stateHolder.OnCurrentStateChanged += OnStateChanged;
       _frameTimeTotal = frameTime;

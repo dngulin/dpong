@@ -2,7 +2,7 @@ using System;
 using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
-using UnityObject = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace DPong.Level.View {
   public class LevelView: IDisposable {
@@ -13,18 +13,21 @@ namespace DPong.Level.View {
       _viewRoot = new GameObject("LevelViewRoot").transform;
       StateHolder = new DisplayingStateHolder(initialState);
 
-      var resources = Resources.Load<LevelViewResources>("LevelResources");
+      var res = Resources.Load<LevelViewResources>("LevelResources");
 
       var stateViewers = new StateViewer[] {
-        UnityObject.Instantiate(resources.BallView, _viewRoot)
+        UObject.Instantiate(res.Board, _viewRoot).ConfiguredForPlayers(left, right),
+        UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Left),
+        UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Right),
+        UObject.Instantiate(res.Ball, _viewRoot),
       };
 
       foreach (var stateViewer in stateViewers)
-        stateViewer.Init(StateHolder, frameTime);
+        stateViewer.Initialize(StateHolder, frameTime);
     }
 
     public void Dispose() {
-      UnityObject.Destroy(_viewRoot);
+      UObject.Destroy(_viewRoot);
     }
   }
 }
