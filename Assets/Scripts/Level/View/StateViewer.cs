@@ -36,5 +36,12 @@ namespace DPong.Level.View {
 
       _stateHolder.OnCurrentStateChanged -= OnStateChanged;
     }
+
+    private void OnDrawGizmos() {
+      DrawGizmos(_stateHolder.Current);
+    }
+
+    protected virtual void DrawGizmos(LevelState state) {
+    }
   }
 }

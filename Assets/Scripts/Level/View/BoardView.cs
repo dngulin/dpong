@@ -26,5 +26,10 @@ namespace DPong.Level.View {
       _leftScore.text = state.LeftScore.ToString();
       _rightScore.text = state.RightScore.ToString();
     }
+
+    protected override void DrawGizmos(LevelState state) {
+      Gizmos.color = Color.yellow;
+      Gizmos.DrawWireCube(Vector3.zero, new Vector3(30, 20, 0));
+    }
   }
 }

@@ -4,7 +4,7 @@ using PGM.ScaledNum;
 using UnityEngine;
 
 namespace DPong.Level.Debug {
-  public class LocalLevelLoader : MonoBehaviour {
+  public class LocalLevelDebugLoader : MonoBehaviour {
 
     [SerializeField] private string _leftName = "LeftPlayer";
     [SerializeField] private bool _leftIsBot;
@@ -38,19 +38,5 @@ namespace DPong.Level.Debug {
 
       return new LevelInfo(leftPlayer, rightPlayer, settings);
     }
-
-    /*private void OnDrawGizmos() {
-      Gizmos.color = Color.yellow;
-      Gizmos.DrawWireCube(Vector3.zero, new Vector3(30, 20, 0));
-
-      Gizmos.color = Color.green;
-      var left = _state.LeftBlocker;
-      var right = _state.RightBlocker;
-      Gizmos.DrawWireCube(left.Pose.Position.ToUnityVector(), left.Size.AsRect.ToUnityVector());
-      Gizmos.DrawWireCube(right.Pose.Position.ToUnityVector(), right.Size.AsRect.ToUnityVector());
-
-      Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(_state.Ball.Pose.Position.ToUnityVector(), 0.5f);
-    }*/
   }
 }

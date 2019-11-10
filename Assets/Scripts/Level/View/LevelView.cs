@@ -13,7 +13,7 @@ namespace DPong.Level.View {
       _viewRoot = new GameObject("LevelViewRoot").transform;
       StateHolder = new DisplayingStateHolder(initialState);
 
-      var res = Resources.Load<LevelViewResources>("LevelResources");
+      var res = Resources.Load<LevelViewResources>("LevelViewResources");
 
       var stateViewers = new StateViewer[] {
         UObject.Instantiate(res.Board, _viewRoot).ConfiguredForPlayers(left, right),

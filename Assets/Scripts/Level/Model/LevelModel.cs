@@ -23,7 +23,7 @@ namespace DPong.Level.Model {
     private static readonly SnVector2 DefaultBallSpeed = SnVector2.Mul(SnVector2.Up, BallSpeed);
 
     private static readonly SnVector2 GateSize = new SnVector2(10_000, 40_000);
-    private static readonly SnVector2 BlockerSize = new SnVector2(2_000, 5_000);
+    private static readonly SnVector2 BlockerSize = new SnVector2(1_250, 5_000);
     private static readonly SnVector2 MarginSize = new SnVector2(30_000, 10_000);
 
     private static readonly SnVector2 GatePos = new SnVector2((BoardWidth + GateSize.X) / 2, 0);
