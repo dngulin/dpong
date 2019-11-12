@@ -22,9 +22,9 @@ namespace DPong.Level.Model {
 
     private static readonly SnVector2 DefaultBallSpeed = SnVector2.Mul(SnVector2.Up, BallSpeed);
 
-    private static readonly SnVector2 GateSize = new SnVector2(10_000, 40_000);
+    private static readonly SnVector2 GateSize = new SnVector2(10_000, 20_000);
     private static readonly SnVector2 BlockerSize = new SnVector2(1_250, 5_000);
-    private static readonly SnVector2 MarginSize = new SnVector2(30_000, 10_000);
+    private static readonly SnVector2 MarginSize = new SnVector2(70_000, 10_000);
 
     private static readonly SnVector2 GatePos = new SnVector2((BoardWidth + GateSize.X) / 2, 0);
     private static readonly SnVector2 BlockerPos = new SnVector2(BoardWidth / 2, 0);
@@ -122,23 +122,20 @@ namespace DPong.Level.Model {
     }
 
     private void CheckCollisions(ref LevelState state) {
-      if (Collision2D.Check(state.Ball.ToShapeState(), GateLeft.ToShapeState(), SnVector2.Left)) {
-        state.LeftScore += 1;
-        HandleGoal(ref state);
-        return;
-      }
-
-      if (Collision2D.Check(state.Ball.ToShapeState(), GateRight.ToShapeState(), SnVector2.Right)) {
-        state.RightScore += 1;
-        HandleGoal(ref state);
-        return;
-      }
-
       // Orthodox order!
       CheckBounce(ref state, MarginUp);
       CheckBounce(ref state, MarginDown);
       CheckBounce(ref state, state.RightBlocker);
       CheckBounce(ref state, state.LeftBlocker);
+
+      if (Collision2D.Check(state.Ball.ToShapeState(), GateLeft.ToShapeState(), SnVector2.Left)) {
+        state.LeftScore += 1;
+        HandleGoal(ref state);
+      }
+      else if (Collision2D.Check(state.Ball.ToShapeState(), GateRight.ToShapeState(), SnVector2.Right)) {
+        state.RightScore += 1;
+        HandleGoal(ref state);
+      }
     }
 
     private void HandleGoal(ref LevelState state) {
@@ -149,10 +146,9 @@ namespace DPong.Level.Model {
     }
 
     private unsafe void CheckBounce(ref LevelState state, ColliderState collider) {
-      var dir = Shape2D.GetCenter(state.Ball.Transform) - Shape2D.GetCenter(collider.Transform);
       var ball = state.Ball.ToShapeState();
       var blocker = collider.ToShapeState();
-      if (!Collision2D.Check(ball, blocker, dir))
+      if (!Collision2D.Check(ball, blocker, state.BallSpeed))
         return;
 
       state.SpeedFactor = SnMath.Clamp(state.SpeedFactor + SpeedFactorInc, SnMath.One, SpeedFactorMax);
