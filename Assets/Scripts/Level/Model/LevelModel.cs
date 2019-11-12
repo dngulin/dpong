@@ -38,10 +38,10 @@ namespace DPong.Level.Model {
     private static readonly ColliderState MarginDown = CreateRectCollider(-MarginPos, MarginSize);
     private static readonly ColliderState MarginUp = CreateRectCollider(MarginPos, MarginSize);
 
-    private readonly long _frameTime;
+    private readonly long _tickDuration;
 
     public LevelModel(SimulationSettings settings) {
-      _frameTime = settings.FrameTime;
+      _tickDuration = settings.TickDuration;
     }
 
     public static LevelState CreateInitialState() {
@@ -82,7 +82,7 @@ namespace DPong.Level.Model {
         return;
 
       var directedSpeed = BlockerSpeed * (keys.HasKey(Keys.Up) ? 1 : -1);
-      var offsetMultiplier = SnMath.Mul(_frameTime, speedFactor);
+      var offsetMultiplier = SnMath.Mul(_tickDuration, speedFactor);
       var offset = SnMath.Mul(directedSpeed, offsetMultiplier);
 
       var oldX = blocker.Pose.Position.X;
@@ -97,7 +97,7 @@ namespace DPong.Level.Model {
     }
 
     private void MoveBall(ref ColliderState ball, in SnVector2 speedVector, long speedFactor) {
-      var offsetMultiplier = SnMath.Mul(_frameTime, speedFactor);
+      var offsetMultiplier = SnMath.Mul(_tickDuration, speedFactor);
       var offset = SnVector2.Mul(speedVector, offsetMultiplier);
 
       var oldPosition = ball.Pose.Position;
@@ -111,7 +111,7 @@ namespace DPong.Level.Model {
     }
 
     private void UpdateFreezeTime(ref LevelState state) {
-      state.FreezeTime -= _frameTime;
+      state.FreezeTime -= _tickDuration;
       if (state.FreezeTime > 0)
         return;
 

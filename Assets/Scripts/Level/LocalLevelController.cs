@@ -27,8 +27,8 @@ namespace DPong.Level {
       _model = new LevelModel(info.Settings);
       _state = LevelModel.CreateInitialState();
 
-      var frameTime = info.Settings.FrameTime.Unscaled();
-      _view = new LevelView(_state, frameTime, info.Left, info.Right);
+      var tickDuration = info.Settings.TickDuration.Unscaled();
+      _view = new LevelView(_state, tickDuration, info.Left, info.Right);
     }
 
     public void Tick() {

@@ -19,14 +19,14 @@ namespace DPong.Level.View {
       return this;
     }
 
-    protected override void UpdateImpl(LevelState previous, LevelState current, float factor) {
+    protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
       switch (_trackingSide) {
         case Side.Left:
-          UpdateBlockerPosition(previous.LeftBlocker, current.LeftBlocker, factor);
+          UpdateBlockerPosition(prev.LeftBlocker, curr.LeftBlocker, factor);
           break;
 
         case Side.Right:
-          UpdateBlockerPosition(previous.RightBlocker, current.RightBlocker, factor);
+          UpdateBlockerPosition(prev.RightBlocker, curr.RightBlocker, factor);
           break;
 
         default:
@@ -37,7 +37,6 @@ namespace DPong.Level.View {
     private void UpdateBlockerPosition(ColliderState prev, ColliderState curr, float factor) {
       var prevPos = prev.Pose.Position.ToUnityVector();
       var currPos = curr.Pose.Position.ToUnityVector();
-
       transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
     }
 

@@ -9,7 +9,7 @@ namespace DPong.Level.View {
     public DisplayingStateHolder StateHolder { get; }
     private readonly Transform _viewRoot;
 
-    public LevelView(LevelState initialState, float frameTime, PlayerInfo left, PlayerInfo right) {
+    public LevelView(LevelState initialState, float tickDuration, PlayerInfo left, PlayerInfo right) {
       _viewRoot = new GameObject("LevelViewRoot").transform;
       StateHolder = new DisplayingStateHolder(initialState);
 
@@ -23,7 +23,7 @@ namespace DPong.Level.View {
       };
 
       foreach (var stateViewer in stateViewers)
-        stateViewer.Initialize(StateHolder, frameTime);
+        stateViewer.Initialize(StateHolder, tickDuration);
     }
 
     public void Dispose() {

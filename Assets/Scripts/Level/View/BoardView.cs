@@ -18,8 +18,8 @@ namespace DPong.Level.View {
 
     private static string GetPrefixedName(PlayerInfo info) => info.IsBot ? $"[AI] {info.Name}" : info.Name;
 
-    protected override void UpdateImpl(LevelState previous, LevelState current, float factor) {
-      SetScores(factor < 0.5f ? previous : current);
+    protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
+      SetScores(factor < 0.5f ? prev : curr);
     }
 
     private void SetScores(LevelState state) {

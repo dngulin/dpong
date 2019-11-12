@@ -4,31 +4,31 @@ using UnityEngine;
 namespace DPong.Level.View {
   public abstract class StateViewer: MonoBehaviour {
     private IDisplayingStateHolder _stateHolder;
-    private float _frameTimeTotal = 1.0f / 60;
-    private float _frameTimeCurrent;
+    private float _tickDuration = 1.0f / 60;
+    private float _displayedTickTime;
 
-    public void Initialize(IDisplayingStateHolder stateHolder, float frameTime) {
+    public void Initialize(IDisplayingStateHolder stateHolder, float tickDuration) {
       _stateHolder = stateHolder;
       _stateHolder.OnCurrentStateChanged += OnStateChanged;
-      _frameTimeTotal = frameTime;
+      _tickDuration = tickDuration;
     }
 
     private void OnStateChanged() {
-      _frameTimeCurrent = 0;
+      _displayedTickTime = 0;
     }
 
     private void Update() {
       if (_stateHolder == null)
         return;
 
-      if (_frameTimeCurrent >= _frameTimeTotal)
+      if (_displayedTickTime >= _tickDuration)
         return;
 
-      _frameTimeCurrent = Mathf.Clamp(_frameTimeCurrent + Time.deltaTime, 0, _frameTimeTotal);
-      UpdateImpl(_stateHolder.Previous, _stateHolder.Current, _frameTimeCurrent / _frameTimeTotal);
+      _displayedTickTime += Time.deltaTime;
+      UpdateImpl(_stateHolder.Previous, _stateHolder.Current, _displayedTickTime / _tickDuration);
     }
 
-    protected abstract void UpdateImpl(LevelState previous, LevelState current, float factor);
+    protected abstract void UpdateImpl(LevelState prev, LevelState curr, float factor);
 
     private void OnDestroy() {
       if (_stateHolder == null)
