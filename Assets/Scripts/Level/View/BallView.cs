@@ -5,6 +5,11 @@ using UnityEngine;
 namespace DPong.Level.View {
   public class BallView: StateViewer {
     protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
+      if (curr.FreezeTime > 0) {
+        transform.localPosition = curr.Ball.Pose.Position.ToUnityVector();
+        return;
+      }
+
       var prevPos = prev.Ball.Pose.Position.ToUnityVector();
       var currPos = curr.Ball.Pose.Position.ToUnityVector();
 
