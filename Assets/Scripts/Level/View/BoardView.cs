@@ -1,3 +1,4 @@
+using DPong.Common;
 using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace DPong.Level.View {
 
     protected override void DrawGizmos(DynamicLevelState state) {
       Gizmos.color = Color.yellow;
-      Gizmos.DrawWireCube(Vector3.zero, new Vector3(30, 20, 0));
+      Gizmos.DrawWireCube(Vector3.zero, StaticState.BoardSize.ToVector2());
     }
   }
 }
