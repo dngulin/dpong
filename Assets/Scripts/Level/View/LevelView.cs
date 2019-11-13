@@ -6,24 +6,24 @@ using UObject = UnityEngine.Object;
 
 namespace DPong.Level.View {
   public class LevelView: IDisposable {
-    public DisplayingStateHolder StateHolder { get; }
+    public DynamicStateContainer StateContainer { get; }
     private readonly Transform _viewRoot;
 
-    public LevelView(LevelState initialState, float tickDuration, PlayerInfo left, PlayerInfo right) {
+    public LevelView(DynamicLevelState initialState, StaticLevelState staticState) {
       _viewRoot = new GameObject("LevelViewRoot").transform;
-      StateHolder = new DisplayingStateHolder(initialState);
+      StateContainer = new DynamicStateContainer(initialState);
 
       var res = Resources.Load<LevelViewResources>("LevelViewResources");
 
       var stateViewers = new StateViewer[] {
-        UObject.Instantiate(res.Board, _viewRoot).ConfiguredForPlayers(left, right),
+        UObject.Instantiate(res.Board, _viewRoot).ConfiguredForPlayers(staticState.PlayerLeft, staticState.PlayerRight),
         UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Left),
         UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Right),
         UObject.Instantiate(res.Ball, _viewRoot),
       };
 
       foreach (var stateViewer in stateViewers)
-        stateViewer.Initialize(StateHolder, tickDuration);
+        stateViewer.Initialize(StateContainer, staticState);
     }
 
     public void Dispose() {

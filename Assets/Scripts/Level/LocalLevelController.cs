@@ -1,4 +1,3 @@
-using DPong.Common;
 using DPong.Level.AI;
 using DPong.Level.Data;
 using DPong.Level.Model;
@@ -15,7 +14,7 @@ namespace DPong.Level {
     private readonly LevelModel _model;
     private readonly LevelView _view;
 
-    private LevelState _state;
+    private DynamicLevelState _state;
 
     public LocalLevelController(LevelInfo info, ILocalInputSource localInputSrc) {
       _leftIsBot = info.Left.IsBot;
@@ -24,11 +23,12 @@ namespace DPong.Level {
       _localInputSrc = localInputSrc;
       _aiInputSrc = new AiInputSource();
 
-      _model = new LevelModel(info.Settings);
-      _state = LevelModel.CreateInitialState();
+      var staticState = new StaticLevelState(info);
 
-      var tickDuration = info.Settings.TickDuration.Unscaled();
-      _view = new LevelView(_state, tickDuration, info.Left, info.Right);
+      _model = new LevelModel(staticState, info.Settings.RandomState);
+      _state = _model.CreateInitialState();
+
+      _view = new LevelView(_state, staticState);
     }
 
     public void Tick() {
@@ -37,7 +37,7 @@ namespace DPong.Level {
 
       _model.Tick(ref _state, leftKeys, rightKeys);
 
-      _view.StateHolder.PushNextState(_state);
+      _view.StateContainer.PushNextState(_state);
     }
   }
 }

@@ -18,16 +18,16 @@ namespace DPong.Level.View {
 
     private static string GetPrefixedName(PlayerInfo info) => info.IsBot ? $"[AI] {info.Name}" : info.Name;
 
-    protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
+    protected override void UpdateImpl(DynamicLevelState prev, DynamicLevelState curr, float factor) {
       SetScores(factor < 0.5f ? prev : curr);
     }
 
-    private void SetScores(LevelState state) {
+    private void SetScores(DynamicLevelState state) {
       _leftScore.text = state.LeftScore.ToString();
       _rightScore.text = state.RightScore.ToString();
     }
 
-    protected override void DrawGizmos(LevelState state) {
+    protected override void DrawGizmos(DynamicLevelState state) {
       Gizmos.color = Color.yellow;
       Gizmos.DrawWireCube(Vector3.zero, new Vector3(30, 20, 0));
     }
