@@ -34,9 +34,9 @@ namespace DPong.Level.Model {
         FreezeTime = _staticState.FreezeTime,
         BallSpeed = _defaultBallSpeed,
 
-        Ball = new ColliderState {Position = SnVector2.Zero, Transform = SnMatrix3.Identity},
-        LeftBlocker = new ColliderState {Position = -blockerPos, Transform = SnMatrix3.Identity},
-        RightBlocker = new ColliderState {Position = blockerPos, Transform = SnMatrix3.Identity}
+        Ball = new ColliderState(SnVector2.Zero),
+        LeftBlocker = new ColliderState(-blockerPos),
+        RightBlocker = new ColliderState(blockerPos)
       };
     }
 
@@ -72,7 +72,6 @@ namespace DPong.Level.Model {
         return;
 
       blocker.Position = new SnVector2(oldX, newY);
-      blocker.Transform = Shape2D.GetTransform(new ShapePose2D {Position = blocker.Position});
     }
 
     private void MoveBall(ref ColliderState ball, in SnVector2 speedVector, long speedFactor) {
@@ -86,7 +85,6 @@ namespace DPong.Level.Model {
         return;
 
       ball.Position = newPosition;
-      ball.Transform = Shape2D.GetTransform(new ShapePose2D {Position = ball.Position});
     }
 
     private void UpdateFreezeTime(ref DynamicLevelState state) {
@@ -121,7 +119,6 @@ namespace DPong.Level.Model {
       state.FreezeTime = _staticState.FreezeTime;
       state.SpeedFactor = SnMath.One;
       state.Ball.Position = SnVector2.Zero;
-      state.Ball.Transform = Shape2D.GetTransform(new ShapePose2D {Position = state.Ball.Position});
     }
 
     private unsafe void CheckBounce(ref DynamicLevelState state, in ShapeState2D blocker) {
@@ -150,7 +147,6 @@ namespace DPong.Level.Model {
       }
 
       state.Ball.Position -= penetrations[minIndex];
-      state.Ball.Transform = Shape2D.GetTransform(new ShapePose2D {Position = state.Ball.Position});
 
       var isVertical = minIndex % 2 == 0;
       var speed = state.BallSpeed;
