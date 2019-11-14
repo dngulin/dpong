@@ -19,12 +19,8 @@ namespace DPong.Level.Model {
       if (IsLevelCompleted(dynState))
         return;
 
-      if (side == Side.Left) {
-        dynState.LeftHp--;
-      }
-      else {
-        dynState.RightHp--;
-      }
+      ref var selectedHp = ref side == Side.Left ? ref dynState.LeftHp : ref dynState.RightHp;
+      selectedHp--;
     }
   }
 }
