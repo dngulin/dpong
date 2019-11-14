@@ -28,9 +28,9 @@ namespace DPong.Level.View {
       _rightScore.text = state.RightScore.ToString();
     }
 
-    protected override void DrawGizmos(DynamicLevelState state) {
+    protected override void DrawGizmos(DynamicLevelState dynState) {
       Gizmos.color = Color.yellow;
-      Gizmos.DrawWireCube(Vector3.zero, StaticState.BoardSize.ToVector2());
+      Gizmos.DrawWireCube(Vector3.zero, StState.BoardSize.ToVector2());
     }
   }
 }

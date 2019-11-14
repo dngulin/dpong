@@ -16,9 +16,9 @@ namespace DPong.Level.View {
       transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
     }
 
-    protected override void DrawGizmos(DynamicLevelState state) {
+    protected override void DrawGizmos(DynamicLevelState dynState) {
       Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(state.Ball.Position.ToVector2(), StaticState.BallSize.Radius.Unscaled());
+      Gizmos.DrawWireSphere(dynState.Ball.Position.ToVector2(), StState.BallSize.Radius.Unscaled());
     }
   }
 }

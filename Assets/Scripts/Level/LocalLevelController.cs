@@ -37,7 +37,7 @@ namespace DPong.Level {
 
       _model.Tick(ref _state, leftKeys, rightKeys);
 
-      _view.StateContainer.PushNextState(_state);
+      _view.DynStateContainer.PushNextState(_state);
     }
   }
 }

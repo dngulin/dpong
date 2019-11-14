@@ -40,11 +40,11 @@ namespace DPong.Level.View {
       transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
     }
 
-    protected override void DrawGizmos(DynamicLevelState state) {
-      var blocker = _trackingSide == Side.Left ? state.LeftBlocker : state.RightBlocker;
+    protected override void DrawGizmos(DynamicLevelState dynState) {
+      var blocker = _trackingSide == Side.Left ? dynState.LeftBlocker : dynState.RightBlocker;
 
       Gizmos.color = Color.green;
-      Gizmos.DrawWireCube(blocker.Position.ToVector2(), StaticState.BlockerSize.ToVector2());
+      Gizmos.DrawWireCube(blocker.Position.ToVector2(), StState.BlockerSize.ToVector2());
     }
   }
 }
