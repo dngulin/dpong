@@ -18,7 +18,7 @@ namespace DPong.Level.View {
 
     protected override void DrawGizmos(DynamicLevelState state) {
       Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(state.Ball.Position.ToVector2(), 0.5f);
+      Gizmos.DrawWireSphere(state.Ball.Position.ToVector2(), StaticState.BallSize.Radius.Unscaled());
     }
   }
 }
