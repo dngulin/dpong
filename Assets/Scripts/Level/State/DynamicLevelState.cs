@@ -7,8 +7,8 @@ namespace DPong.Level.State {
 
     public long SpeedFactor;
 
-    public int LeftScore;
-    public int RightScore;
+    public int LeftHp;
+    public int RightHp;
 
     public long FreezeTime;
     public SnVector2 BallSpeed;

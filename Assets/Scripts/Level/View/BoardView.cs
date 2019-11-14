@@ -24,8 +24,8 @@ namespace DPong.Level.View {
     }
 
     private void SetScores(DynamicLevelState state) {
-      _leftScore.text = state.LeftScore.ToString();
-      _rightScore.text = state.RightScore.ToString();
+      _leftScore.text = state.LeftHp.ToString();
+      _rightScore.text = state.RightHp.ToString();
     }
 
     protected override void DrawGizmos(DynamicLevelState dynState) {

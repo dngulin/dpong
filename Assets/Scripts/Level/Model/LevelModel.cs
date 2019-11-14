@@ -28,8 +28,8 @@ namespace DPong.Level.Model {
         Random = _initialPcgState,
         SpeedFactor = SnMath.One,
 
-        LeftScore = 0,
-        RightScore = 0,
+        LeftHp = _stState.HitPoints,
+        RightHp = _stState.HitPoints,
 
         FreezeTime = _stState.FreezeTime,
         BallSpeed = _defaultBallSpeed,
@@ -106,11 +106,11 @@ namespace DPong.Level.Model {
       CheckBounce(ref dynState, dynState.LeftBlocker.ToRect(_stState.BlockerSize));
 
       if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateLeft, SnVector2.Left)) {
-        dynState.LeftScore += 1;
+        dynState.LeftHp--;
         HandleGoal(ref dynState);
       }
       else if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateRight, SnVector2.Right)) {
-        dynState.RightScore += 1;
+        dynState.RightHp--;
         HandleGoal(ref dynState);
       }
     }
@@ -156,8 +156,8 @@ namespace DPong.Level.Model {
       dynState.BallSpeed *= Transform.Combine(SnVector2.Zero, angle);
     }
 
-    private bool IsFinished(ref DynamicLevelState dynState) {
-      return dynState.LeftScore >= _stState.Goal || dynState.RightScore >= _stState.Goal;
+    private static bool IsFinished(ref DynamicLevelState dynState) {
+      return dynState.LeftHp <= 0 || dynState.RightHp <= 0;
     }
   }
 }

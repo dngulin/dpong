@@ -4,7 +4,7 @@ using PGM.ScaledNum;
 
 namespace DPong.Level.State {
   public class StaticLevelState {
-    public readonly int Goal = 5;
+    public readonly int HitPoints = 5;
 
     public readonly long FreezeTime = 3_000;
     public readonly long SpeedFactorInc = 0_100;
