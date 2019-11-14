@@ -4,20 +4,8 @@ using UnityEngine;
 
 namespace DPong.Common {
   public static class PgmBridge {
-    public static float Unscaled(this long scaledNumber) {
-      return scaledNumber / (float) SnMath.One;
-    }
-
-    public static Vector2 ToVector2(this SnVector2 v) {
-      var x = (float) v.X / SnMath.Scale;
-      var y = (float) v.Y / SnMath.Scale;
-      return new Vector2(x, y);
-    }
-
-    public static Vector2 ToVector2(this RectSize2D v) {
-      var x = (float) v.Width / SnMath.Scale;
-      var y = (float) v.Height / SnMath.Scale;
-      return new Vector2(x, y);
-    }
+    public static float Unscaled(this long scaledNumber) => (float) scaledNumber / SnMath.Scale;
+    public static Vector2 ToVector2(this SnVector2 v) => new Vector2(v.X.Unscaled(), v.Y.Unscaled());
+    public static Vector2 ToVector2(this RectSize2D s) => new Vector2(s.Width.Unscaled(), s.Height.Unscaled());
   }
 }
