@@ -1,3 +1,4 @@
+using DPong.Level.Data;
 using DPong.Level.State;
 using PGM.Collisions;
 using PGM.Collisions.Shapes2D;
@@ -10,15 +11,17 @@ namespace DPong.Level.Model {
     private readonly StaticLevelState _stState;
     private readonly PcgState _initialPcgState;
 
-    private readonly SnVector2 _defaultBallSpeed;
-    private readonly long _maxBlockerDeviation;
+    private readonly ProgressionMechanic _progression;
+    private readonly BlockerControlMechanic _blockerControl;
+    private readonly BallMovementMechanic _ballMovement;
 
     public LevelModel(StaticLevelState stState, PcgState? pcgState) {
       _stState = stState;
       _initialPcgState = pcgState ?? Pcg.CreateState();
 
-      _defaultBallSpeed = SnVector2.Mul(SnVector2.Up, _stState.BallSpeed);
-      _maxBlockerDeviation = (_stState.BoardSize.Height - _stState.BlockerSize.Height) / 2;
+      _progression = new ProgressionMechanic(stState);
+      _blockerControl = new BlockerControlMechanic(stState);
+      _ballMovement = new BallMovementMechanic(stState);
     }
 
     public DynamicLevelState CreateInitialState() {
@@ -28,11 +31,11 @@ namespace DPong.Level.Model {
         Random = _initialPcgState,
         SpeedFactor = SnMath.One,
 
-        LeftHp = _stState.HitPoints,
-        RightHp = _stState.HitPoints,
+        LeftHp = _progression.DefaultHp,
+        RightHp = _progression.DefaultHp,
 
         FreezeTime = _stState.FreezeTime,
-        BallSpeed = _defaultBallSpeed,
+        BallSpeed = _ballMovement.DefaultBallSpeed,
 
         Ball = new ColliderState(SnVector2.Zero),
         LeftBlocker = new ColliderState(-blockerPos),
@@ -41,61 +44,16 @@ namespace DPong.Level.Model {
     }
 
     public void Tick(ref DynamicLevelState dynState, Keys leftKeys, Keys rightKeys) {
-      if (IsFinished(ref dynState))
+      if (_progression.IsLevelCompleted(dynState))
         return;
 
-      MoveBlocker(ref dynState.LeftBlocker, leftKeys, dynState.SpeedFactor);
-      MoveBlocker(ref dynState.RightBlocker, rightKeys, dynState.SpeedFactor);
+      _blockerControl.Move(ref dynState.LeftBlocker, leftKeys, dynState.SpeedFactor);
+      _blockerControl.Move(ref dynState.RightBlocker, rightKeys, dynState.SpeedFactor);
 
-      if (dynState.FreezeTime > 0) {
-        UpdateFreezeTime(ref dynState);
+      if (!_ballMovement.TryMove(ref dynState))
         return;
-      }
 
-      MoveBall(ref dynState.Ball, dynState.BallSpeed, dynState.SpeedFactor);
       CheckCollisions(ref dynState);
-    }
-
-    private void MoveBlocker(ref ColliderState blocker, Keys keys, long speedFactor) {
-      if (keys == Keys.None || keys == (Keys.Up | Keys.Down))
-        return;
-
-      var directedSpeed = _stState.BlockerSpeed * (keys.HasKey(Keys.Up) ? 1 : -1);
-      var offsetMultiplier = SnMath.Mul(_stState.TickDuration, speedFactor);
-      var offset = SnMath.Mul(directedSpeed, offsetMultiplier);
-
-      var oldX = blocker.Position.X;
-      var oldY = blocker.Position.Y;
-      var newY = SnMath.Clamp(oldY + offset, -_maxBlockerDeviation, _maxBlockerDeviation);
-
-      if (oldY == newY)
-        return;
-
-      blocker.Position = new SnVector2(oldX, newY);
-    }
-
-    private void MoveBall(ref ColliderState ball, in SnVector2 speedVector, long speedFactor) {
-      var offsetMultiplier = SnMath.Mul(_stState.TickDuration, speedFactor);
-      var offset = SnVector2.Mul(speedVector, offsetMultiplier);
-
-      var oldPosition = ball.Position;
-      var newPosition = ball.Position + offset;
-
-      if (oldPosition == newPosition)
-        return;
-
-      ball.Position = newPosition;
-    }
-
-    private void UpdateFreezeTime(ref DynamicLevelState dynState) {
-      dynState.FreezeTime -= _stState.TickDuration;
-      if (dynState.FreezeTime > 0)
-        return;
-
-      dynState.FreezeTime = 0;
-
-      var angle = SnMath.DegToRad(45_000) + Pcg.NextRanged(ref dynState.Random, 0, 4) * SnMath.DegToRad(90_000);
-      dynState.BallSpeed = _defaultBallSpeed * Transform.Combine(SnVector2.Zero, angle);
     }
 
     private void CheckCollisions(ref DynamicLevelState dynState) {
@@ -106,19 +64,15 @@ namespace DPong.Level.Model {
       CheckBounce(ref dynState, dynState.LeftBlocker.ToRect(_stState.BlockerSize));
 
       if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateLeft, SnVector2.Left)) {
-        dynState.LeftHp--;
-        HandleGoal(ref dynState);
+        _progression.HandleGateHit(ref dynState, Side.Left);
+        _ballMovement.Freeze(ref dynState);
+        dynState.SpeedFactor = SnMath.One;
       }
       else if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateRight, SnVector2.Right)) {
-        dynState.RightHp--;
-        HandleGoal(ref dynState);
+        _progression.HandleGateHit(ref dynState, Side.Right);
+        _ballMovement.Freeze(ref dynState);
+        dynState.SpeedFactor = SnMath.One;
       }
-    }
-
-    private void HandleGoal(ref DynamicLevelState state) {
-      state.FreezeTime = _stState.FreezeTime;
-      state.SpeedFactor = SnMath.One;
-      state.Ball.Position = SnVector2.Zero;
     }
 
     private unsafe void CheckBounce(ref DynamicLevelState dynState, in ShapeState2D blocker) {
@@ -154,10 +108,6 @@ namespace DPong.Level.Model {
 
       var angle = SnMath.DegToRad(Pcg.NextRanged(ref dynState.Random, 0, 10_000)) - SnMath.DegToRad(5_000);
       dynState.BallSpeed *= Transform.Combine(SnVector2.Zero, angle);
-    }
-
-    private static bool IsFinished(ref DynamicLevelState dynState) {
-      return dynState.LeftHp <= 0 || dynState.RightHp <= 0;
     }
   }
 }
