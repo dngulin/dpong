@@ -11,9 +11,9 @@ namespace DPong.Level.Model {
       _maxBlockerDeviation = (stState.BoardSize.Height - stState.BlockerSize.Height) / 2;
     }
 
-    public void Move(ref ColliderState blocker, Keys keys, long speedFactor) {
+    public SnVector2 Move(ref ColliderState blocker, Keys keys, long speedFactor) {
       if (keys == Keys.None || keys == (Keys.Up | Keys.Down))
-        return;
+        return SnVector2.Zero;
 
       var moveSign = keys.HasKey(Keys.Up) ? 1 : -1;
 
@@ -21,11 +21,11 @@ namespace DPong.Level.Model {
       var offsetMultiplier = SnMath.Mul(_stState.TickDuration, speedFactor);
       var offset = SnMath.Mul(directedSpeed, offsetMultiplier);
 
-      var oldX = blocker.Position.X;
-      var oldY = blocker.Position.Y;
-      var newY = SnMath.Clamp(oldY + offset, -_maxBlockerDeviation, _maxBlockerDeviation);
+      var oldPos = blocker.Position;
+      var newY = SnMath.Clamp(oldPos.Y + offset, -_maxBlockerDeviation, _maxBlockerDeviation);
+      blocker.Position = new SnVector2(oldPos.X, newY);
 
-      blocker.Position = new SnVector2(oldX, newY);
+      return blocker.Position - oldPos;
     }
   }
 }
