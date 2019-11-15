@@ -43,6 +43,9 @@ namespace DPong.Level.View {
     }
 
     private void OnDrawGizmos() {
+      if (_dynStateContainer == null)
+        return;
+
       DrawGizmos(_dynStateContainer.Current);
     }
 
