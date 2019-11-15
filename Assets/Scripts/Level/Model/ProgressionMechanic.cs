@@ -15,7 +15,7 @@ namespace DPong.Level.Model {
       return dynState.LeftHp <= 0 || dynState.RightHp <= 0;
     }
 
-    public void HandleGateHit(ref DynamicLevelState dynState, Side side) {
+    public void DecreaseHp(ref DynamicLevelState dynState, Side side) {
       if (IsLevelCompleted(dynState))
         return;
 

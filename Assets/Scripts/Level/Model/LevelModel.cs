@@ -65,12 +65,12 @@ namespace DPong.Level.Model {
       CheckBounce(ref dynState, dynState.LeftBlocker.ToRect(_stState.BlockerSize));
 
       if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateLeft, SnVector2.Left)) {
-        _progression.HandleGateHit(ref dynState, Side.Left);
+        _progression.DecreaseHp(ref dynState, Side.Left);
         _ballMovement.Freeze(ref dynState);
         dynState.SpeedFactor = _gamePace.DefaultSpeed;
       }
       else if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateRight, SnVector2.Right)) {
-        _progression.HandleGateHit(ref dynState, Side.Right);
+        _progression.DecreaseHp(ref dynState, Side.Right);
         _ballMovement.Freeze(ref dynState);
         dynState.SpeedFactor = _gamePace.DefaultSpeed;
       }
