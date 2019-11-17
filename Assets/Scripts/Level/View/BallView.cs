@@ -5,7 +5,7 @@ using UnityEngine;
 namespace DPong.Level.View {
   public class BallView: StateViewer {
     protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
-      if (curr.FreezeTime > 0) {
+      if (curr.Ball.FreezeCooldown > 0) {
         transform.localPosition = curr.Ball.Position.ToVector2();
         return;
       }
