@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DPong.Level.View {
   public class BallView: StateViewer {
-    protected override void UpdateImpl(DynamicLevelState prev, DynamicLevelState curr, float factor) {
+    protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
       if (curr.FreezeTime > 0) {
         transform.localPosition = curr.Ball.Position.ToVector2();
         return;
@@ -16,9 +16,9 @@ namespace DPong.Level.View {
       transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
     }
 
-    protected override void DrawGizmos(DynamicLevelState dynState) {
+    protected override void DrawGizmos(LevelState state) {
       Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(dynState.Ball.Position.ToVector2(), StState.BallSize.Radius.Unscaled());
+      Gizmos.DrawWireSphere(state.Ball.Position.ToVector2(), StState.BallSize.Radius.Unscaled());
     }
   }
 }

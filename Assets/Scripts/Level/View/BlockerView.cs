@@ -19,7 +19,7 @@ namespace DPong.Level.View {
       return this;
     }
 
-    protected override void UpdateImpl(DynamicLevelState prev, DynamicLevelState curr, float factor) {
+    protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
       switch (_trackingSide) {
         case Side.Left:
           UpdateBlockerPosition(prev.LeftBlocker, curr.LeftBlocker, factor);
@@ -40,8 +40,8 @@ namespace DPong.Level.View {
       transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
     }
 
-    protected override void DrawGizmos(DynamicLevelState dynState) {
-      var blocker = _trackingSide == Side.Left ? dynState.LeftBlocker : dynState.RightBlocker;
+    protected override void DrawGizmos(LevelState state) {
+      var blocker = _trackingSide == Side.Left ? state.LeftBlocker : state.RightBlocker;
 
       Gizmos.color = Color.green;
       Gizmos.DrawWireCube(blocker.Position.ToVector2(), StState.BlockerSize.ToVector2());

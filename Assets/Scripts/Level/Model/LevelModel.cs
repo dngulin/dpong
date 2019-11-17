@@ -27,10 +27,10 @@ namespace DPong.Level.Model {
       _collisions = new CollisionsMechanic(stState);
     }
 
-    public DynamicLevelState CreateInitialState() {
+    public LevelState CreateInitialState() {
       var blockerPos = new SnVector2(_stState.BoardSize.Width / 2, 0);
 
-      return new DynamicLevelState {
+      return new LevelState {
         Random = _initialPcgState,
         SpeedFactor = _gamePace.DefaultSpeed,
 
@@ -46,14 +46,14 @@ namespace DPong.Level.Model {
       };
     }
 
-    public unsafe void Tick(ref DynamicLevelState dynState, Keys leftKeys, Keys rightKeys) {
-      if (_progression.IsLevelCompleted(dynState))
+    public unsafe void Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
+      if (_progression.IsLevelCompleted(state))
         return;
 
-      var lBlocker = _blockerControl.Move(ref dynState.LeftBlocker, leftKeys, dynState.SpeedFactor);
-      var rBlocker = _blockerControl.Move(ref dynState.RightBlocker, rightKeys, dynState.SpeedFactor);
+      var lBlocker = _blockerControl.Move(ref state.LeftBlocker, leftKeys, state.SpeedFactor);
+      var rBlocker = _blockerControl.Move(ref state.RightBlocker, rightKeys, state.SpeedFactor);
 
-      if (!_ballMovement.TryMove(ref dynState))
+      if (!_ballMovement.TryMove(ref state))
         return;
 
       const int bLen = 4;
@@ -61,21 +61,21 @@ namespace DPong.Level.Model {
 
       for (var i = 0; i < bLen; i++) {
         var obj = objects[i];
-        if (!_collisions.Check(dynState.Ball.ToCircle(_stState.BallSize), obj.State, out var penetration))
+        if (!_collisions.Check(state.Ball.ToCircle(_stState.BallSize), obj.State, out var penetration))
           continue;
 
-        _ballMovement.Shift(ref dynState, -penetration);
-        _ballMovement.Bounce(ref dynState, -penetration.Normalized(), obj.Movement.Normalized());
-        dynState.SpeedFactor = _gamePace.SpeedUp(dynState.SpeedFactor);
+        _ballMovement.Shift(ref state, -penetration);
+        _ballMovement.Bounce(ref state, -penetration.Normalized(), obj.Movement.Normalized());
+        state.SpeedFactor = _gamePace.SpeedUp(state.SpeedFactor);
       }
 
       foreach (var side in Sides) {
-        if (!_collisions.CheckGates(dynState.Ball.ToCircle(_stState.BallSize), side))
+        if (!_collisions.CheckGates(state.Ball.ToCircle(_stState.BallSize), side))
           continue;
 
-        _progression.DecreaseHp(ref dynState, side);
-        _ballMovement.Freeze(ref dynState);
-        dynState.SpeedFactor = _gamePace.DefaultSpeed;
+        _progression.DecreaseHp(ref state, side);
+        _ballMovement.Freeze(ref state);
+        state.SpeedFactor = _gamePace.DefaultSpeed;
         break;
       }
     }

@@ -4,15 +4,15 @@ using UnityEngine;
 
 namespace DPong.Level.View {
   public abstract class StateViewer: MonoBehaviour {
-    private IDynamicStateContainer _dynStateContainer;
+    private IDynamicStateContainer _stateContainer;
     protected StaticLevelState StState;
 
     private float _tickDuration = 1.0f / 60;
     private float _displayedTickTime;
 
-    public void Initialize(IDynamicStateContainer dynStateContainer, StaticLevelState staticState) {
-      _dynStateContainer = dynStateContainer;
-      _dynStateContainer.OnCurrentStateChanged += OnCurrentStateChanged;
+    public void Initialize(IDynamicStateContainer stateContainer, StaticLevelState staticState) {
+      _stateContainer = stateContainer;
+      _stateContainer.OnCurrentStateChanged += OnCurrentStateChanged;
 
       StState = staticState;
       _tickDuration = StState.TickDuration.Unscaled();
@@ -23,33 +23,33 @@ namespace DPong.Level.View {
     }
 
     private void Update() {
-      if (_dynStateContainer == null)
+      if (_stateContainer == null)
         return;
 
       if (_displayedTickTime >= _tickDuration)
         return;
 
       _displayedTickTime += Time.deltaTime;
-      UpdateImpl(_dynStateContainer.Previous, _dynStateContainer.Current, _displayedTickTime / _tickDuration);
+      UpdateImpl(_stateContainer.Previous, _stateContainer.Current, _displayedTickTime / _tickDuration);
     }
 
-    protected abstract void UpdateImpl(DynamicLevelState prev, DynamicLevelState curr, float factor);
+    protected abstract void UpdateImpl(LevelState prev, LevelState curr, float factor);
 
     private void OnDestroy() {
-      if (_dynStateContainer == null)
+      if (_stateContainer == null)
         return;
 
-      _dynStateContainer.OnCurrentStateChanged -= OnCurrentStateChanged;
+      _stateContainer.OnCurrentStateChanged -= OnCurrentStateChanged;
     }
 
     private void OnDrawGizmos() {
-      if (_dynStateContainer == null)
+      if (_stateContainer == null)
         return;
 
-      DrawGizmos(_dynStateContainer.Current);
+      DrawGizmos(_stateContainer.Current);
     }
 
-    protected virtual void DrawGizmos(DynamicLevelState dynState) {
+    protected virtual void DrawGizmos(LevelState state) {
     }
   }
 }

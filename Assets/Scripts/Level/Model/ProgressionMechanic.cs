@@ -11,15 +11,15 @@ namespace DPong.Level.Model {
       _stState = stState;
     }
 
-    public bool IsLevelCompleted(in DynamicLevelState dynState) {
-      return dynState.LeftHp <= 0 || dynState.RightHp <= 0;
+    public bool IsLevelCompleted(in LevelState state) {
+      return state.LeftHp <= 0 || state.RightHp <= 0;
     }
 
-    public void DecreaseHp(ref DynamicLevelState dynState, Side side) {
-      if (IsLevelCompleted(dynState))
+    public void DecreaseHp(ref LevelState state, Side side) {
+      if (IsLevelCompleted(state))
         return;
 
-      ref var selectedHp = ref side == Side.Left ? ref dynState.LeftHp : ref dynState.RightHp;
+      ref var selectedHp = ref side == Side.Left ? ref state.LeftHp : ref state.RightHp;
       selectedHp--;
     }
   }

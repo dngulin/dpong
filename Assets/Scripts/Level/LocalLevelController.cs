@@ -14,7 +14,7 @@ namespace DPong.Level {
     private readonly LevelModel _model;
     private readonly LevelView _view;
 
-    private DynamicLevelState _state;
+    private LevelState _state;
 
     public LocalLevelController(LevelInfo info, ILocalInputSource localInputSrc) {
       _leftIsBot = info.Left.IsBot;
@@ -37,7 +37,7 @@ namespace DPong.Level {
 
       _model.Tick(ref _state, leftKeys, rightKeys);
 
-      _view.DynStateContainer.PushNextState(_state);
+      _view.stateContainer.PushNextState(_state);
     }
   }
 }

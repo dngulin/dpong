@@ -2,7 +2,7 @@ using PGM.Random;
 using PGM.ScaledNum;
 
 namespace DPong.Level.State {
-  public struct DynamicLevelState {
+  public struct LevelState {
     public PcgState Random;
 
     public long SpeedFactor;

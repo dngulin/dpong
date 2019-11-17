@@ -5,21 +5,21 @@ namespace DPong.Level.View {
   public class DynamicStateContainer : IDynamicStateContainer {
     public event Action OnCurrentStateChanged;
 
-    public DynamicLevelState Current { private set; get; }
-    public DynamicLevelState Previous { private set; get; }
+    public LevelState Current { private set; get; }
+    public LevelState Previous { private set; get; }
 
-    public DynamicStateContainer(DynamicLevelState state) {
+    public DynamicStateContainer(LevelState state) {
       Current = state;
       Previous = state;
     }
 
-    public void PushNextState(DynamicLevelState state) {
+    public void PushNextState(LevelState state) {
       Previous = Current;
       Current = state;
       OnCurrentStateChanged?.Invoke();
     }
 
-    public void SetPreviousAndCurrentStates(DynamicLevelState previous, DynamicLevelState current) {
+    public void SetPreviousAndCurrentStates(LevelState previous, LevelState current) {
       Previous = previous;
       Current = current;
       OnCurrentStateChanged?.Invoke();
