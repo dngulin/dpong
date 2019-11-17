@@ -14,6 +14,7 @@ namespace DPong.Level.State {
     public readonly long BallSpeed = 8_000;
 
     public readonly int BounceDeviationDegrees = 2_500;
+    public readonly int BounceMovementAngle = 5_000;
 
     public readonly RectSize2D BoardSize = new RectSize2D(30_000, 20_000);
     public readonly RectSize2D MarginSize = new RectSize2D(70_000, 10_000);

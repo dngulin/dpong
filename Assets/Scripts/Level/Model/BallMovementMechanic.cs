@@ -1,3 +1,5 @@
+using System;
+using DPong.Common;
 using DPong.Level.State;
 using PGM.Random;
 using PGM.ScaledNum;
@@ -35,13 +37,21 @@ namespace DPong.Level.Model {
       state.Ball.Position += shift;
     }
 
-    public void Bounce(ref LevelState state, in SnVector2 normal, in SnVector2 movement) {
-      var dot = SnVector2.Dot(state.BallSpeed, normal);
-      state.BallSpeed -= SnVector2.Mul(normal, dot * 2);
+    public void Bounce(ref LevelState state, in SnVector2 bounceNormal, in SnVector2 movementNormal) {
+      // Reflect speed vector
+      var dot = SnVector2.Dot(state.BallSpeed, bounceNormal);
+      state.BallSpeed -= SnVector2.Mul(bounceNormal, dot * 2);
 
+      // Calculate rotation by blocker movement
+      var cross = SnVector3.Cross(movementNormal.To3D(), bounceNormal.To3D());
+      var movementAngle = Math.Sign(cross.Z) * SnMath.DegToRad(_stState.BounceMovementAngle);
+
+      // Calculate some random rotation
       var deviation = _stState.BounceDeviationDegrees;
-      var angle = SnMath.DegToRad(Pcg.NextRanged(ref state.Random, -deviation, deviation));
-      state.BallSpeed *= Transform.Combine(SnVector2.Zero, angle);
+      var deviationAngle = SnMath.DegToRad(Pcg.NextRanged(ref state.Random, -deviation, deviation));
+
+      // Apply speed vector rotation
+      state.BallSpeed *= Transform.Combine(SnVector2.Zero, movementAngle + deviationAngle);
     }
 
     private void UpdateFreezeTime(ref LevelState state) {
