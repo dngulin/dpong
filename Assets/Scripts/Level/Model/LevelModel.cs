@@ -34,17 +34,19 @@ namespace DPong.Level.Model {
       };
     }
 
-    public unsafe void Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      if (_hitPoints.IsLevelCompleted(state.HitPoints))
-        return;
+    public void Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
+      if (_hitPoints.IsLevelCompleted(state.HitPoints)) return;
 
-      // Move dynamic objects
       var (lBlocker, rBlocker) = _blockers.Move(ref state.Blockers, state.Pace, leftKeys, rightKeys);
+      var ballMoved = _ball.TryMove(ref state.Ball, ref state.Random, state.Pace);
 
-      if (!_ball.TryMove(ref state.Ball, ref state.Random, state.Pace))
-        return;
+      if (!ballMoved) return;
 
-      // Make bounce collisions
+      MakeBounceCollisions(ref state, lBlocker, rBlocker);
+      CheckGates(ref state);
+    }
+
+    private unsafe void MakeBounceCollisions(ref LevelState state, in BounceObj lBlocker, in BounceObj rBlocker) {
       const int objCount = 4;
       var objects = stackalloc BounceObj[objCount] {lBlocker, rBlocker, _collisions.BorderUp, _collisions.BorderDown};
 
@@ -59,11 +61,13 @@ namespace DPong.Level.Model {
 
         state.Pace = _pace.SpeedUp(state.Pace);
       }
+    }
 
-      // Check gates
+    private void CheckGates(ref LevelState state) {
+      var ballShape = _ball.GetShape(ref state.Ball);
+
       foreach (var side in Sides) {
-        if (!_collisions.CheckGates(_ball.GetShape(ref state.Ball), side))
-          continue;
+        if (!_collisions.CheckGates(ballShape, side)) continue;
 
         _hitPoints.DecreaseHp(ref state.HitPoints, side);
         _ball.Freeze(ref state.Ball);
