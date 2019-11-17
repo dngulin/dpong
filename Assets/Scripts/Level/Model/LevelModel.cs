@@ -10,7 +10,7 @@ namespace DPong.Level.Model {
     private readonly StaticLevelState _stState;
     private readonly PcgState _initialPcgState;
 
-    private readonly ProgressMechanic _progress;
+    private readonly HitPointsMechanic _hitPoints;
     private readonly PaceMechanic _pace;
     private readonly BlockersMechanic _blockers;
     private readonly BallMechanic _ball;
@@ -20,7 +20,7 @@ namespace DPong.Level.Model {
       _stState = stState;
       _initialPcgState = pcgState ?? Pcg.CreateState();
 
-      _progress = new ProgressMechanic(stState);
+      _hitPoints = new HitPointsMechanic(stState.HitPoints);
       _pace = new PaceMechanic(stState);
       _blockers = new BlockersMechanic(stState);
       _ball = new BallMechanic(stState);
@@ -34,20 +34,19 @@ namespace DPong.Level.Model {
         Random = _initialPcgState,
         SpeedFactor = _pace.Default,
 
-        LeftHp = _progress.DefaultHp,
-        RightHp = _progress.DefaultHp,
+        HitPoints = _hitPoints.InitialState,
 
         FreezeTime = _stState.FreezeTime,
         BallSpeed = _ball.DefaultBallSpeed,
-
         Ball = new ColliderState(SnVector2.Zero),
+
         LeftBlocker = new ColliderState(-blockerPos),
         RightBlocker = new ColliderState(blockerPos)
       };
     }
 
     public unsafe void Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      if (_progress.IsLevelCompleted(state))
+      if (_hitPoints.IsLevelCompleted(state.HitPoints))
         return;
 
       var lBlocker = _blockers.Move(ref state.LeftBlocker, leftKeys, state.SpeedFactor);
@@ -72,7 +71,7 @@ namespace DPong.Level.Model {
         if (!_collisions.CheckGates(_ball.GetShape(ref state), side))
           continue;
 
-        _progress.DecreaseHp(ref state, side);
+        _hitPoints.DecreaseHp(ref state.HitPoints, side);
         _ball.Freeze(ref state);
         state.SpeedFactor = _pace.Default;
         break;

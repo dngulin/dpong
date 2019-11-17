@@ -24,8 +24,8 @@ namespace DPong.Level.View {
     }
 
     private void SetScores(LevelState state) {
-      _leftScore.text = state.LeftHp.ToString();
-      _rightScore.text = state.RightHp.ToString();
+      _leftScore.text = state.HitPoints.Left.ToString();
+      _rightScore.text = state.HitPoints.Right.ToString();
     }
 
     protected override void DrawGizmos(LevelState state) {
