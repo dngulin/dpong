@@ -1,18 +1,19 @@
-using DPong.Level.State;
+using DPong.Level.Data;
 using PGM.ScaledNum;
 
 namespace DPong.Level.Model {
   public class PaceMechanic {
-    private readonly StaticLevelState _stState;
+    public readonly long Default;
 
-    public PaceMechanic(StaticLevelState stState) {
-      _stState = stState;
+    private readonly long _inc;
+    private readonly long _max;
+
+    public PaceMechanic(PaceSettings pace) {
+      Default = pace.Default;
+      _inc = pace.BounceInc;
+      _max = pace.Maximum;
     }
 
-    public long Default => SnMath.One;
-
-    public long SpeedUp(long speedFactor) {
-      return SnMath.Clamp(speedFactor + _stState.SpeedFactorInc, Default, _stState.SpeedFactorMax);
-    }
+    public long SpeedUp(long pace) => SnMath.Clamp(pace + _inc, Default, _max);
   }
 }

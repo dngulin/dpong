@@ -1,5 +1,6 @@
 using System;
 using DPong.Common;
+using DPong.Level.Data;
 using DPong.Level.State;
 using PGM.Collisions.Shapes2D;
 using PGM.Random;
@@ -8,20 +9,26 @@ using PGM.SceneGraph;
 
 namespace DPong.Level.Model {
   public class BallMechanic {
-    private readonly StaticLevelState _stState;
-    private readonly SnVector2 _defaultBallSpeed;
+    private readonly long _tickDuration;
+
+    private readonly long _bounceMovementAngle;
+    private readonly long _bounceRandomAngle;
+
     private readonly ShapeSize2D _size;
 
     public readonly BallState InitialState;
 
-    public BallMechanic(StaticLevelState stState) {
-      _stState = stState;
-      _defaultBallSpeed = SnVector2.Mul(SnVector2.Up, stState.BallSpeed);
-      _size = new ShapeSize2D(_stState.BallSize);
+    public BallMechanic(BallSettings ball, long tickDuration) {
+      _tickDuration = tickDuration;
+
+      _size = new ShapeSize2D(ball.Size);
+
+      _bounceMovementAngle = ball.BounceMovementAngle;
+      _bounceRandomAngle = ball.BounceRandomAngle;
 
       InitialState = new BallState {
-        FreezeCooldown = stState.FreezeTime,
-        Speed = _defaultBallSpeed,
+        FreezeCooldown = ball.FreezeTime,
+        Speed = SnVector2.Mul(SnVector2.Up, ball.Speed),
         Position = SnVector2.Zero
       };
     }
@@ -36,13 +43,13 @@ namespace DPong.Level.Model {
         return false;
       }
 
-      var multiplier = SnMath.Mul(_stState.TickDuration, pace);
+      var multiplier = SnMath.Mul(_tickDuration, pace);
       ball.Position += SnVector2.Mul(ball.Speed, multiplier);
       return true;
     }
 
     public void Freeze(ref BallState ball) {
-      ball.FreezeCooldown = _stState.FreezeTime;
+      ball.FreezeCooldown = InitialState.FreezeCooldown;
       ball.Position = SnVector2.Zero;
     }
 
@@ -57,10 +64,10 @@ namespace DPong.Level.Model {
 
       // Calculate rotation by blocker movement
       var cross = SnVector3.Cross(movementNorm.To3D(), bounceNorm.To3D());
-      var movementAngle = Math.Sign(cross.Z) * SnMath.DegToRad(_stState.BounceMovementAngle);
+      var movementAngle = Math.Sign(cross.Z) * SnMath.DegToRad(_bounceMovementAngle);
 
       // Calculate some random rotation
-      var deviation = _stState.BounceDeviationDegrees;
+      var deviation = (int) _bounceRandomAngle;
       var deviationAngle = SnMath.DegToRad(Pcg.NextRanged(ref random, -deviation, deviation));
 
       // Apply speed vector rotation
@@ -68,7 +75,7 @@ namespace DPong.Level.Model {
     }
 
     private void UpdateCooldown(ref BallState ball, ref PcgState random) {
-      ball.FreezeCooldown -= _stState.TickDuration;
+      ball.FreezeCooldown -= _tickDuration;
       if (ball.FreezeCooldown > 0)
         return;
 
@@ -78,7 +85,7 @@ namespace DPong.Level.Model {
 
     private void SetRandomMovementDirection(ref BallState ball, ref PcgState random) {
       var angle = SnMath.DegToRad(45_000) + Pcg.NextRanged(ref random, 0, 4) * SnMath.DegToRad(90_000);
-      ball.Speed = _defaultBallSpeed * Transform.Combine(SnVector2.Zero, angle);
+      ball.Speed = InitialState.Speed * Transform.Combine(SnVector2.Zero, angle);
     }
   }
 }

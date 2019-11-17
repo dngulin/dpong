@@ -29,14 +29,14 @@ namespace DPong.Level.Debug {
       return new LocalInputSource(left, right);
     }
 
-    private LevelInfo CreateLevelInfo() {
+    private LevelSettings CreateLevelInfo() {
       var leftPlayer = new PlayerInfo(_leftName, _leftIsBot);
       var rightPlayer = new PlayerInfo(_rightName, _rightIsBot);
 
       var tickDuration = Mathf.RoundToInt(Time.fixedDeltaTime * SnMath.Scale);
       var settings = new SimulationSettings(tickDuration, null);
 
-      return new LevelInfo(leftPlayer, rightPlayer, settings);
+      return new LevelSettings(leftPlayer, rightPlayer, settings);
     }
   }
 }

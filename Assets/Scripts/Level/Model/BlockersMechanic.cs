@@ -1,3 +1,4 @@
+using DPong.Level.Data;
 using DPong.Level.State;
 using PGM.Collisions.Shapes2D;
 using PGM.ScaledNum;
@@ -5,18 +6,22 @@ using PGM.SceneGraph;
 
 namespace DPong.Level.Model {
   public class BlockersMechanic {
-    private readonly StaticLevelState _stState;
+    private readonly long _tickDuration;
+    private readonly long _speed;
+
     private readonly long _maxBlockerDeviation;
     private readonly ShapeSize2D _size;
 
     public readonly BlockersState InitialState;
 
-    public BlockersMechanic(StaticLevelState stState) {
-      _stState = stState;
-      _maxBlockerDeviation = (stState.BoardSize.Height - stState.BlockerSize.Height) / 2;
-      _size = new ShapeSize2D(stState.BlockerSize);
+    public BlockersMechanic(BlockerSettings blocker, in RectSize2D boardSize, long tickDuration) {
+      _tickDuration = tickDuration;
+      _speed = blocker.Speed;
 
-      var blockerPos = new SnVector2(_stState.BoardSize.Width / 2, 0);
+      _maxBlockerDeviation = (boardSize.Height - blocker.Size.Height) / 2;
+      _size = new ShapeSize2D(blocker.Size);
+
+      var blockerPos = new SnVector2(boardSize.Width / 2, 0);
       InitialState = new BlockersState {
         LeftPosition = -blockerPos,
         RightPosition = blockerPos
@@ -34,10 +39,8 @@ namespace DPong.Level.Model {
         return GetBlockerBounceObject(position, SnVector2.Zero);
 
       var moveSign = keys.HasKey(Keys.Up) ? 1 : -1;
-
-      var directedSpeed = _stState.BlockerSpeed * moveSign;
-      var offsetMultiplier = SnMath.Mul(_stState.TickDuration, pace);
-      var offset = SnMath.Mul(directedSpeed, offsetMultiplier);
+      var offsetMultiplier = SnMath.Mul(_tickDuration, pace);
+      var offset = SnMath.Mul(_speed * moveSign, offsetMultiplier);
 
       var prevPosition = position;
       var newY = SnMath.Clamp(prevPosition.Y + offset, -_maxBlockerDeviation, _maxBlockerDeviation);

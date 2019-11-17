@@ -1,21 +1,22 @@
 using DPong.Common;
+using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
 
 namespace DPong.Level.View {
   public abstract class StateViewer: MonoBehaviour {
     private IDynamicStateContainer _stateContainer;
-    protected StaticLevelState StState;
+    protected LevelSettings Settings;
 
     private float _tickDuration = 1.0f / 60;
     private float _displayedTickTime;
 
-    public void Initialize(IDynamicStateContainer stateContainer, StaticLevelState staticState) {
+    public void Initialize(IDynamicStateContainer stateContainer, LevelSettings settings) {
       _stateContainer = stateContainer;
       _stateContainer.OnCurrentStateChanged += OnCurrentStateChanged;
 
-      StState = staticState;
-      _tickDuration = StState.TickDuration.Unscaled();
+      Settings = settings;
+      _tickDuration = Settings.Simulation.TickDuration.Unscaled();
     }
 
     private void OnCurrentStateChanged() {

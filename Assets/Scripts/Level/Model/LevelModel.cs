@@ -14,14 +14,14 @@ namespace DPong.Level.Model {
     private readonly BallMechanic _ball;
     private readonly CollisionsMechanic _collisions;
 
-    public LevelModel(StaticLevelState stState, PcgState? pcgState) {
-      _initialRandomState = pcgState ?? Pcg.CreateState();
+    public LevelModel(LevelSettings settings) {
+      _initialRandomState = settings.Simulation.RandomState ?? Pcg.CreateState();
 
-      _hitPoints = new HitPointsMechanic(stState.HitPoints);
-      _pace = new PaceMechanic(stState);
-      _blockers = new BlockersMechanic(stState);
-      _ball = new BallMechanic(stState);
-      _collisions = new CollisionsMechanic(stState);
+      _hitPoints = new HitPointsMechanic(settings.HitPoints);
+      _pace = new PaceMechanic(settings.Pace);
+      _blockers = new BlockersMechanic(settings.Blocker, settings.Board.Size, settings.Simulation.TickDuration);
+      _ball = new BallMechanic(settings.Ball, settings.Simulation.TickDuration);
+      _collisions = new CollisionsMechanic(settings.Board);
     }
 
     public LevelState CreateInitialState() {

@@ -43,7 +43,7 @@ namespace DPong.Level.View {
       var position = _trackingSide == Side.Left ? state.Blockers.LeftPosition : state.Blockers.RightPosition;
 
       Gizmos.color = Color.green;
-      Gizmos.DrawWireCube(position.ToVector2(), StState.BlockerSize.ToVector2());
+      Gizmos.DrawWireCube(position.ToVector2(), Settings.Blocker.Size.ToVector2());
     }
   }
 }

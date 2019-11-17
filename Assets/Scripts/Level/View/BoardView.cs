@@ -30,7 +30,7 @@ namespace DPong.Level.View {
 
     protected override void DrawGizmos(LevelState state) {
       Gizmos.color = Color.yellow;
-      Gizmos.DrawWireCube(Vector3.zero, StState.BoardSize.ToVector2());
+      Gizmos.DrawWireCube(Vector3.zero, Settings.Board.Size.ToVector2());
     }
   }
 }

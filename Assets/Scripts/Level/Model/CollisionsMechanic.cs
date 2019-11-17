@@ -1,19 +1,31 @@
 using DPong.Level.Data;
-using DPong.Level.State;
 using PGM.Collisions;
 using PGM.Collisions.Shapes2D;
 using PGM.ScaledNum;
+using PGM.SceneGraph;
 
 namespace DPong.Level.Model {
   public class CollisionsMechanic {
-    private readonly StaticLevelState _stState;
+    public BounceObj BorderUp;
+    public BounceObj BorderDown;
 
-    public CollisionsMechanic(StaticLevelState stState) {
-      _stState = stState;
+    private readonly ShapeState2D _lGateShape;
+    private readonly ShapeState2D _rGateShape;
+
+    public CollisionsMechanic(BoardSettings board) {
+      var gatePos = new SnVector2((board.Size.Width + board.GateSize.Width) / 2, 0);
+
+      _lGateShape = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.GateSize), Transform.Translate(-gatePos));
+      _rGateShape = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.GateSize), Transform.Translate(gatePos));
+
+      var borderPos = new SnVector2(0, (board.Size.Height + board.BorderSize.Height) / 2);
+
+      var up = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.BorderSize), Transform.Translate(-borderPos));
+      var down = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.BorderSize), Transform.Translate(borderPos));
+
+      BorderUp = new BounceObj(up, SnVector2.Zero);
+      BorderDown = new BounceObj(down, SnVector2.Zero);
     }
-
-    public BounceObj BorderUp => new BounceObj(_stState.BorderUp, SnVector2.Zero);
-    public BounceObj BorderDown => new BounceObj(_stState.BorderDown, SnVector2.Zero);
 
     public unsafe bool Check(in ShapeState2D a, in ShapeState2D b, out SnVector2 penetration) {
       penetration = SnVector2.Zero;
@@ -45,7 +57,7 @@ namespace DPong.Level.Model {
     }
 
     public bool CheckGates(ShapeState2D shape, Side side) {
-      var gates = side == Side.Left ? _stState.GateLeft : _stState.GateRight;
+      var gates = side == Side.Left ? _lGateShape : _rGateShape;
       var direction = Shape2D.GetCenter(gates.Transform) - Shape2D.GetCenter(shape.Transform);
       return Collision2D.Check(shape, gates, direction);
     }

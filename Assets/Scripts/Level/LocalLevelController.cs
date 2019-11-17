@@ -16,19 +16,17 @@ namespace DPong.Level {
 
     private LevelState _state;
 
-    public LocalLevelController(LevelInfo info, ILocalInputSource localInputSrc) {
-      _leftIsBot = info.Left.IsBot;
-      _rightIsBot = info.Right.IsBot;
+    public LocalLevelController(LevelSettings settings, ILocalInputSource localInputSrc) {
+      _leftIsBot = settings.PlayerLeft.IsBot;
+      _rightIsBot = settings.PlayerRight.IsBot;
 
       _localInputSrc = localInputSrc;
       _aiInputSrc = new AiInputSource();
 
-      var staticState = new StaticLevelState(info);
-
-      _model = new LevelModel(staticState, info.Settings.RandomState);
+      _model = new LevelModel(settings);
       _state = _model.CreateInitialState();
 
-      _view = new LevelView(_state, staticState);
+      _view = new LevelView(_state, settings);
     }
 
     public void Tick() {
@@ -36,8 +34,7 @@ namespace DPong.Level {
       var rightKeys = _rightIsBot ? _aiInputSrc.GetRight(_state) : _localInputSrc.GetRight();
 
       _model.Tick(ref _state, leftKeys, rightKeys);
-
-      _view.stateContainer.PushNextState(_state);
+      _view.StateContainer.PushNextState(_state);
     }
   }
 }
