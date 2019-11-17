@@ -10,20 +10,20 @@ namespace DPong.Level.Model {
     private readonly StaticLevelState _stState;
     private readonly PcgState _initialPcgState;
 
-    private readonly ProgressionMechanic _progression;
-    private readonly GamePaceMechanic _gamePace;
-    private readonly BlockerControlMechanic _blockerControl;
-    private readonly BallMovementMechanic _ballMovement;
+    private readonly ProgressMechanic _progress;
+    private readonly PaceMechanic _pace;
+    private readonly BlockersMechanic _blockers;
+    private readonly BallMechanic _ball;
     private readonly CollisionsMechanic _collisions;
 
     public LevelModel(StaticLevelState stState, PcgState? pcgState) {
       _stState = stState;
       _initialPcgState = pcgState ?? Pcg.CreateState();
 
-      _progression = new ProgressionMechanic(stState);
-      _gamePace = new GamePaceMechanic(stState);
-      _blockerControl = new BlockerControlMechanic(stState);
-      _ballMovement = new BallMovementMechanic(stState);
+      _progress = new ProgressMechanic(stState);
+      _pace = new PaceMechanic(stState);
+      _blockers = new BlockersMechanic(stState);
+      _ball = new BallMechanic(stState);
       _collisions = new CollisionsMechanic(stState);
     }
 
@@ -32,13 +32,13 @@ namespace DPong.Level.Model {
 
       return new LevelState {
         Random = _initialPcgState,
-        SpeedFactor = _gamePace.DefaultSpeed,
+        SpeedFactor = _pace.Default,
 
-        LeftHp = _progression.DefaultHp,
-        RightHp = _progression.DefaultHp,
+        LeftHp = _progress.DefaultHp,
+        RightHp = _progress.DefaultHp,
 
         FreezeTime = _stState.FreezeTime,
-        BallSpeed = _ballMovement.DefaultBallSpeed,
+        BallSpeed = _ball.DefaultBallSpeed,
 
         Ball = new ColliderState(SnVector2.Zero),
         LeftBlocker = new ColliderState(-blockerPos),
@@ -47,13 +47,13 @@ namespace DPong.Level.Model {
     }
 
     public unsafe void Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      if (_progression.IsLevelCompleted(state))
+      if (_progress.IsLevelCompleted(state))
         return;
 
-      var lBlocker = _blockerControl.Move(ref state.LeftBlocker, leftKeys, state.SpeedFactor);
-      var rBlocker = _blockerControl.Move(ref state.RightBlocker, rightKeys, state.SpeedFactor);
+      var lBlocker = _blockers.Move(ref state.LeftBlocker, leftKeys, state.SpeedFactor);
+      var rBlocker = _blockers.Move(ref state.RightBlocker, rightKeys, state.SpeedFactor);
 
-      if (!_ballMovement.TryMove(ref state))
+      if (!_ball.TryMove(ref state))
         return;
 
       const int bLen = 4;
@@ -61,21 +61,21 @@ namespace DPong.Level.Model {
 
       for (var i = 0; i < bLen; i++) {
         var obj = objects[i];
-        if (!_collisions.Check(state.Ball.ToCircle(_stState.BallSize), obj.State, out var penetration))
+        if (!_collisions.Check(_ball.GetShape(ref state), obj.State, out var penetration))
           continue;
 
-        _ballMovement.Shift(ref state, -penetration);
-        _ballMovement.Bounce(ref state, -penetration.Normalized(), obj.Movement.Normalized());
-        state.SpeedFactor = _gamePace.SpeedUp(state.SpeedFactor);
+        _ball.Shift(ref state, -penetration);
+        _ball.Bounce(ref state, -penetration.Normalized(), obj.Movement.Normalized());
+        state.SpeedFactor = _pace.SpeedUp(state.SpeedFactor);
       }
 
       foreach (var side in Sides) {
-        if (!_collisions.CheckGates(state.Ball.ToCircle(_stState.BallSize), side))
+        if (!_collisions.CheckGates(_ball.GetShape(ref state), side))
           continue;
 
-        _progression.DecreaseHp(ref state, side);
-        _ballMovement.Freeze(ref state);
-        state.SpeedFactor = _gamePace.DefaultSpeed;
+        _progress.DecreaseHp(ref state, side);
+        _ball.Freeze(ref state);
+        state.SpeedFactor = _pace.Default;
         break;
       }
     }

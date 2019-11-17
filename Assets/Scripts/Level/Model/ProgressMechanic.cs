@@ -2,12 +2,12 @@ using DPong.Level.Data;
 using DPong.Level.State;
 
 namespace DPong.Level.Model {
-  public class ProgressionMechanic {
+  public class ProgressMechanic {
     private readonly StaticLevelState _stState;
 
     public int DefaultHp => _stState.HitPoints;
 
-    public ProgressionMechanic(StaticLevelState stState) {
+    public ProgressMechanic(StaticLevelState stState) {
       _stState = stState;
     }
 

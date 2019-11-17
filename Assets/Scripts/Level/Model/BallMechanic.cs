@@ -1,20 +1,25 @@
 using System;
 using DPong.Common;
 using DPong.Level.State;
+using PGM.Collisions.Shapes2D;
 using PGM.Random;
 using PGM.ScaledNum;
 using PGM.SceneGraph;
 
 namespace DPong.Level.Model {
-  public class BallMovementMechanic {
+  public class BallMechanic {
     private readonly StaticLevelState _stState;
     private readonly SnVector2 _defaultBallSpeed;
 
     public SnVector2 DefaultBallSpeed => _defaultBallSpeed;
 
-    public BallMovementMechanic(StaticLevelState stState) {
+    public BallMechanic(StaticLevelState stState) {
       _stState = stState;
       _defaultBallSpeed = SnVector2.Mul(SnVector2.Up, stState.BallSpeed);
+    }
+
+    public ShapeState2D GetShape(ref LevelState state) {
+      return state.Ball.ToCircle(_stState.BallSize);
     }
 
     public bool TryMove(ref LevelState state) {

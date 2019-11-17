@@ -2,11 +2,11 @@ using DPong.Level.State;
 using PGM.ScaledNum;
 
 namespace DPong.Level.Model {
-  public class BlockerControlMechanic {
+  public class BlockersMechanic {
     private readonly StaticLevelState _stState;
     private readonly long _maxBlockerDeviation;
 
-    public BlockerControlMechanic(StaticLevelState stState) {
+    public BlockersMechanic(StaticLevelState stState) {
       _stState = stState;
       _maxBlockerDeviation = (stState.BoardSize.Height - stState.BlockerSize.Height) / 2;
     }
