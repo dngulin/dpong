@@ -13,6 +13,8 @@ namespace DPong.Level.State {
     public readonly long BlockerSpeed = 7_000;
     public readonly long BallSpeed = 8_000;
 
+    public readonly int BounceDeviationDegrees = 2_500;
+
     public readonly RectSize2D BoardSize = new RectSize2D(30_000, 20_000);
     public readonly RectSize2D MarginSize = new RectSize2D(70_000, 10_000);
     public readonly RectSize2D GateSize = new RectSize2D(10_000, 20_000);
@@ -27,8 +29,8 @@ namespace DPong.Level.State {
 
     public readonly ShapeState2D GateLeft;
     public readonly ShapeState2D GateRight;
-    public readonly ShapeState2D MarginDown;
-    public readonly ShapeState2D MarginUpper;
+    public readonly ShapeState2D BorderDown;
+    public readonly ShapeState2D BorderUp;
 
     public StaticLevelState(LevelInfo info) {
       PlayerLeft = info.Left;
@@ -40,8 +42,8 @@ namespace DPong.Level.State {
       GateRight = GetRectShapeState(GateSize, gatePos);
 
       var marginPos = new SnVector2(0, (BoardSize.Height + MarginSize.Height) / 2);
-      MarginDown = GetRectShapeState(MarginSize, -marginPos);
-      MarginUpper = GetRectShapeState(MarginSize, marginPos);
+      BorderDown = GetRectShapeState(MarginSize, -marginPos);
+      BorderUp = GetRectShapeState(MarginSize, marginPos);
     }
 
     private static ShapeState2D GetRectShapeState(in RectSize2D size, in SnVector2 position) {

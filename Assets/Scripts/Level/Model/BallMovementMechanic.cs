@@ -35,11 +35,12 @@ namespace DPong.Level.Model {
       dynState.Ball.Position += shift;
     }
 
-    public void Bounce(ref DynamicLevelState dynState, in SnVector2 normal) {
+    public void Bounce(ref DynamicLevelState dynState, in SnVector2 normal, in SnVector2 movement) {
       var dot = SnVector2.Dot(dynState.BallSpeed, normal);
       dynState.BallSpeed -= SnVector2.Mul(normal, dot * 2);
 
-      var angle = SnMath.DegToRad(Pcg.NextRanged(ref dynState.Random, 0, 10_000)) - SnMath.DegToRad(5_000);
+      var deviation = _stState.BounceDeviationDegrees;
+      var angle = SnMath.DegToRad(Pcg.NextRanged(ref dynState.Random, -deviation, deviation));
       dynState.BallSpeed *= Transform.Combine(SnVector2.Zero, angle);
     }
 

@@ -1,12 +1,12 @@
 using DPong.Level.Data;
 using DPong.Level.State;
-using PGM.Collisions;
-using PGM.Collisions.Shapes2D;
 using PGM.Random;
 using PGM.ScaledNum;
 
 namespace DPong.Level.Model {
   public class LevelModel {
+    private static readonly Side[] Sides = {Side.Left, Side.Right};
+
     private readonly StaticLevelState _stState;
     private readonly PcgState _initialPcgState;
 
@@ -14,6 +14,7 @@ namespace DPong.Level.Model {
     private readonly GamePaceMechanic _gamePace;
     private readonly BlockerControlMechanic _blockerControl;
     private readonly BallMovementMechanic _ballMovement;
+    private readonly CollisionsMechanic _collisions;
 
     public LevelModel(StaticLevelState stState, PcgState? pcgState) {
       _stState = stState;
@@ -23,6 +24,7 @@ namespace DPong.Level.Model {
       _gamePace = new GamePaceMechanic(stState);
       _blockerControl = new BlockerControlMechanic(stState);
       _ballMovement = new BallMovementMechanic(stState);
+      _collisions = new CollisionsMechanic(stState);
     }
 
     public DynamicLevelState CreateInitialState() {
@@ -44,65 +46,38 @@ namespace DPong.Level.Model {
       };
     }
 
-    public void Tick(ref DynamicLevelState dynState, Keys leftKeys, Keys rightKeys) {
+    public unsafe void Tick(ref DynamicLevelState dynState, Keys leftKeys, Keys rightKeys) {
       if (_progression.IsLevelCompleted(dynState))
         return;
 
-      var lMove = _blockerControl.Move(ref dynState.LeftBlocker, leftKeys, dynState.SpeedFactor);
-      var rMove = _blockerControl.Move(ref dynState.RightBlocker, rightKeys, dynState.SpeedFactor);
+      var lBlocker = _blockerControl.Move(ref dynState.LeftBlocker, leftKeys, dynState.SpeedFactor);
+      var rBlocker = _blockerControl.Move(ref dynState.RightBlocker, rightKeys, dynState.SpeedFactor);
 
       if (!_ballMovement.TryMove(ref dynState))
         return;
 
-      CheckCollisions(ref dynState);
-    }
+      const int bLen = 4;
+      var objects = stackalloc BounceObj[bLen] {lBlocker, rBlocker, _collisions.BorderUp, _collisions.BorderDown};
 
-    private void CheckCollisions(ref DynamicLevelState dynState) {
-      // Orthodox order!
-      CheckBounce(ref dynState, _stState.MarginUpper);
-      CheckBounce(ref dynState, _stState.MarginDown);
-      CheckBounce(ref dynState, dynState.RightBlocker.ToRect(_stState.BlockerSize));
-      CheckBounce(ref dynState, dynState.LeftBlocker.ToRect(_stState.BlockerSize));
-
-      if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateLeft, SnVector2.Left)) {
-        _progression.DecreaseHp(ref dynState, Side.Left);
-        _ballMovement.Freeze(ref dynState);
-        dynState.SpeedFactor = _gamePace.DefaultSpeed;
-      }
-      else if (Collision2D.Check(dynState.Ball.ToCircle(_stState.BallSize), _stState.GateRight, SnVector2.Right)) {
-        _progression.DecreaseHp(ref dynState, Side.Right);
-        _ballMovement.Freeze(ref dynState);
-        dynState.SpeedFactor = _gamePace.DefaultSpeed;
-      }
-    }
-
-    private unsafe void CheckBounce(ref DynamicLevelState dynState, in ShapeState2D blocker) {
-      var ball = dynState.Ball.ToCircle(_stState.BallSize);
-      if (!Collision2D.Check(ball, blocker, dynState.BallSpeed))
-        return;
-
-      var penetrations = stackalloc SnVector2[4];
-      penetrations[0] = Collision2D.GetPenetration(ball, blocker, SnVector2.Up);
-      penetrations[1] = Collision2D.GetPenetration(ball, blocker, SnVector2.Left);
-      penetrations[2] = Collision2D.GetPenetration(ball, blocker, SnVector2.Down);
-      penetrations[3] = Collision2D.GetPenetration(ball, blocker, SnVector2.Right);
-
-      var minPenetration = long.MaxValue;
-      var minIndex = 0;
-      for (var i = 0; i < 4; i++) {
-        var penetration = penetrations[i].SquareMagnitude();
-        if (penetration >= minPenetration)
+      for (var i = 0; i < bLen; i++) {
+        var obj = objects[i];
+        if (!_collisions.Check(dynState.Ball.ToCircle(_stState.BallSize), obj.State, out var penetration))
           continue;
 
-        minPenetration = penetration;
-        minIndex = i;
+        _ballMovement.Shift(ref dynState, -penetration);
+        _ballMovement.Bounce(ref dynState, -penetration.Normalized(), obj.Movement.Normalized());
+        dynState.SpeedFactor = _gamePace.SpeedUp(dynState.SpeedFactor);
       }
 
-      var shift = -penetrations[minIndex];
-      _ballMovement.Shift(ref dynState, shift);
-      _ballMovement.Bounce(ref dynState, shift.Normalized());
+      foreach (var side in Sides) {
+        if (!_collisions.CheckGates(dynState.Ball.ToCircle(_stState.BallSize), side))
+          continue;
 
-      dynState.SpeedFactor = _gamePace.SpeedUp(dynState.SpeedFactor);
+        _progression.DecreaseHp(ref dynState, side);
+        _ballMovement.Freeze(ref dynState);
+        dynState.SpeedFactor = _gamePace.DefaultSpeed;
+        break;
+      }
     }
   }
 }
