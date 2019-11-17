@@ -1,13 +1,11 @@
 using DPong.Level.Data;
 using DPong.Level.State;
 using PGM.Random;
-using PGM.ScaledNum;
 
 namespace DPong.Level.Model {
   public class LevelModel {
     private static readonly Side[] Sides = {Side.Left, Side.Right};
 
-    private readonly StaticLevelState _stState;
     private readonly PcgState _initialRandomState;
 
     private readonly HitPointsMechanic _hitPoints;
@@ -17,7 +15,6 @@ namespace DPong.Level.Model {
     private readonly CollisionsMechanic _collisions;
 
     public LevelModel(StaticLevelState stState, PcgState? pcgState) {
-      _stState = stState;
       _initialRandomState = pcgState ?? Pcg.CreateState();
 
       _hitPoints = new HitPointsMechanic(stState.HitPoints);
@@ -28,18 +25,12 @@ namespace DPong.Level.Model {
     }
 
     public LevelState CreateInitialState() {
-      var blockerPos = new SnVector2(_stState.BoardSize.Width / 2, 0);
-
       return new LevelState {
         Random = _initialRandomState,
         Pace = _pace.Default,
-
         HitPoints = _hitPoints.InitialState,
-
         Ball = _ball.InitialState,
-
-        LeftBlocker = new ColliderState(-blockerPos),
-        RightBlocker = new ColliderState(blockerPos)
+        Blockers = _blockers.InitialState
       };
     }
 
@@ -47,12 +38,13 @@ namespace DPong.Level.Model {
       if (_hitPoints.IsLevelCompleted(state.HitPoints))
         return;
 
-      var lBlocker = _blockers.Move(ref state.LeftBlocker, leftKeys, state.Pace);
-      var rBlocker = _blockers.Move(ref state.RightBlocker, rightKeys, state.Pace);
+      // Move dynamic objects
+      var (lBlocker, rBlocker) = _blockers.Move(ref state.Blockers, state.Pace, leftKeys, rightKeys);
 
       if (!_ball.TryMove(ref state.Ball, ref state.Random, state.Pace))
         return;
 
+      // Make bounce collisions
       const int objCount = 4;
       var objects = stackalloc BounceObj[objCount] {lBlocker, rBlocker, _collisions.BorderUp, _collisions.BorderDown};
 
@@ -68,6 +60,7 @@ namespace DPong.Level.Model {
         state.Pace = _pace.SpeedUp(state.Pace);
       }
 
+      // Check gates
       foreach (var side in Sides) {
         if (!_collisions.CheckGates(_ball.GetShape(ref state.Ball), side))
           continue;

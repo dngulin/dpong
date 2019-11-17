@@ -2,6 +2,7 @@ using System;
 using DPong.Common;
 using DPong.Level.Data;
 using DPong.Level.State;
+using PGM.ScaledNum;
 using UnityEngine;
 
 namespace DPong.Level.View {
@@ -22,11 +23,11 @@ namespace DPong.Level.View {
     protected override void UpdateImpl(LevelState prev, LevelState curr, float factor) {
       switch (_trackingSide) {
         case Side.Left:
-          UpdateBlockerPosition(prev.LeftBlocker, curr.LeftBlocker, factor);
+          UpdateBlockerPosition(prev.Blockers.LeftPosition, curr.Blockers.LeftPosition, factor);
           break;
 
         case Side.Right:
-          UpdateBlockerPosition(prev.RightBlocker, curr.RightBlocker, factor);
+          UpdateBlockerPosition(prev.Blockers.RightPosition, curr.Blockers.RightPosition, factor);
           break;
 
         default:
@@ -34,17 +35,15 @@ namespace DPong.Level.View {
       }
     }
 
-    private void UpdateBlockerPosition(ColliderState prev, ColliderState curr, float factor) {
-      var prevPos = prev.Position.ToVector2();
-      var currPos = curr.Position.ToVector2();
-      transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
+    private void UpdateBlockerPosition(in SnVector2 prev, in SnVector2 curr, float factor) {
+      transform.localPosition = Vector3.Lerp(prev.ToVector2(), curr.ToVector2(), factor);
     }
 
     protected override void DrawGizmos(LevelState state) {
-      var blocker = _trackingSide == Side.Left ? state.LeftBlocker : state.RightBlocker;
+      var position = _trackingSide == Side.Left ? state.Blockers.LeftPosition : state.Blockers.RightPosition;
 
       Gizmos.color = Color.green;
-      Gizmos.DrawWireCube(blocker.Position.ToVector2(), StState.BlockerSize.ToVector2());
+      Gizmos.DrawWireCube(position.ToVector2(), StState.BlockerSize.ToVector2());
     }
   }
 }
