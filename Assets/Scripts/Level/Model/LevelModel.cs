@@ -56,16 +56,15 @@ namespace DPong.Level.Model {
       if (!_ball.TryMove(ref state))
         return;
 
-      const int bLen = 4;
-      var objects = stackalloc BounceObj[bLen] {lBlocker, rBlocker, _collisions.BorderUp, _collisions.BorderDown};
+      const int objCount = 4;
+      var objects = stackalloc BounceObj[objCount] {lBlocker, rBlocker, _collisions.BorderUp, _collisions.BorderDown};
 
-      for (var i = 0; i < bLen; i++) {
-        var obj = objects[i];
-        if (!_collisions.Check(_ball.GetShape(ref state), obj.State, out var penetration))
+      for (var objIdx = 0; objIdx < objCount; objIdx++) {
+        if (!_collisions.Check(_ball.GetShape(ref state), objects[objIdx].State, out var penetration))
           continue;
 
         _ball.Shift(ref state, -penetration);
-        _ball.Bounce(ref state, -penetration.Normalized(), obj.Movement.Normalized());
+        _ball.Bounce(ref state, -penetration.Normalized(), objects[objIdx].Movement.Normalized());
         state.SpeedFactor = _pace.SpeedUp(state.SpeedFactor);
       }
 
