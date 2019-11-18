@@ -2,18 +2,25 @@ using DPong.Common;
 using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DPong.Level.View {
   public class BoardView: StateViewer {
-    [SerializeField] private TextMesh _leftName;
-    [SerializeField] private TextMesh _rightName;
+    private const char HpChar = '@';
 
-    [SerializeField] private TextMesh _leftScore;
-    [SerializeField] private TextMesh _rightScore;
+    [SerializeField] private Text _leftName;
+    [SerializeField] private Text _rightName;
+
+    [SerializeField] private Text _leftHp;
+    [SerializeField] private Text _rightHp;
+
+    private int _leftHpValue = -1;
+    private int _rightHpValue = -1;
 
     protected override void InitImpl(LevelState state) {
       _leftName.text = GetPrefixedName(Settings.PlayerLeft);
       _rightName.text = GetPrefixedName(Settings.PlayerRight);
+      SetScores(state);
     }
 
     private static string GetPrefixedName(PlayerInfo info) => info.IsBot ? $"[AI] {info.Name}" : info.Name;
@@ -23,8 +30,15 @@ namespace DPong.Level.View {
     }
 
     private void SetScores(LevelState state) {
-      _leftScore.text = state.HitPoints.Left.ToString();
-      _rightScore.text = state.HitPoints.Right.ToString();
+      if (_leftHpValue != state.HitPoints.Left) {
+        _leftHpValue = state.HitPoints.Left;
+        _leftHp.text = new string(HpChar, _leftHpValue);
+      }
+
+      if (_rightHpValue != state.HitPoints.Right) {
+        _rightHpValue = state.HitPoints.Right;
+        _rightHp.text = new string(HpChar, _rightHpValue);
+      }
     }
 
     protected override void DrawGizmosImpl(LevelState state) {
