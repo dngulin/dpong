@@ -8,6 +8,6 @@ namespace DPong.Level.Data {
     public readonly CircleSize2D Size = new CircleSize2D(0_500);
 
     public readonly int BounceRandomAngle = 2_500;
-    public readonly int BounceMovementAngle = 5_000;
+    public readonly int BounceMovementAngle = 15_000;
   }
 }
