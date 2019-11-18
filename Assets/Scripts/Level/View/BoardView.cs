@@ -11,10 +11,9 @@ namespace DPong.Level.View {
     [SerializeField] private TextMesh _leftScore;
     [SerializeField] private TextMesh _rightScore;
 
-    public BoardView ConfiguredForPlayers(PlayerInfo left, PlayerInfo right) {
-      _leftName.text = GetPrefixedName(left);
-      _rightName.text = GetPrefixedName(right);
-      return this;
+    protected override void InitImpl(LevelState state) {
+      _leftName.text = GetPrefixedName(Settings.PlayerLeft);
+      _rightName.text = GetPrefixedName(Settings.PlayerRight);
     }
 
     private static string GetPrefixedName(PlayerInfo info) => info.IsBot ? $"[AI] {info.Name}" : info.Name;
@@ -28,7 +27,7 @@ namespace DPong.Level.View {
       _rightScore.text = state.HitPoints.Right.ToString();
     }
 
-    protected override void DrawGizmos(LevelState state) {
+    protected override void DrawGizmosImpl(LevelState state) {
       Gizmos.color = Color.yellow;
       Gizmos.DrawWireCube(Vector3.zero, Settings.Board.Size.ToVector2());
     }

@@ -11,12 +11,24 @@ namespace DPong.Level.View {
     private float _tickDuration = 1.0f / 60;
     private float _displayedTickTime;
 
-    public void Initialize(IDynamicStateContainer stateContainer, LevelSettings settings) {
+    public void Init(IDynamicStateContainer stateContainer, LevelSettings settings) {
       _stateContainer = stateContainer;
       _stateContainer.OnCurrentStateChanged += OnCurrentStateChanged;
 
       Settings = settings;
       _tickDuration = Settings.Simulation.TickDuration.Unscaled();
+
+      InitImpl(_stateContainer.Current);
+    }
+
+    protected virtual void InitImpl(LevelState state) {
+    }
+
+    private void OnDestroy() {
+      if (_stateContainer == null)
+        return;
+
+      _stateContainer.OnCurrentStateChanged -= OnCurrentStateChanged;
     }
 
     private void OnCurrentStateChanged() {
@@ -36,21 +48,14 @@ namespace DPong.Level.View {
 
     protected abstract void UpdateImpl(LevelState prev, LevelState curr, float factor);
 
-    private void OnDestroy() {
-      if (_stateContainer == null)
-        return;
-
-      _stateContainer.OnCurrentStateChanged -= OnCurrentStateChanged;
-    }
-
     private void OnDrawGizmos() {
       if (_stateContainer == null)
         return;
 
-      DrawGizmos(_stateContainer.Current);
+      DrawGizmosImpl(_stateContainer.Current);
     }
 
-    protected virtual void DrawGizmos(LevelState state) {
+    protected virtual void DrawGizmosImpl(LevelState state) {
     }
   }
 }

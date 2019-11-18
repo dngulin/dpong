@@ -16,14 +16,16 @@ namespace DPong.Level.View {
       var res = Resources.Load<LevelViewResources>("LevelViewResources");
 
       var stateViewers = new StateViewer[] {
-        UObject.Instantiate(res.Board, _viewRoot).ConfiguredForPlayers(settings.PlayerLeft, settings.PlayerRight),
-        UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Left),
-        UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Right),
+        UObject.Instantiate(res.Board, _viewRoot),
         UObject.Instantiate(res.Ball, _viewRoot),
+        UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Left),
+        UObject.Instantiate(res.Blocker, _viewRoot).ConfiguredForSide(Side.Right)
       };
 
       foreach (var stateViewer in stateViewers)
-        stateViewer.Initialize(StateContainer, settings);
+        stateViewer.Init(StateContainer, settings);
+
+      Resources.UnloadAsset(res);
     }
 
     public void Dispose() {

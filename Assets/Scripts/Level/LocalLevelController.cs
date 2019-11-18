@@ -1,3 +1,4 @@
+using System;
 using DPong.Level.AI;
 using DPong.Level.Data;
 using DPong.Level.Model;
@@ -5,7 +6,7 @@ using DPong.Level.State;
 using DPong.Level.View;
 
 namespace DPong.Level {
-  public class LocalLevelController {
+  public class LocalLevelController : IDisposable {
     private readonly bool _leftIsBot;
     private readonly bool _rightIsBot;
 
@@ -35,6 +36,10 @@ namespace DPong.Level {
 
       _model.Tick(ref _state, leftKeys, rightKeys);
       _view.StateContainer.PushNextState(_state);
+    }
+
+    public void Dispose() {
+      _view?.Dispose();
     }
   }
 }

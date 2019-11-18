@@ -16,7 +16,7 @@ namespace DPong.Level.View {
       transform.localPosition = Vector3.Lerp(prevPos, currPos, factor);
     }
 
-    protected override void DrawGizmos(LevelState state) {
+    protected override void DrawGizmosImpl(LevelState state) {
       Gizmos.color = Color.red;
       Gizmos.DrawWireSphere(state.Ball.Position.ToVector2(), Settings.Ball.Size.Radius.Unscaled());
     }

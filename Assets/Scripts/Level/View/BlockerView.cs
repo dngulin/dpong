@@ -16,7 +16,6 @@ namespace DPong.Level.View {
     public BlockerView ConfiguredForSide(Side side) {
       _spriteRenderer.sprite = side == Side.Left ? _leftSprite : _rightSprite;
       _trackingSide = side;
-
       return this;
     }
 
@@ -39,7 +38,7 @@ namespace DPong.Level.View {
       transform.localPosition = Vector3.Lerp(prev.ToVector2(), curr.ToVector2(), factor);
     }
 
-    protected override void DrawGizmos(LevelState state) {
+    protected override void DrawGizmosImpl(LevelState state) {
       var position = _trackingSide == Side.Left ? state.Blockers.LeftPosition : state.Blockers.RightPosition;
 
       Gizmos.color = Color.green;
