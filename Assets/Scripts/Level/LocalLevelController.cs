@@ -17,6 +17,8 @@ namespace DPong.Level {
 
     private LevelState _state;
 
+    private bool _finished;
+
     public LocalLevelController(LevelSettings settings, ILocalInputSource localInputSrc) {
       _leftIsBot = settings.PlayerLeft.IsBot;
       _rightIsBot = settings.PlayerRight.IsBot;
@@ -31,10 +33,12 @@ namespace DPong.Level {
     }
 
     public void Tick() {
+      if (_finished) return;
+
       var leftKeys = _leftIsBot ? _aiInputSrc.GetLeft(_state) : _localInputSrc.GetLeft();
       var rightKeys = _rightIsBot ? _aiInputSrc.GetRight(_state) : _localInputSrc.GetRight();
 
-      _model.Tick(ref _state, leftKeys, rightKeys);
+      _finished = _model.Tick(ref _state, leftKeys, rightKeys);
       _view.StateContainer.PushNextState(_state);
     }
 

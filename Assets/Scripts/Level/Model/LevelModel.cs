@@ -34,16 +34,19 @@ namespace DPong.Level.Model {
       };
     }
 
-    public void Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      if (_hitPoints.IsLevelCompleted(state.HitPoints)) return;
+    public bool Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
+      if (_hitPoints.IsLevelCompleted(state.HitPoints))
+        return true;
 
       var (lBlocker, rBlocker) = _blockers.Move(ref state.Blockers, state.Pace, leftKeys, rightKeys);
       var ballMoved = _ball.TryMove(ref state.Ball, ref state.Random, state.Pace);
 
-      if (!ballMoved) return;
+      if (ballMoved) {
+        MakeBounceCollisions(ref state, lBlocker, rBlocker);
+        CheckGates(ref state);
+      }
 
-      MakeBounceCollisions(ref state, lBlocker, rBlocker);
-      CheckGates(ref state);
+      return false;
     }
 
     private unsafe void MakeBounceCollisions(ref LevelState state, in BounceObj lBlocker, in BounceObj rBlocker) {

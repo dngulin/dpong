@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
@@ -26,6 +27,24 @@ namespace DPong.Level.View {
         stateViewer.Init(StateContainer, settings);
 
       Resources.UnloadAsset(res);
+    }
+
+    public void ShowSessionFinished(uint[] frames, int[] hashes) {
+      var sb = new StringBuilder();
+      sb.AppendLine("Session finished:");
+
+      sb.Append("Frames:");
+      foreach (var frame in frames) sb.Append(" ").Append(frame);
+
+      sb.Append("Hashes:");
+      foreach (var hash in hashes) sb.Append(" ").Append(hash);
+
+
+      UnityEngine.Debug.Log(sb.ToString());
+    }
+
+    public void ShowSessionClosed(string message) {
+      UnityEngine.Debug.LogError(message);
     }
 
     public void Dispose() {
