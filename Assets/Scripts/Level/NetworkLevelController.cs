@@ -197,23 +197,23 @@ namespace DPong.Level {
     }
 
     public void SessionFinished(ServerMsgFinish msgFinish) {
-      _view.ShowSessionFinished(msgFinish.Frames, msgFinish.Hashes);
+      _view?.ShowSessionFinished(msgFinish.Frames, msgFinish.Hashes);
     }
 
     public void SessionClosedByServerError(ServerErrorId errorId) {
-      _view.ShowSessionClosed($"Disconnected by server: {errorId}");
+      _view?.ShowSessionClosed($"Disconnected by server: {errorId}");
     }
 
     public void SessionClosedByConnectionError() {
-      _view.ShowSessionClosed("Connection error");
+      _view?.ShowSessionClosed("Connection error");
     }
 
     public void SessionClosedByProtocolError() {
-      _view.ShowSessionClosed("Protocol error");
+      _view?.ShowSessionClosed("Protocol error");
     }
 
     public void SessionClosedByInternalError() {
-      _view.ShowSessionClosed("Internal client error");
+      _view?.ShowSessionClosed("Internal client error");
     }
 
     public void Dispose() => _view?.Dispose();
