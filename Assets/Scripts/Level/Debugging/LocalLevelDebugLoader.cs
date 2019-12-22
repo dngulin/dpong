@@ -3,7 +3,7 @@ using DPong.Level.Data;
 using PGM.ScaledNum;
 using UnityEngine;
 
-namespace DPong.Level.Debug {
+namespace DPong.Level.Debugging {
   public class LocalLevelDebugLoader : MonoBehaviour {
 
     [SerializeField] private string _leftName = "LeftPlayer";

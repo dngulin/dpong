@@ -40,11 +40,11 @@ namespace DPong.Level.View {
       foreach (var hash in hashes) sb.Append(" ").Append(hash);
 
 
-      UnityEngine.Debug.Log(sb.ToString());
+      Debug.Log(sb.ToString());
     }
 
     public void ShowSessionClosed(string message) {
-      UnityEngine.Debug.LogError(message);
+      Debug.LogError(message);
     }
 
     public void Dispose() {
