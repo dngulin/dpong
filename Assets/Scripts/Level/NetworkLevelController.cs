@@ -108,7 +108,7 @@ namespace DPong.Level {
 
       var simulated = false;
       for (var frame = GetFirstMisPredictedFrame(); frame < _frame; frame++) {
-        _finished = SimulateFrame(frame);
+        _finished = SimulateNextState(frame);
         HandleFrameResimualated(frame);
 
         simulated = true;
@@ -118,7 +118,7 @@ namespace DPong.Level {
       var targetFrame = _finished ? _frame : GetTargetSimulationFrame();
       for (; _frame < targetFrame;) {
         PushLocalInputs(_side == Side.Left ? _localInputSource.GetLeft() : _localInputSource.GetRight());
-        _finished = SimulateFrame(_frame++);
+        _finished = SimulateNextState(_frame++);
         HandleFrameIncremented();
 
         simulated = true;
@@ -183,7 +183,7 @@ namespace DPong.Level {
       };
     }
 
-    private bool SimulateFrame(uint frame) {
+    private bool SimulateNextState(uint frame) {
       var state = _states[frame % _states.Length];
       var inputs = _inputs[frame % _inputs.Length];
 
