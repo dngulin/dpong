@@ -17,10 +17,10 @@ namespace DPong.Level.Debugging {
     private ClientSession _session;
 
     private void Awake() {
-      var cfg = new ClientConfig(GameName, _gameVersion, PlayerCount, _host, _port, _playerName);
+      var cfg = new ClientConfig(GameName, _gameVersion, PlayerCount, _host, _port, _playerName + Random.Range(1, 99));
       var client = new NetworkLevelController(CreateInputSource());
 
-      _session = new ClientSession(cfg, client);
+      _session = new ClientSession(cfg, client, new NgisUnityLogger());
     }
 
     private void Update() {
