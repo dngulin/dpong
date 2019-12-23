@@ -189,7 +189,7 @@ namespace DPong.Level {
       var frame = _frame + InputDelay;
       _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
 
-      var input = _inputs[frame % _inputs.Length];
+      ref var input = ref _inputs[frame % _inputs.Length];
       ref var mySideKeys = ref _side == Side.Left ? ref input.Left : ref input.Right;
       mySideKeys = keys;
     }
