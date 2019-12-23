@@ -166,7 +166,7 @@ namespace DPong.Level {
 
     private void HandleFrameIncremented() {
       var (_, max) = GetInputFramesRangeInclusive();
-      var prevMax = _inputs[max - 1 % _inputs.Length];
+      var prevMax = _inputs[(max - 1) % _inputs.Length];
       _inputs[max % _inputs.Length] = new NetworkInputs {
         Left = prevMax.Left,
         Right = prevMax.Right,
