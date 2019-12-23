@@ -21,9 +21,11 @@ namespace DPong.Level {
     private LevelModel _model;
     private LevelView _view;
 
-    private Stopwatch _playingTime;
     private uint _frame;
     private LevelState[] _states;
+
+    private readonly Stopwatch _frameTimer = new Stopwatch();
+    private uint _frameTimerOffset;
 
     private bool _finished;
 
@@ -65,7 +67,7 @@ namespace DPong.Level {
       _states[0] = _model.CreateInitialState();
 
       _view = new LevelView(_states[0], settings);
-      _playingTime = Stopwatch.StartNew();
+      _frameTimer.Start();
     }
 
     public void InputReceived(ServerMsgInput msgInput) {
@@ -75,6 +77,11 @@ namespace DPong.Level {
       var (min, max) = GetInputFramesRangeInclusive();
       if (msgInput.Frame < min || msgInput.Frame > max || msgInput.Frame < InputDelay)
         throw new Exception($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
+
+      if (msgInput.Frame > _frame + InputDelay) {
+        _frameTimer.Restart();
+        _frameTimerOffset = msgInput.Frame;
+      }
 
       var msgKeys = (Keys) msgInput.InputMask;
 
@@ -131,15 +138,16 @@ namespace DPong.Level {
     }
 
     private uint GetTargetSimulationFrame() {
+      var (min, max) = GetInputFramesRangeInclusive();
       var approvedFrames = 0u;
-      foreach (var input in _inputs) {
-        if (!input.Approved)
-          break;
-        approvedFrames++;
+
+      for (var frame = min; frame <= max; frame++) {
+        if (_inputs[frame % _inputs.Length].Approved)
+          approvedFrames++;
       }
 
-      var maxReachableFrame = Math.Max((uint) _states.Length, _frame + approvedFrames);
-      var timeBasedFrame = (uint) (_playingTime.ElapsedMilliseconds / _tickDuration);
+      var maxReachableFrame = Math.Max(_frame + approvedFrames, (uint) _states.Length / 2);
+      var timeBasedFrame = _frameTimerOffset + (uint) (_frameTimer.ElapsedMilliseconds / _tickDuration);
 
       return Math.Min(timeBasedFrame, maxReachableFrame);
     }
