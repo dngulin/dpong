@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2e27cb96e0f49dfb9e9cb5848bbea23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerName: Player2
+  _playerName: Player
   _host: localhost
   _port: 5081
   _gameVersion: 0
