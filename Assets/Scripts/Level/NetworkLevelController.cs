@@ -9,7 +9,6 @@ using NGIS.Message.Client;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
 using PGM.Random;
-using PGM.ScaledNum;
 
 namespace DPong.Level {
   public class NetworkLevelController : IGameClient, IDisposable {
@@ -45,7 +44,7 @@ namespace DPong.Level {
 
     public void SessionStarted(ServerMsgStart msgStart) {
       _side = (Side) msgStart.YourIndex;
-      _tickDuration = SnMath.Div(SnMath.One, msgStart.TicksPerSecond);
+      _tickDuration = 1000 / msgStart.TicksPerSecond;
 
       var stateCount = msgStart.TicksPerSecond / 2 + 1;
       _states = new LevelState[stateCount];
@@ -57,9 +56,8 @@ namespace DPong.Level {
       var left = new PlayerInfo(msgStart.Players[0], msgStart.YourIndex != 0);
       var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex != 1);
 
-      var tickDuration = SnMath.Div(SnMath.One, msgStart.TicksPerSecond);
       var randomState = Pcg.CreateState(new Random(msgStart.Seed));
-      var simSettings = new SimulationSettings(tickDuration, randomState);
+      var simSettings = new SimulationSettings(_tickDuration, randomState);
 
       var settings = new LevelSettings(left, right, simSettings);
 
