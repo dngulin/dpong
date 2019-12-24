@@ -7,12 +7,12 @@ using UObject = UnityEngine.Object;
 
 namespace DPong.Level.View {
   public class LevelView: IDisposable {
-    public DynamicStateContainer StateContainer { get; }
+    public StateContainer StateContainer { get; }
     private readonly Transform _viewRoot;
 
     public LevelView(LevelState state, LevelSettings settings) {
       _viewRoot = new GameObject("LevelViewRoot").transform;
-      StateContainer = new DynamicStateContainer(state);
+      StateContainer = new StateContainer(state);
 
       var res = Resources.Load<LevelViewResources>("LevelViewResources");
 

@@ -2,13 +2,13 @@ using System;
 using DPong.Level.State;
 
 namespace DPong.Level.View {
-  public class DynamicStateContainer : IDynamicStateContainer {
+  public class StateContainer : IDynamicStateContainer {
     public event Action OnCurrentStateChanged;
 
     public LevelState Current { private set; get; }
     public LevelState Previous { private set; get; }
 
-    public DynamicStateContainer(LevelState state) {
+    public StateContainer(LevelState state) {
       Current = state;
       Previous = state;
     }
