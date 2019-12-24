@@ -107,29 +107,8 @@ namespace DPong.Level {
         return (_inputSendQueue, null);
 
       var simulated = false;
-      for (var frame = GetFirstMisPredictedFrame(); frame < _frame; frame++) {
-        var finished = SimulateNextState(frame);
-        HandleFrameResimualated(frame);
-        simulated = true;
-
-        if (finished) {
-          _finishFrame = frame + 1;
-          break;
-        }
-      }
-
-      var targetFrame = _finishFrame ?? GetTargetSimulationFrame();
-      for (; _frame < targetFrame;) {
-        PushLocalInputs(_side == Side.Left ? _localInputSource.GetLeft() : _localInputSource.GetRight());
-        var finished = SimulateNextState(_frame++);
-        HandleFrameIncremented();
-        simulated = true;
-
-        if (finished) {
-          _finishFrame = _frame;
-          break;
-        }
-      }
+      simulated |= PrecessMisPredictedStates();
+      simulated |= ProcessFutureStates();
 
       if (_finishFrame.HasValue) {
         _frame = _finishFrame.Value;
@@ -143,6 +122,42 @@ namespace DPong.Level {
       }
 
       return (_inputSendQueue, finishMsg);
+    }
+
+    private bool PrecessMisPredictedStates() {
+      var simulated = false;
+
+      for (var frame = GetFirstMisPredictedFrame(); frame < _frame; frame++) {
+        simulated = true;
+
+        var finished = SimulateState(frame);
+        HandleFrameResimualated(frame);
+        if (!finished) continue;
+
+        _finishFrame = frame + 1;
+        break;
+      }
+
+      return simulated;
+    }
+
+    private bool ProcessFutureStates() {
+      var simulated = false;
+
+      var targetFrame = _finishFrame ?? GetTargetSimulationFrame();
+      for (; _frame < targetFrame;) {
+        simulated = true;
+
+        PushLocalInputs(_side == Side.Left ? _localInputSource.GetLeft() : _localInputSource.GetRight());
+        var finished = SimulateState(_frame++);
+        HandleFrameIncremented();
+        if (!finished) continue;
+
+        _finishFrame = _frame;
+        break;
+      }
+
+      return simulated;
     }
 
     private uint GetTargetSimulationFrame() {
@@ -191,7 +206,7 @@ namespace DPong.Level {
       };
     }
 
-    private bool SimulateNextState(uint frame) {
+    private bool SimulateState(uint frame) {
       var state = _states[frame % _states.Length];
       var inputs = _inputs[frame % _inputs.Length];
 
