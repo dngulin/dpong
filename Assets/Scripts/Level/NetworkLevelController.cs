@@ -27,7 +27,7 @@ namespace DPong.Level {
     private readonly Stopwatch _frameTimer = new Stopwatch();
     private uint _frameTimerOffset;
 
-    private bool _finished;
+    private uint? _finishFrame;
 
     private struct NetworkInputs {
       public Keys Left;
@@ -103,30 +103,38 @@ namespace DPong.Level {
 
     public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process() {
       ClientMsgFinished? finishMsg = null;
-      if (_finished)
+      if (_finishFrame.HasValue)
         return (_inputSendQueue, null);
 
       var simulated = false;
       for (var frame = GetFirstMisPredictedFrame(); frame < _frame; frame++) {
-        _finished = SimulateNextState(frame);
+        var finished = SimulateNextState(frame);
         HandleFrameResimualated(frame);
-
         simulated = true;
-        if (_finished) break;
+
+        if (finished) {
+          _finishFrame = frame + 1;
+          break;
+        }
       }
 
-      var targetFrame = _finished ? _frame : GetTargetSimulationFrame();
+      var targetFrame = _finishFrame ?? GetTargetSimulationFrame();
       for (; _frame < targetFrame;) {
         PushLocalInputs(_side == Side.Left ? _localInputSource.GetLeft() : _localInputSource.GetRight());
-        _finished = SimulateNextState(_frame++);
+        var finished = SimulateNextState(_frame++);
         HandleFrameIncremented();
-
         simulated = true;
-        if (_finished) break;
+
+        if (finished) {
+          _finishFrame = _frame;
+          break;
+        }
       }
 
-      if (_finished)
-        finishMsg = new ClientMsgFinished(_frame, _states[_frame % _states.Length].GetHashCode());
+      if (_finishFrame.HasValue) {
+        _frame = _finishFrame.Value;
+        finishMsg = new ClientMsgFinished(_frame, _states[_frame % _states.Length].CalculateHash());
+      }
 
       if (simulated) {
         var prevState = _states[(_frame - 1) % _states.Length];
