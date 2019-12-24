@@ -31,11 +31,13 @@ namespace DPong.Level.View {
 
     public void ShowSessionFinished(uint[] frames, int[] hashes) {
       var sb = new StringBuilder();
-      sb.AppendLine("Session finished:");
+      sb.Append("Session finished:");
 
+      sb.AppendLine();
       sb.Append("Frames:");
       foreach (var frame in frames) sb.Append(" ").Append(frame);
 
+      sb.AppendLine();
       sb.Append("Hashes:");
       foreach (var hash in hashes) sb.Append(" ").Append(hash);
 
