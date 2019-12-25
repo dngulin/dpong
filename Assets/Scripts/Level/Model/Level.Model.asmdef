@@ -1,0 +1,17 @@
+{
+    "name": "Level.Model",
+    "references": [
+        "Common",
+        "Level.Data",
+        "Level.State"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
