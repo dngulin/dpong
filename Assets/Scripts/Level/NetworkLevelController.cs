@@ -208,12 +208,12 @@ namespace DPong.Level {
 
     private bool SimulateState(uint frame) {
       var state = _states[frame % _states.Length];
-      var inputs = _inputs[frame % _inputs.Length];
+      var input = _inputs[frame % _inputs.Length];
 
-      var finished = _model.Tick(ref state, inputs.Left, inputs.Right);
+      var finished = _model.Tick(ref state, input.Left, input.Right);
       _states[(frame + 1) % _states.Length] = state;
 
-      return finished;
+      return finished && input.Approved;
     }
 
     private void PushLocalInputs(Keys keys) {
