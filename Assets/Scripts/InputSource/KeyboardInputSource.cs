@@ -3,11 +3,11 @@ using DPong.Level.State;
 using UnityEngine;
 
 namespace DPong.InputSource {
-  public class LocalInputSource : ILocalInputSource {
+  public class KeyboardInputSource : ILocalInputSource {
     private readonly KeyBindings _leftBindings;
     private readonly KeyBindings _rightBindings;
 
-    public LocalInputSource(KeyBindings leftBindings, KeyBindings rightBindings) {
+    public KeyboardInputSource(KeyBindings leftBindings, KeyBindings rightBindings) {
       _leftBindings = leftBindings;
       _rightBindings = rightBindings;
     }

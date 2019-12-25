@@ -34,7 +34,7 @@ namespace DPong.Level.Debugging {
     private static ILocalInputSource CreateInputSource() {
       var left = new KeyBindings { Up = KeyCode.W, Down = KeyCode.S };
       var right = new KeyBindings { Up = KeyCode.P, Down = KeyCode.L };
-      return new LocalInputSource(left, right);
+      return new KeyboardInputSource(left, right);
     }
   }
 }
