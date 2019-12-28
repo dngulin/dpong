@@ -1,11 +1,7 @@
 {
-    "name": "Level",
+    "name": "Level.Networking",
     "references": [
-        "Level.Data",
-        "Level.State",
-        "Level.Model",
-        "Level.View",
-        "Level.Networking"
+        "Level.State"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
