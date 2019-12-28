@@ -234,7 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerName: Player
-  _host: localhost
+  _host: 127.0.0.1
   _port: 5081
   _gameVersion: 0
 --- !u!4 &1968492353
