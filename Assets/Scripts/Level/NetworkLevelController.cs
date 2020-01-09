@@ -73,9 +73,10 @@ namespace DPong.Level {
       if (msgInput.Frame < min || msgInput.Frame > max || msgInput.Frame < InputDelay)
         throw new Exception($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
 
-      if (msgInput.Frame > _frame + InputDelay) {
+      var remoteFrame = msgInput.Frame - InputDelay;
+      if (remoteFrame > _frame) {
         _frameTimer.Restart();
-        _frameTimerOffset = msgInput.Frame;
+        _frameTimerOffset = remoteFrame;
       }
 
       var msgKeys = (Keys) msgInput.InputMask;
@@ -86,6 +87,7 @@ namespace DPong.Level {
         if (input.Approved) throw new Exception("Try to rewrite approved input");
 
         ref var enemySideKeys = ref msgInput.PlayerIndex == 0 ? ref input.Left : ref input.Right;
+
         if (frame == msgInput.Frame) {
           input.Approved = true;
           if (frame < _frame)
