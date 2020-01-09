@@ -8,42 +8,40 @@ using DPong.Level.State;
 using DPong.Level.View;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
-using NGIS.Session.Client;
 using PGM.Random;
 
 namespace DPong.Level {
-  public class NetworkLevelController : IGameClient, IDisposable {
+  public class NetworkLevelController : IDisposable {
     private const uint InputDelay = 2;
     private readonly ILocalInputSource _localInputSource;
 
-    private Side _side;
-    private long _tickDuration;
+    private readonly Side _side;
+    private readonly long _tickDuration;
 
-    private LevelModel _model;
-    private LevelView _view;
+    private readonly LevelModel _model;
+    private readonly LevelView _view;
 
     private SimulationState _simulationState;
     private uint _simulationCounter;
 
     private uint _frame;
-    private StateBuffer _states;
+    private readonly StateBuffer _states;
 
     private readonly Stopwatch _frameTimer = new Stopwatch();
     private uint _frameTimerOffset;
 
-    private InputBuffer _inputs;
+    private readonly InputBuffer _inputs;
+    private readonly Queue<ClientMsgInputs> _inputSendQueue;
 
-    private readonly Queue<ClientMsgInputs> _inputSendQueue = new Queue<ClientMsgInputs>();
-
-    public NetworkLevelController(ILocalInputSource localInputSource) {
+    public NetworkLevelController(ILocalInputSource localInputSource, ServerMsgStart msgStart) {
       _localInputSource = localInputSource;
-    }
 
-    public void SessionStarted(ServerMsgStart msgStart) {
       _side = (Side) msgStart.YourIndex;
       _tickDuration = 1000 / msgStart.TicksPerSecond;
 
       var stateCount = msgStart.TicksPerSecond / 2 + 1;
+      _inputSendQueue = new Queue<ClientMsgInputs>(stateCount);
+
       _states = new StateBuffer(stateCount);
       _inputs = new InputBuffer(stateCount * 2 - 1);
 
@@ -91,7 +89,7 @@ namespace DPong.Level {
         if (frame == msgInput.Frame) {
           input.Approved = true;
           if (frame < _frame)
-            input.MisPredicted = msgKeys != enemySideKeys; // Was simulated with bad value
+            input.MisPredicted = msgKeys != enemySideKeys; // Was simulated with wrong value
         }
 
         enemySideKeys = msgKeys; // Primitive input state prediction
@@ -205,26 +203,6 @@ namespace DPong.Level {
       var frame = _frame + InputDelay;
       _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
       (_side == Side.Left ? ref _inputs[frame].Left : ref _inputs[frame].Right) = keys;
-    }
-
-    public void SessionFinished(ServerMsgFinish msgFinish) {
-      _view?.ShowSessionFinished(msgFinish.Frames, msgFinish.Hashes);
-    }
-
-    public void SessionClosedByServerError(ServerErrorId errorId) {
-      _view?.ShowSessionClosed($"Disconnected by server: {errorId}");
-    }
-
-    public void SessionClosedByConnectionError() {
-      _view?.ShowSessionClosed("Connection error");
-    }
-
-    public void SessionClosedByProtocolError() {
-      _view?.ShowSessionClosed("Protocol error");
-    }
-
-    public void SessionClosedByInternalError() {
-      _view?.ShowSessionClosed("Internal client error");
     }
 
     public void Dispose() => _view?.Dispose();
