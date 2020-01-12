@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using DPong.InputSource;
+using DPong.Level.Debugging.UI;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace DPong.Level.Debugging {
   public class NetworkLevelDebugLoader : MonoBehaviour, IClientSessionWorker {
@@ -14,31 +14,38 @@ namespace DPong.Level.Debugging {
     private const int Port = 5081;
     private const ushort Version = 0;
 
-    [SerializeField] private GameObject _panel;
-    [SerializeField] private Button _startButton;
-    [SerializeField] private InputField _host;
-    [SerializeField] private InputField _name;
-    [SerializeField] private Text _status;
+    [SerializeField] private ConnectPanel _panel;
+    [SerializeField] private Popup _popup;
 
     private ClientSession _session;
     private NetworkLevelController _level;
 
     private void Awake() {
-      _startButton.onClick.AddListener(ConnectClicked);
+      _panel.SetClickListener(ConnectClicked);
+      _popup.SetClickListener(FinishClicked);
+    }
+
+    private void FinishClicked() {
+      _session?.Dispose();
+      _level?.Dispose();
+
+      _popup.Visible = false;
+      _panel.Visible = true;
     }
 
     private void ConnectClicked() {
-      var cfg = new ClientConfig(GameName, Version, PlayerCount, _host.text, Port, _name.text);
+      var cfg = new ClientConfig(GameName, Version, PlayerCount, _panel.HostName, Port, _panel.PlayerName);
 
       _session?.Dispose();
       try {
-        _panel.SetActive(false);
-        _status.text = "Connecting...";
+        _panel.Visible = false;
+        _popup.Visible = true;
+        _popup.Text = "Connecting..";
+
         _session = new ClientSession(cfg, this, new NgisUnityLogger());
       }
       catch (Exception e) {
-        _panel.SetActive(true);
-        _status.text = e.Message;
+        _popup.Text = e.Message;
       }
     }
 
@@ -58,32 +65,27 @@ namespace DPong.Level.Debugging {
     }
 
     public void JoinedToSession() {
+      _popup.Text = "Waiting for players...";
     }
 
     public void SessionStarted(ServerMsgStart msgStart) {
+      _popup.Visible = false;
       _level = new NetworkLevelController(CreateInputSource(), msgStart);
-      _status.text = "Session started";
     }
 
     public void InputReceived(ServerMsgInput msgInput) => _level.InputReceived(msgInput);
     public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process() => _level.Process();
 
     public void SessionFinished(ServerMsgFinish msgFinish) {
-      // TODO: Show level exit UI
       var frames = string.Join(", ", msgFinish.Frames);
       var hashes = string.Join(", ", msgFinish.Hashes);
-      _status.text = $"Finished at [{frames}] with state [{hashes}]";
+      _popup.Visible = true;
+      _popup.Text = $"Finished at [{frames}] with state [{hashes}]";
     }
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
-      _status.text = $"{errorId}:{serverErrorId}";
-
-      if (_level != null) {
-        // TODO: Show level exit UI
-      }
-      else {
-        _panel.SetActive(true);
-      }
+      _popup.Visible = true;
+      _popup.Text = $"Error: {errorId}:{serverErrorId}";
     }
   }
 }
