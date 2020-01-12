@@ -57,6 +57,9 @@ namespace DPong.Level.Debugging {
       return new KeyboardInputSource(left, right);
     }
 
+    public void JoinedToSession() {
+    }
+
     public void SessionStarted(ServerMsgStart msgStart) {
       _level = new NetworkLevelController(CreateInputSource(), msgStart);
       _status.text = "Session started";
