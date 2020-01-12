@@ -10,6 +10,6 @@ namespace DPong.Level.Debugging {
 
     public void Error(string msg) => Debug.LogError($"SESSION: {msg}");
 
-    public void Exception(Exception e) => Debug.LogException(e);
+    public void Exception(Exception e) => Debug.LogError($"SESSION: {e}");
   }
 }
