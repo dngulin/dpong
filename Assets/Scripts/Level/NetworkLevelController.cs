@@ -48,8 +48,8 @@ namespace DPong.Level {
       for (uint frame = 0; frame < InputDelay; frame++)
         _inputs[frame].Approved = true;
 
-      var left = new PlayerInfo(msgStart.Players[0], msgStart.YourIndex != 0);
-      var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex != 1);
+      var left = new PlayerInfo(msgStart.Players[0], msgStart.YourIndex == 0 ? PlayerType.Local : PlayerType.Remote);
+      var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex == 1 ? PlayerType.Local : PlayerType.Remote);
 
       var randomState = Pcg.CreateState(new Random(msgStart.Seed));
       var simSettings = new SimulationSettings(_tickDuration, randomState);

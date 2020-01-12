@@ -1,11 +1,11 @@
 namespace DPong.Level.Data {
   public class PlayerInfo {
     public readonly string Name;
-    public readonly bool IsBot;
+    public readonly PlayerType Type;
 
-    public PlayerInfo(string name, bool isBot) {
+    public PlayerInfo(string name, PlayerType type) {
       Name = name;
-      IsBot = isBot;
+      Type = type;
     }
   }
 }

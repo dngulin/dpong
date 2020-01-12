@@ -20,8 +20,8 @@ namespace DPong.Level {
     private bool _finished;
 
     public LocalLevelController(LevelSettings settings, ILocalInputSource localInputSrc) {
-      _leftIsBot = settings.PlayerLeft.IsBot;
-      _rightIsBot = settings.PlayerRight.IsBot;
+      _leftIsBot = settings.PlayerLeft.Type == PlayerType.Bot;
+      _rightIsBot = settings.PlayerRight.Type == PlayerType.Bot;
 
       _localInputSrc = localInputSrc;
       _aiInputSrc = new AiInputSource();

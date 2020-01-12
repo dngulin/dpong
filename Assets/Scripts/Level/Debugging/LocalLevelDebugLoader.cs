@@ -30,8 +30,8 @@ namespace DPong.Level.Debugging {
     }
 
     private LevelSettings CreateLevelInfo() {
-      var leftPlayer = new PlayerInfo(_leftName, _leftIsBot);
-      var rightPlayer = new PlayerInfo(_rightName, _rightIsBot);
+      var leftPlayer = new PlayerInfo(_leftName, _leftIsBot ? PlayerType.Bot : PlayerType.Local);
+      var rightPlayer = new PlayerInfo(_rightName, _rightIsBot ? PlayerType.Bot : PlayerType.Local);
 
       var tickDuration = Mathf.RoundToInt(Time.fixedDeltaTime * SnMath.Scale);
       var settings = new SimulationSettings(tickDuration, null);
