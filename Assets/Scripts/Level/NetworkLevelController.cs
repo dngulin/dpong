@@ -33,6 +33,8 @@ namespace DPong.Level {
     private readonly InputBuffer _inputs;
     private readonly Queue<ClientMsgInputs> _inputSendQueue;
 
+    public (uint, uint) SimulationStats => (_frame, _simulationCounter);
+
     public NetworkLevelController(ILocalInputSource localInputSource, ServerMsgStart msgStart) {
       _localInputSource = localInputSource;
 

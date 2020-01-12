@@ -79,8 +79,10 @@ namespace DPong.Level.Debugging {
     public void SessionFinished(ServerMsgFinish msgFinish) {
       var frames = string.Join(", ", msgFinish.Frames);
       var hashes = string.Join(", ", msgFinish.Hashes);
+      var (frame, simulations) = _level.SimulationStats;
+
       _popup.Visible = true;
-      _popup.Text = $"Finished at [{frames}] with state [{hashes}]";
+      _popup.Text = $"Finished at [{frames}] with state [{hashes}]\nSimulations: {frame} / {simulations}";
     }
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
