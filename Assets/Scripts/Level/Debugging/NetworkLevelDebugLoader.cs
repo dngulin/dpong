@@ -85,7 +85,7 @@ namespace DPong.Level.Debugging {
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
       _popup.Visible = true;
-      _popup.Text = $"Error: {errorId}:{serverErrorId}";
+      _popup.Text = serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString();
     }
   }
 }
