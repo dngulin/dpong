@@ -50,7 +50,8 @@ namespace DPong.Level.View {
     }
 
     public void Dispose() {
-      UObject.Destroy(_viewRoot);
+      if (_viewRoot.gameObject != null)
+        UObject.Destroy(_viewRoot.gameObject);
     }
   }
 }
