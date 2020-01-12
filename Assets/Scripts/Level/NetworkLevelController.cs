@@ -122,11 +122,8 @@ namespace DPong.Level {
       if (_simulationState == SimulationState.Finished)
         finishMsg = new ClientMsgFinished(_frame, _states[_frame].CalculateHash());
 
-      if (simulationCounter != _simulationCounter) {
-        var prevState = _states[_frame - 1];
-        var currState = _states[_frame];
-        _view.StateContainer.SetPreviousAndCurrentStates(prevState, currState);
-      }
+      if (simulationCounter != _simulationCounter)
+        _view.StateContainer.SetPreviousAndCurrentStates(_states[_frame - 1], _states[_frame]);
 
       return (_inputSendQueue, finishMsg);
     }
