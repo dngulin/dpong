@@ -29,7 +29,7 @@ namespace DPong.Level.View {
     }
 
     public void Dispose() {
-      if (_viewRoot.gameObject != null)
+      if (_viewRoot != null)
         UObject.Destroy(_viewRoot.gameObject);
     }
   }
