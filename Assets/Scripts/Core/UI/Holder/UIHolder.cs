@@ -20,6 +20,7 @@ namespace DPong.Core.UI.Holder {
 
     [SerializeField] private Animator _animator;
     [SerializeField] private Transform _contentRoot;
+    [SerializeField] private CanvasGroup _canvasGroup;
 
     private State _state;
 
@@ -31,6 +32,10 @@ namespace DPong.Core.UI.Holder {
 
     internal void InternalInit(bool visible) {
       _state = visible ? State.Opened : State.Closed;
+
+      _canvasGroup.alpha = visible ? 1 : 0;
+      _canvasGroup.interactable = visible;
+
       _animator.Play(AnimatorHashes.States[_state]);
       _animator.SetBool(AnimatorHashes.Params[Param.IsOpened], visible);
       _animator.Update(0f);
@@ -39,15 +44,19 @@ namespace DPong.Core.UI.Holder {
         _state = state;
         switch (_state) {
           case State.Open:
+            _canvasGroup.alpha = 1;
             OnOpenStart?.Invoke();
             break;
           case State.Opened:
+            _canvasGroup.interactable = true;
             OnOpenFinish?.Invoke();
             break;
           case State.Close:
+            _canvasGroup.interactable = false;
             OnHideStart?.Invoke();
             break;
           case State.Closed:
+            _canvasGroup.alpha = 0;
             OnHideFinish?.Invoke();
             break;
 

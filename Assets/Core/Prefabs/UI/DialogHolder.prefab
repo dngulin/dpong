@@ -122,6 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 6440453020022303799}
   _contentRoot: {fileID: 6440453021827294656}
+  _canvasGroup: {fileID: 6440453020022303796}
 --- !u!1 &6440453021827294659
 GameObject:
   m_ObjectHideFlags: 0
