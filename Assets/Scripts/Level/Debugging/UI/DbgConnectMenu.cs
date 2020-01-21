@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace DPong.Level.Debugging.UI {
-  public class ConnectPanel : DebugUIBase {
+  public class DbgConnectMenu : DebugUIBase {
     [SerializeField] private InputField _host;
     [SerializeField] private InputField _name;
 
