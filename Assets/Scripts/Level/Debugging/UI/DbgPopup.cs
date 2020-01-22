@@ -5,7 +5,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace DPong.Level.Debugging.UI {
-  public class DbgPopup : UIHolderContent {
+  public class DbgPopup : UIHolderWrapper {
     [SerializeField] private Text _message;
     [SerializeField] private Button _button;
 

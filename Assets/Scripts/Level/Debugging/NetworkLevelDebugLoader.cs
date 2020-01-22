@@ -44,25 +44,22 @@ namespace DPong.Level.Debugging {
       var cfg = new ClientConfig(GameName, Version, PlayerCount, _menu.HostName, Port, _menu.PlayerName);
 
       _session?.Dispose();
-      var connectingPopup = ShowPopup("Connecting...");
       try {
         _session = new ClientSession(cfg, this, new NgisUnityLogger());
       }
       catch (Exception e) {
         ShowPopup(e.Message);
       }
-
-      connectingPopup.Holder.Hide();
     }
 
     private DbgPopup ShowPopup(string text) {
       var popup = _ui.InstantiateWindow(WindowType.Dialog, _popupPrefab, false);
       popup.Init(text, () => {
-        popup.Holder.Hide();
+        popup.Hide();
         FinishClicked();
       });
-      popup.Holder.OnHideFinish += () => Destroy(popup.Holder.gameObject);
-      popup.Holder.Show();
+      popup.OnHideFinish += popup.Destroy;
+      popup.Show();
       return popup;
     }
 
@@ -87,7 +84,7 @@ namespace DPong.Level.Debugging {
 
     public void SessionStarted(ServerMsgStart msgStart) {
       _menu.Visible = false;
-      _waitingPopup.Holder.Hide();
+      _waitingPopup.Hide();
       _level = new NetworkLevelController(CreateInputSource(), msgStart);
     }
 
@@ -104,7 +101,7 @@ namespace DPong.Level.Debugging {
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
       if (_waitingPopup != null)
-        _waitingPopup.Holder.Hide();
+        _waitingPopup.Hide();
 
       ShowPopup(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
     }

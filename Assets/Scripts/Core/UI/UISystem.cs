@@ -42,25 +42,25 @@ namespace DPong.Core.UI {
       return Object.Instantiate(prefab, _layers[layer]);
     }
 
-    public TContent InstantiateHolder<THolder, TContent>(THolder holder, TContent content, UILayer layer, bool visible)
-      where THolder : UIHolder where TContent : UIHolderContent {
+    public TWrapper InstantiateHolder<THolder, TWrapper>(THolder holder, TWrapper wrapper, UILayer layer, bool visible)
+      where THolder : UIHolder where TWrapper : UIHolderWrapper {
       var holderInstance = Object.Instantiate(holder, _layers[layer]);
       holderInstance.InternalInit(visible);
 
-      var contentInstance = Object.Instantiate(content, holderInstance.ContentRoot);
+      var contentInstance = Object.Instantiate(wrapper, holderInstance.ContentRoot);
       contentInstance.InternalInit(holderInstance);
 
       return contentInstance;
     }
 
-    public TContent InstantiateWindow<TContent>(WindowType type, TContent content, bool visible)
-      where TContent : UIHolderContent {
-      return InstantiateHolder(_resources.Windows[type], content, UILayer.Windows, visible);
+    public TWrapper InstantiateWindow<TWrapper>(WindowType type, TWrapper wrapper, bool visible)
+      where TWrapper : UIHolderWrapper {
+      return InstantiateHolder(_resources.Windows[type], wrapper, UILayer.Windows, visible);
     }
 
-    public TContent InstantiatePanel<TContent>(PanelType type, TContent content, bool visible)
-      where TContent : UIHolderContent {
-      return InstantiateHolder(_resources.Panels[type], content, UILayer.Panels, visible);
+    public TWrapper InstantiatePanel<TWrapper>(PanelType type, TWrapper wrapper, bool visible)
+      where TWrapper : UIHolderWrapper {
+      return InstantiateHolder(_resources.Panels[type], wrapper, UILayer.Panels, visible);
     }
   }
 }
