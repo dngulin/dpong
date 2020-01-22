@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DPong.Core.UI;
 using DPong.InputSource;
@@ -25,7 +24,7 @@ namespace DPong.Level.Debugging {
 
     private UISystem _ui;
     private DbgConnectMenu _menu;
-    private DbgPopup _waitingPopup;
+    private DbgPopup _statusPopup;
 
     private void Awake() {
       _ui = new UISystem(_canvas);
@@ -41,15 +40,12 @@ namespace DPong.Level.Debugging {
     }
 
     private void ConnectClicked() {
-      var cfg = new ClientConfig(GameName, Version, PlayerCount, _menu.HostName, Port, _menu.PlayerName);
-
       _session?.Dispose();
-      try {
-        _session = new ClientSession(cfg, this, new NgisUnityLogger());
-      }
-      catch (Exception e) {
-        ShowPopup(e.Message);
-      }
+
+      var cfg = new ClientConfig(GameName, Version, PlayerCount, _menu.HostName, Port, _menu.PlayerName);
+      _session = new ClientSession(cfg, this, new NgisUnityLogger());
+
+      _statusPopup = ShowPopup("Connecting to server...");
     }
 
     private DbgPopup ShowPopup(string text) {
@@ -78,13 +74,19 @@ namespace DPong.Level.Debugging {
       return new KeyboardInputSource(left, right);
     }
 
-    public void JoinedToSession() {
-      _waitingPopup = ShowPopup("Waiting for players...");
+    public void ConnectionFailed() {
+      if (_statusPopup != null)
+        _statusPopup.Hide();
+
+      ShowPopup("Connection failed!");
     }
+
+    public void JoiningToSession() => _statusPopup.UpdateMessage("Joining to session...");
+    public void JoinedToSession() => _statusPopup.UpdateMessage("Waiting for players...");
 
     public void SessionStarted(ServerMsgStart msgStart) {
       _menu.Visible = false;
-      _waitingPopup.Hide();
+      _statusPopup.Hide();
       _level = new NetworkLevelController(CreateInputSource(), msgStart);
     }
 
@@ -100,8 +102,8 @@ namespace DPong.Level.Debugging {
     }
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
-      if (_waitingPopup != null)
-        _waitingPopup.Hide();
+      if (_statusPopup != null)
+        _statusPopup.Hide();
 
       ShowPopup(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
     }

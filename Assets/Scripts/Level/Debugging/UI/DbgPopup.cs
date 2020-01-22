@@ -14,5 +14,9 @@ namespace DPong.Level.Debugging.UI {
       _button.onClick.AddListener(new UnityAction(onButtonClick));
       _message.text = text;
     }
+
+    public void UpdateMessage(string text) {
+      _message.text = text;
+    }
   }
 }
