@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DPong.Core.UI;
 using DPong.InputSource;
@@ -32,6 +33,23 @@ namespace DPong.Level.Debugging {
       _menu.SetClickListener(ConnectClicked);
     }
 
+    private DbgPopup CreatePopup(string text) {
+      var popup = _ui.InstantiateWindow(WindowType.Dialog, _popupPrefab, false);
+      popup.Init(text, () => {
+        popup.Hide();
+        FinishClicked();
+      });
+      popup.OnHideFinish += popup.Destroy;
+      popup.Show();
+      return popup;
+    }
+
+    private static ILocalInputSource CreateInputSource() {
+      var left = new KeyBindings { Up = KeyCode.W, Down = KeyCode.S };
+      var right = new KeyBindings { Up = KeyCode.P, Down = KeyCode.L };
+      return new KeyboardInputSource(left, right);
+    }
+
     private void FinishClicked() {
       _session?.Dispose();
       _level?.Dispose();
@@ -43,20 +61,15 @@ namespace DPong.Level.Debugging {
       _session?.Dispose();
 
       var cfg = new ClientConfig(GameName, Version, PlayerCount, _menu.HostName, Port, _menu.PlayerName);
-      _session = new ClientSession(cfg, this, new NgisUnityLogger());
+      try {
+        _session = new ClientSession(cfg, this, new NgisUnityLogger());
+      }
+      catch (Exception e) {
+        CreatePopup(e.Message);
+        return;
+      }
 
-      _statusPopup = ShowPopup("Connecting to server...");
-    }
-
-    private DbgPopup ShowPopup(string text) {
-      var popup = _ui.InstantiateWindow(WindowType.Dialog, _popupPrefab, false);
-      popup.Init(text, () => {
-        popup.Hide();
-        FinishClicked();
-      });
-      popup.OnHideFinish += popup.Destroy;
-      popup.Show();
-      return popup;
+      _statusPopup = CreatePopup("Connecting...");
     }
 
     private void Update() {
@@ -68,20 +81,6 @@ namespace DPong.Level.Debugging {
       _level?.Dispose();
     }
 
-    private static ILocalInputSource CreateInputSource() {
-      var left = new KeyBindings { Up = KeyCode.W, Down = KeyCode.S };
-      var right = new KeyBindings { Up = KeyCode.P, Down = KeyCode.L };
-      return new KeyboardInputSource(left, right);
-    }
-
-    public void ConnectionFailed() {
-      if (_statusPopup != null)
-        _statusPopup.Hide();
-
-      ShowPopup("Connection failed!");
-    }
-
-    public void JoiningToSession() => _statusPopup.UpdateMessage("Joining to session...");
     public void JoinedToSession() => _statusPopup.UpdateMessage("Waiting for players...");
 
     public void SessionStarted(ServerMsgStart msgStart) {
@@ -98,14 +97,14 @@ namespace DPong.Level.Debugging {
       var hashes = string.Join(", ", msgFinish.Hashes);
       var (frame, simulations) = _level.SimulationStats;
 
-      ShowPopup($"Finished at [{frames}] with state [{hashes}]\nSimulations: {frame} / {simulations}");
+      CreatePopup($"Finished at [{frames}] with state [{hashes}]\nSimulations: {frame} / {simulations}");
     }
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
       if (_statusPopup != null)
         _statusPopup.Hide();
 
-      ShowPopup(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
+      CreatePopup(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
     }
   }
 }
