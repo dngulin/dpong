@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace DPong.Core.UI.Helpers {
+namespace DPong.Common {
   public class AnimatorHashes<TState, TParam> where TState : unmanaged, Enum where TParam : unmanaged, Enum {
     public readonly Dictionary<TState, int> States;
     public readonly Dictionary<TParam, int> Params;

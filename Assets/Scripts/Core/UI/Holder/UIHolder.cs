@@ -1,5 +1,5 @@
 using System;
-using DPong.Core.UI.Helpers;
+using DPong.Common;
 using UnityEngine;
 
 namespace DPong.Core.UI.Holder {
