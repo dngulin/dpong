@@ -1,32 +1,26 @@
-using System.Collections.Generic;
+using System;
 using DPong.Core.UI.Holder;
 using UnityEngine;
 
 namespace DPong.Core.UI {
   [CreateAssetMenu(fileName = "UISystemResources", menuName = "DPONG/UISystemResources")]
-  public class UISystemResources : ScriptableObject, ISerializationCallbackReceiver {
-    [SerializeField] private UIHolder DialogWindow;
-    [SerializeField] private UIHolder FullScreenWindow;
+  public class UISystemResources : ScriptableObject {
+    [SerializeField] private UIHolder _dialogHolder;
+    [SerializeField] private UIHolder _fullScreenHolder;
 
-    [SerializeField] private UIHolder LeftPanel;
-    [SerializeField] private UIHolder RightPanel;
+    public UIHolder this[WindowType windowType] {
+      get {
+        switch (windowType) {
+          case WindowType.Dialog:
+            return _dialogHolder;
 
-    public Dictionary<WindowType, UIHolder> Windows { get; private set; }
-    public Dictionary<PanelType, UIHolder> Panels { get; private set; }
+          case WindowType.FullScreen:
+            return _fullScreenHolder;
 
-    public void OnBeforeSerialize() {
-    }
-
-    public void OnAfterDeserialize() {
-      Windows = new Dictionary<WindowType, UIHolder> {
-        {WindowType.Dialog, DialogWindow},
-        {WindowType.FullScreen, FullScreenWindow}
-      };
-
-      Panels = new Dictionary<PanelType, UIHolder> {
-        {PanelType.Left, LeftPanel},
-        {PanelType.Right, RightPanel}
-      };
+          default:
+            throw new ArgumentOutOfRangeException(nameof(windowType), windowType, null);
+        }
+      }
     }
   }
 }

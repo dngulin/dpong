@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39818fefa28b44769400060099704eb5, type: 3}
   m_Name: UISystemResources
   m_EditorClassIdentifier: 
-  DialogWindow: {fileID: 6440453020022303798, guid: aa41b28472c33dd328e63a38e2caefbe,
+  _dialogHolder: {fileID: 6440453020022303798, guid: aa41b28472c33dd328e63a38e2caefbe,
     type: 3}
-  FullScreenWindow: {fileID: 0}
-  LeftPanel: {fileID: 0}
-  RightPanel: {fileID: 0}
+  _fullScreenHolder: {fileID: 0}

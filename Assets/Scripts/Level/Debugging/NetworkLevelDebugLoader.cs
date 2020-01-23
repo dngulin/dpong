@@ -29,7 +29,7 @@ namespace DPong.Level.Debugging {
 
     private void Awake() {
       _ui = new UISystem(_canvas);
-      _menu = _ui.InstantiateInLayer(_menuPrefab, UILayer.Background);
+      _menu = _ui.Instantiate(_menuPrefab, UILayer.Background);
       _menu.SetClickListener(ConnectClicked);
     }
 

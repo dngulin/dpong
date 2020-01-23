@@ -31,36 +31,32 @@ namespace DPong.Core.UI {
       _layers.Add(layer, rt);
     }
 
-    public THolder InstantiateHolder<THolder>(THolder holder, UILayer layer, bool visible) where THolder : UIHolder {
-      var holderInstance = Object.Instantiate(holder, _layers[layer]);
-      holderInstance.InternalInit(visible);
-
-      return holderInstance;
-    }
-
-    public T InstantiateInLayer<T>(T prefab, UILayer layer) where T : MonoBehaviour {
+    public T Instantiate<T>(T prefab, UILayer layer) where T : MonoBehaviour {
       return Object.Instantiate(prefab, _layers[layer]);
     }
 
-    public TWrapper InstantiateHolder<THolder, TWrapper>(THolder holder, TWrapper wrapper, UILayer layer, bool visible)
-      where THolder : UIHolder where TWrapper : UIHolderWrapper {
+    public T InstantiateWrapped<T>(UIHolder holder, UILayer layer, bool visible) where T : UIHolderWrapper {
       var holderInstance = Object.Instantiate(holder, _layers[layer]);
       holderInstance.InternalInit(visible);
 
-      var contentInstance = Object.Instantiate(wrapper, holderInstance.ContentRoot);
-      contentInstance.InternalInit(holderInstance);
+      var wrapperInstance = holderInstance.ContentRoot.GetComponent<T>();
+      wrapperInstance.InternalInit(holderInstance);
 
-      return contentInstance;
+      return wrapperInstance;
     }
 
-    public TWrapper InstantiateWindow<TWrapper>(WindowType type, TWrapper wrapper, bool visible)
-      where TWrapper : UIHolderWrapper {
-      return InstantiateHolder(_resources.Windows[type], wrapper, UILayer.Windows, visible);
+    public T InstantiateAndWrap<T>(UIHolder holder, T wrapper, UILayer layer, bool visible) where T : UIHolderWrapper {
+      var holderInstance = Object.Instantiate(holder, _layers[layer]);
+      holderInstance.InternalInit(visible);
+
+      var wrapperInstance = Object.Instantiate(wrapper, holderInstance.ContentRoot);
+      wrapperInstance.InternalInit(holderInstance);
+
+      return wrapperInstance;
     }
 
-    public TWrapper InstantiatePanel<TWrapper>(PanelType type, TWrapper wrapper, bool visible)
-      where TWrapper : UIHolderWrapper {
-      return InstantiateHolder(_resources.Panels[type], wrapper, UILayer.Panels, visible);
+    public T InstantiateWindow<T>(WindowType winType, T wrapper, bool visible) where T : UIHolderWrapper {
+      return InstantiateAndWrap(_resources[winType], wrapper, UILayer.Windows, visible);
     }
   }
 }
