@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace DPong.Core.Save {
+namespace DPong.Save {
   public class SaveSystem {
     private readonly UTF8Encoding _utf8;
     private readonly string _saveFilePath;

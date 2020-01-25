@@ -1,5 +1,5 @@
 using System;
-using DPong.Core.UI.Holder;
+using DPong.UI.Holder;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;

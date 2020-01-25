@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DPong.Core.UI;
 using DPong.InputSource;
 using DPong.Level.Debugging.UI;
+using DPong.UI;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
 using NGIS.Session.Client;

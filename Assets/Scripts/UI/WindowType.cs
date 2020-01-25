@@ -1,4 +1,4 @@
-namespace DPong.Core.UI {
+namespace DPong.UI {
   public enum WindowType {
     Dialog,
     FullScreen

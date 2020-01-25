@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DPong.Core.UI.Holder;
+using DPong.UI.Holder;
 using UnityEngine;
 
-namespace DPong.Core.UI {
+namespace DPong.UI {
   public class UISystem {
     private readonly Transform _root;
     private readonly Dictionary<UILayer, Transform> _layers = new Dictionary<UILayer, Transform>();

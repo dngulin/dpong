@@ -2,7 +2,7 @@ using System;
 using DPong.Common;
 using UnityEngine;
 
-namespace DPong.Core.UI.Holder {
+namespace DPong.UI.Holder {
   public class UIHolder : MonoBehaviour {
     public enum State {
       Open,

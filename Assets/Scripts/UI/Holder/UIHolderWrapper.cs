@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace DPong.Core.UI.Holder {
+namespace DPong.UI.Holder {
   public abstract class UIHolderWrapper : MonoBehaviour {
     internal void InternalInit(UIHolder holder) => _holder = holder;
     private UIHolder _holder;

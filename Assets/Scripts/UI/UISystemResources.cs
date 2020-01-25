@@ -1,8 +1,8 @@
 using System;
-using DPong.Core.UI.Holder;
+using DPong.UI.Holder;
 using UnityEngine;
 
-namespace DPong.Core.UI {
+namespace DPong.UI {
   [CreateAssetMenu(fileName = "UISystemResources", menuName = "DPONG/UISystemResources")]
   public class UISystemResources : ScriptableObject {
     [SerializeField] private UIHolder _dialogHolder;
