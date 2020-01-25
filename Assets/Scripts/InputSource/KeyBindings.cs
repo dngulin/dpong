@@ -1,8 +1,8 @@
-using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace DPong.InputSource {
   public struct KeyBindings {
-    public KeyCode Up;
-    public KeyCode Down;
+    public Key Up;
+    public Key Down;
   }
 }

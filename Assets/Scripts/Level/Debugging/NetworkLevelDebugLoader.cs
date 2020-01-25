@@ -7,6 +7,7 @@ using NGIS.Message.Client;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
   public class NetworkLevelDebugLoader : MonoBehaviour, IClientSessionWorker {
@@ -45,8 +46,8 @@ namespace DPong.Level.Debugging {
     }
 
     private static ILocalInputSource CreateInputSource() {
-      var left = new KeyBindings { Up = KeyCode.W, Down = KeyCode.S };
-      var right = new KeyBindings { Up = KeyCode.P, Down = KeyCode.L };
+      var left = new KeyBindings { Up = Key.W, Down = Key.S };
+      var right = new KeyBindings { Up = Key.P, Down = Key.L };
       return new KeyboardInputSource(left, right);
     }
 

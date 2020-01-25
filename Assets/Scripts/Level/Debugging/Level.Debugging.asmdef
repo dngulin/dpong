@@ -1,10 +1,11 @@
 {
     "name": "Level.Debugging",
     "references": [
+        "Unity.InputSystem",
+        "InputSource",
         "UI",
         "Level",
-        "Level.Data",
-        "InputSource"
+        "Level.Data"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

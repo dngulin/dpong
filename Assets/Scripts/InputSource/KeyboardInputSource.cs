@@ -1,6 +1,6 @@
 using DPong.Level;
 using DPong.Level.State;
-using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace DPong.InputSource {
   public class KeyboardInputSource : ILocalInputSource {
@@ -19,8 +19,10 @@ namespace DPong.InputSource {
     private static Keys GetKeys(KeyBindings bindings) {
       var keys = Keys.None;
 
-      if (Input.GetKey(bindings.Up)) keys |= Keys.Up;
-      if (Input.GetKey(bindings.Down)) keys |= Keys.Down;
+      var keyboard = Keyboard.current;
+
+      if (keyboard[bindings.Up].isPressed) keys |= Keys.Up;
+      if (keyboard[bindings.Down].isPressed) keys |= Keys.Down;
 
       return keys;
     }

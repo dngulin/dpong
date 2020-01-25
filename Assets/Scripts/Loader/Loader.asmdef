@@ -1,9 +1,9 @@
 {
-    "name": "InputSource",
+    "name": "Loader",
     "references": [
-        "Unity.InputSystem",
-        "Level",
-        "Level.State"
+        "Save",
+        "UI",
+        "InputSource"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
