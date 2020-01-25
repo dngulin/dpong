@@ -21,7 +21,7 @@ namespace DPong.Core.UI.Holder {
       remove => _holder.OnHideStart -= value;
     }
 
-    public event Action OnHideFinish{
+    public event Action OnHideFinish {
       add => _holder.OnHideFinish += value;
       remove => _holder.OnHideFinish -= value;
     }
