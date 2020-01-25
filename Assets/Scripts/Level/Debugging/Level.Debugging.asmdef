@@ -1,7 +1,7 @@
 {
     "name": "Level.Debugging",
     "references": [
-        "Core",
+        "UI",
         "Level",
         "Level.Data",
         "InputSource"

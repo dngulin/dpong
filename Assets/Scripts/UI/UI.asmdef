@@ -1,5 +1,5 @@
 {
-    "name": "Core",
+    "name": "UI",
     "references": [
         "Common"
     ],
