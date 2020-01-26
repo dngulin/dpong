@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DPong.InputSource;
 using DPong.Level.Debugging.UI;
+using DPong.Localization;
 using DPong.UI;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
@@ -32,6 +33,9 @@ namespace DPong.Level.Debugging {
       _ui = new UISystem(_canvas);
       _menu = _ui.Instantiate(_menuPrefab, UILayer.Background);
       _menu.SetClickListener(ConnectClicked);
+
+      T.LoadFromStreamingAssets("ru.mo");
+      Debug.Log(T._("Hello World!"));
     }
 
     private DbgPopup CreatePopup(string text) {

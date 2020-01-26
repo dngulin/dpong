@@ -1,14 +1,11 @@
 {
-    "name": "Level.Debugging",
+    "name": "Localization.Editor",
     "references": [
-        "Unity.InputSystem",
-        "InputSource",
-        "Localization",
-        "UI",
-        "Level",
-        "Level.Data"
+      "Localization"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
