@@ -34,8 +34,8 @@ namespace DPong.Level.Debugging {
       _menu = _ui.Instantiate(_menuPrefab, UILayer.Background);
       _menu.SetClickListener(ConnectClicked);
 
-      T.LoadFromStreamingAssets("ru.mo");
-      Debug.Log(T._("Hello World!"));
+      Tr.LoadLocaleFromStreamingAssets("ru.mo");
+      Debug.Log(Tr._("Hello World!"));
     }
 
     private DbgPopup CreatePopup(string text) {
@@ -78,6 +78,8 @@ namespace DPong.Level.Debugging {
     private void OnDestroy() {
       _session?.Dispose();
       _level?.Dispose();
+
+      Tr.UnloadLocale();
     }
 
     public void JoinedToSession() => _statusPopup.UpdateMessage("Waiting for players...");

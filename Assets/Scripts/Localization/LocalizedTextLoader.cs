@@ -15,8 +15,8 @@ namespace DPong.Localization {
         return;
 
       textComponent.text = string.IsNullOrEmpty(_context) ?
-        T._(textComponent.text) :
-        T._p(_context, textComponent.text);
+        Tr._(textComponent.text) :
+        Tr._p(_context, textComponent.text);
     }
   }
 }

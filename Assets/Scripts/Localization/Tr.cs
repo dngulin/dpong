@@ -3,17 +3,17 @@ using NGettext;
 using UnityEngine;
 
 namespace DPong.Localization {
-  public static class T {
+  public static class Tr {
     private static Catalog _catalog;
 
-    public static void LoadFromStreamingAssets(string moFilePath) {
+    public static void LoadLocaleFromStreamingAssets(string moFilePath) {
       var fullMoFilePath = Path.Combine(Application.streamingAssetsPath, moFilePath);
       using (var moFileStream = File.OpenRead(fullMoFilePath)) {
         _catalog = new Catalog(moFileStream);
       }
     }
 
-    public static void Unload() {
+    public static void UnloadLocale() {
       _catalog = null;
     }
 
