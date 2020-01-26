@@ -45,12 +45,6 @@ namespace DPong.Level.Debugging {
       return popup;
     }
 
-    private static ILocalInputSource CreateInputSource() {
-      var left = new KeyBindings { Up = Key.W, Down = Key.S };
-      var right = new KeyBindings { Up = Key.P, Down = Key.L };
-      return new KeyboardInputSource(left, right);
-    }
-
     private void FinishClicked() {
       _session?.Dispose();
       _level?.Dispose();
@@ -87,7 +81,9 @@ namespace DPong.Level.Debugging {
     public void SessionStarted(ServerMsgStart msgStart) {
       _menu.Visible = false;
       _statusPopup.Hide();
-      _level = new NetworkLevelController(CreateInputSource(), msgStart);
+
+      var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
+      _level = new NetworkLevelController(inputSource, msgStart);
     }
 
     public void InputReceived(ServerMsgInput msgInput) => _level.InputReceived(msgInput);

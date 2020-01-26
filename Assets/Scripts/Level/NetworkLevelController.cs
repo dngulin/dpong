@@ -13,7 +13,7 @@ using PGM.Random;
 namespace DPong.Level {
   public class NetworkLevelController : IDisposable {
     private const uint InputDelay = 2;
-    private readonly ILocalInputSource _localInputSource;
+    private readonly IInputSource _inputSrc;
 
     private readonly Side _side;
     private readonly long _tickDuration;
@@ -35,8 +35,8 @@ namespace DPong.Level {
 
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
 
-    public NetworkLevelController(ILocalInputSource localInputSource, ServerMsgStart msgStart) {
-      _localInputSource = localInputSource;
+    public NetworkLevelController(IInputSource inputSrc, ServerMsgStart msgStart) {
+      _inputSrc = inputSrc;
 
       _side = (Side) msgStart.YourIndex;
       _tickDuration = 1000 / msgStart.TicksPerSecond;
@@ -162,7 +162,7 @@ namespace DPong.Level {
     private SimulationState ProcessFutureStates() {
       var targetFrame = GetTargetSimulationFrame();
       for (; _frame < targetFrame;) {
-        PushLocalInputs(_side == Side.Left ? _localInputSource.GetLeft() : _localInputSource.GetRight());
+        PushLocalInputs();
         var finished = SimulateNextState(_frame++);
         _inputs.HandleFrameIncremented(_frame);
 
@@ -200,10 +200,12 @@ namespace DPong.Level {
       return finished;
     }
 
-    private void PushLocalInputs(Keys keys) {
+    private void PushLocalInputs() {
       var frame = _frame + InputDelay;
-      _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
+      var keys = _inputSrc.GetKeys();
+
       (_side == Side.Left ? ref _inputs[frame].Left : ref _inputs[frame].Right) = keys;
+      _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
     }
 
     public void Dispose() => _view?.Dispose();

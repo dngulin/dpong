@@ -17,18 +17,13 @@ namespace DPong.Level.Debugging {
 
     private void Awake() {
       var levelInfo = CreateLevelInfo();
-      var inputSource = CreateInputSource();
+      var lInputSrc = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
+      var rInputSrc = new KeyboardInputSource(Keyboard.current, Key.UpArrow, Key.DownArrow);
 
-      _levelController = new LocalLevelController(levelInfo, inputSource);
+      _levelController = new LocalLevelController(levelInfo, lInputSrc, rInputSrc);
     }
 
     private void FixedUpdate() => _levelController?.Tick();
-
-    private static ILocalInputSource CreateInputSource() {
-      var left = new KeyBindings { Up = Key.W, Down = Key.S };
-      var right = new KeyBindings { Up = Key.P, Down = Key.L };
-      return new KeyboardInputSource(left, right);
-    }
 
     private LevelSettings CreateLevelInfo() {
       var leftPlayer = new PlayerInfo(_leftName, _leftIsBot ? PlayerType.Bot : PlayerType.Local);
