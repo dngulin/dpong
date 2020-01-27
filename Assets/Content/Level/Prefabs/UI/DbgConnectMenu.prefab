@@ -129,7 +129,6 @@ GameObject:
   - component: {fileID: 3392070204953025972}
   - component: {fileID: 3392070204953025978}
   - component: {fileID: 3392070204953025979}
-  - component: {fileID: 941896401101851926}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -171,7 +170,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3392070204953025973}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -196,19 +195,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Your name...
---- !u!114 &941896401101851926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3392070204953025973}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _context: 
 --- !u!1 &3392070205317671752
 GameObject:
   m_ObjectHideFlags: 0

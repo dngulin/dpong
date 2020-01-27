@@ -30,12 +30,12 @@ namespace DPong.Level.Debugging {
     private DbgPopup _statusPopup;
 
     private void Awake() {
+      Tr.LoadLocale("ru");
+      Debug.Log(Tr._("Localization is loaded!"));
+
       _ui = new UISystem(_canvas);
       _menu = _ui.Instantiate(_menuPrefab, UILayer.Background);
       _menu.SetClickListener(ConnectClicked);
-
-      Tr.LoadLocaleFromStreamingAssets("ru.mo");
-      Debug.Log(Tr._("Hello World!"));
     }
 
     private DbgPopup CreatePopup(string text) {

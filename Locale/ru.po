@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: DPong\n"
-"POT-Creation-Date: 2020-01-27 19:52+0300\n"
-"PO-Revision-Date: 2020-01-27 19:52+0300\n"
+"POT-Creation-Date: 2020-01-27 21:28+0300\n"
+"PO-Revision-Date: 2020-01-27 21:28+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -17,26 +17,17 @@ msgstr ""
 "X-Poedit-KeywordsList: _;_n:1,2;_p:1c,2;_pn:1c,2,3\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Assets/Content/Level/Prefabs/UI/DbgConnectMenu.prefab/DbgConnectMenu/Button/Text
+#: Content/Level/Prefabs/UI/DbgConnectMenu.prefab:DbgConnectMenu/Button/Text
 msgid "Start\n"
-msgstr ""
+msgstr "Играть\n"
 
-#: Assets/Content/Level/Prefabs/UI/DbgConnectMenu.prefab/DbgConnectMenu/Name/Placeholder
-msgid "Your name..."
-msgstr ""
-
-#: Assets/Content/Level/Prefabs/UI/DbgPopup.prefab/DbgPopup/Text
-msgctxt "WUT\\"
-msgid ""
-"Message \\t \\n\n"
-"42\n"
-"43"
-msgstr ""
-
-#: Assets/Content/Level/Prefabs/UI/DbgPopup.prefab/DbgPopup/Button/Text
+#: Content/Level/Prefabs/UI/DbgPopup.prefab:DbgPopup/Button/Text
 msgid "Exit to menu"
-msgstr ""
+msgstr "Выйти в меню"
 
-#: Scripts/Level/Debugging/NetworkLevelDebugLoader.cs:38
-msgid "Hello World!"
-msgstr ""
+#: Scripts/Level/Debugging/NetworkLevelDebugLoader.cs:34
+msgid "Localization is loaded!"
+msgstr "Локализация загружена!"
+
+#~ msgid "Hello World!"
+#~ msgstr "Привет, мир!"

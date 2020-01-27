@@ -6,9 +6,9 @@ namespace DPong.Localization {
   public static class Tr {
     private static Catalog _catalog;
 
-    public static void LoadLocaleFromStreamingAssets(string moFilePath) {
-      var fullMoFilePath = Path.Combine(Application.streamingAssetsPath, moFilePath);
-      using (var moFileStream = File.OpenRead(fullMoFilePath)) {
+    public static void LoadLocale(string localeName) {
+      var moFilePath = Path.Combine(Application.streamingAssetsPath, "Locale", $"{localeName}.mo");
+      using (var moFileStream = File.OpenRead(moFilePath)) {
         _catalog = new Catalog(moFileStream);
       }
     }
