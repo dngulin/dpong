@@ -6,12 +6,14 @@ using UnityEngine.UI;
 
 namespace DPong.Localization.Editor {
   public static class PrefabStringExtractor {
-    private const string GenerateFileMenu = "Localization/Collect Translatable Strings From Prefabs";
+    private const string GenerateFileMenu = "Localization/Extract Translatable Strings From Prefabs";
 
     [MenuItem(GenerateFileMenu)]
     private static void GetLocalizedText() {
       Debug.Log("Collecting strings from prefab...");
       var outputPath = Path.Combine(Application.dataPath, "prefab-extracted-strings.pot");
+
+      const string prefix = "Assets/";
 
       using (var fileStream = File.Create(outputPath))
       using (var textWriter = new StreamWriter(fileStream, new UTF8Encoding(false))) {
@@ -22,7 +24,7 @@ namespace DPong.Localization.Editor {
 
           Debug.Log($"Processing prefab: {path}...");
           foreach (var loader in loaders) {
-            textWriter.WriteLine($"#: {path}/{GetObjectPath(loader.transform)}");
+            textWriter.WriteLine($"#: {path.Substring(prefix.Length)}:{GetObjectPath(loader.transform)}");
 
             if (!string.IsNullOrEmpty(loader.Context))
               textWriter.WriteLine($"msgctxt \"{Escape(loader.Context)}\"");
