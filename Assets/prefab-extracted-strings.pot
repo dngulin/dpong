@@ -1,0 +1,17 @@
+#: Assets/Content/Level/Prefabs/UI/DbgConnectMenu.prefab/DbgConnectMenu/Button/Text
+msgid "Start\n"
+msgstr ""
+
+#: Assets/Content/Level/Prefabs/UI/DbgConnectMenu.prefab/DbgConnectMenu/Name/Placeholder
+msgid "Your name..."
+msgstr ""
+
+#: Assets/Content/Level/Prefabs/UI/DbgPopup.prefab/DbgPopup/Text
+msgctxt "WUT\\"
+msgid "Message \\t \\n\n42\n43"
+msgstr ""
+
+#: Assets/Content/Level/Prefabs/UI/DbgPopup.prefab/DbgPopup/Button/Text
+msgid "Exit to menu"
+msgstr ""`
+
