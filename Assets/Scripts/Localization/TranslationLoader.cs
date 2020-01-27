@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace DPong.Localization {
 
   [RequireComponent(typeof(Text))]
-  public class LocalizedTextLoader : MonoBehaviour {
+  public class TranslationLoader : MonoBehaviour {
     [SerializeField] private string _context;
 
     public string Context => _context;

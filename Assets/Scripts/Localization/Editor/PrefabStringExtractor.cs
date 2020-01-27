@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace DPong.Localization.Editor {
-  public static class UnityStringExtractor {
+  public static class PrefabStringExtractor {
     private const string GenerateFileMenu = "Localization/Collect Translatable Strings From Prefabs";
 
     [MenuItem(GenerateFileMenu)]
@@ -18,7 +18,7 @@ namespace DPong.Localization.Editor {
         foreach (var guid in AssetDatabase.FindAssets("t:prefab")) {
           var path = AssetDatabase.GUIDToAssetPath(guid);
           var asset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-          var loaders = asset.GetComponentsInChildren<LocalizedTextLoader>();
+          var loaders = asset.GetComponentsInChildren<TranslationLoader>();
 
           Debug.Log($"Processing prefab: {path}...");
           foreach (var loader in loaders) {
