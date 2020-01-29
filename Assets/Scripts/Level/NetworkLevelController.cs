@@ -174,7 +174,7 @@ namespace DPong.Level {
     }
 
     private uint GetTargetSimulationFrame() {
-      var maxReachableFrame = Math.Max(_frame + _inputs.CountApproved(), _states.Count / 2);
+      var maxReachableFrame = Math.Max(_frame + _inputs.CountApproved(), _states.Count - 1);
       var timeBasedFrame = _frameTimerOffset + (uint) (_frameTimer.ElapsedMilliseconds / _tickDuration);
 
       return Math.Min(timeBasedFrame, maxReachableFrame);

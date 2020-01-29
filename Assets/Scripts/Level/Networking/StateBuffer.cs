@@ -8,7 +8,7 @@ namespace DPong.Level.Networking {
       _states = new LevelState[length];
     }
 
-    public uint Count => (uint) _states.Length / 2;
+    public uint Count => (uint) _states.Length;
 
     public ref LevelState this[uint index] => ref _states[index % _states.Length];
   }
