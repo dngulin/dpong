@@ -13,7 +13,7 @@ namespace DPong.UI {
       _root = canvas.transform;
       _resources = Resources.Load<UISystemResources>("UISystemResources");
 
-      foreach (var layer in new[] {UILayer.Background, UILayer.Panels, UILayer.Windows, UILayer.Foreground})
+      foreach (var layer in new[] {UILayer.Background, UILayer.Windows, UILayer.Foreground})
         CreateLayer(layer);
     }
 
