@@ -30,7 +30,7 @@ namespace DPong.InputSource {
     // Workaround for https://github.com/Unity-Technologies/InputSystem/issues/1025
     // Processing works correctly only with fixed resolution and GameView scale = 1
     public override Vector2 Process(Vector2 value, InputControl control) {
-#if UNITY_EDITOR && UNITY_EDITOR_LINUX
+#if UNITY_EDITOR_LINUX
       if (EditorScaled) {
         var window = UnityEditor.EditorWindow.GetWindow(GameViewType);
         var w = window.position.width * 2;
