@@ -31,26 +31,28 @@ namespace DPong.UI {
       _layers.Add(layer, rt);
     }
 
-    public T Instantiate<T>(T prefab, UILayer layer) where T : MonoBehaviour {
-      return Object.Instantiate(prefab, _layers[layer]);
+    public T Instantiate<T>(T prefab, UILayer layer, bool visible) where T : MonoBehaviour, IUserInterface {
+      var ui = Object.Instantiate(prefab, _layers[layer]);
+      ui.SetInitialVisibility(visible);
+      return ui;
     }
 
     public T InstantiateWrapped<T>(UIHolder holder, UILayer layer, bool visible) where T : UIHolderWrapper {
       var holderInstance = Object.Instantiate(holder, _layers[layer]);
-      holderInstance.InternalInit(visible);
-
       var wrapperInstance = holderInstance.ContentRoot.GetComponent<T>();
-      wrapperInstance.InternalInit(holderInstance);
+
+      wrapperInstance.WrapHolder(holderInstance);
+      wrapperInstance.SetInitialVisibility(visible);
 
       return wrapperInstance;
     }
 
     public T InstantiateAndWrap<T>(UIHolder holder, T wrapper, UILayer layer, bool visible) where T : UIHolderWrapper {
       var holderInstance = Object.Instantiate(holder, _layers[layer]);
-      holderInstance.InternalInit(visible);
-
       var wrapperInstance = Object.Instantiate(wrapper, holderInstance.ContentRoot);
-      wrapperInstance.InternalInit(holderInstance);
+
+      wrapperInstance.WrapHolder(holderInstance);
+      wrapperInstance.SetInitialVisibility(visible);
 
       return wrapperInstance;
     }

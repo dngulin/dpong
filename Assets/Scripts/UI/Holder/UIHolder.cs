@@ -3,7 +3,7 @@ using DPong.Common;
 using UnityEngine;
 
 namespace DPong.UI.Holder {
-  public class UIHolder : MonoBehaviour {
+  public class UIHolder : MonoBehaviour, IUserInterface {
     public enum State {
       Open,
       Opened,
@@ -24,13 +24,19 @@ namespace DPong.UI.Holder {
 
     private State _state;
 
+    private bool _initialized;
+
     public event Action OnOpenStart;
     public event Action OnOpenFinish;
 
     public event Action OnHideStart;
     public event Action OnHideFinish;
 
-    internal void InternalInit(bool visible) {
+    public void SetInitialVisibility(bool visible) {
+      if (_initialized)
+        throw new InvalidOperationException();
+
+      _initialized = true;
       _state = visible ? State.Opened : State.Closed;
 
       _canvasGroup.alpha = visible ? 1 : 0;

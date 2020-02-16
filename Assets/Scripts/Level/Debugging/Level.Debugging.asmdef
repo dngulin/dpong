@@ -3,8 +3,6 @@
     "references": [
         "Unity.InputSystem",
         "InputSource",
-        "Localization",
-        "UI",
         "Level",
         "Level.Data"
     ],

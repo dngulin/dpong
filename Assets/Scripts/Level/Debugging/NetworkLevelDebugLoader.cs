@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DPong.InputSource;
-using DPong.Level.Debugging.UI;
-using DPong.Localization;
-using DPong.UI;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
@@ -17,58 +14,20 @@ namespace DPong.Level.Debugging {
     private const int Port = 5081;
     private const ushort Version = 0;
 
-    [SerializeField] private Canvas _canvas;
-
-    [SerializeField] private DbgConnectMenu _menuPrefab;
-    [SerializeField] private DbgPopup _popupPrefab;
+    [SerializeField] private string _hostName;
+    [SerializeField] private string _playerName;
 
     private ClientSession _session;
     private NetworkLevelController _level;
 
-    private UISystem _ui;
-    private DbgConnectMenu _menu;
-    private DbgPopup _statusPopup;
-
     private void Awake() {
-      Tr.LoadLocale("ru");
-      Debug.Log(Tr._("Localization is loaded!"));
-
-      _ui = new UISystem(_canvas);
-      _menu = _ui.Instantiate(_menuPrefab, UILayer.Background);
-      _menu.SetClickListener(ConnectClicked);
-    }
-
-    private DbgPopup CreatePopup(string text) {
-      var popup = _ui.InstantiateWindow(WindowType.Dialog, _popupPrefab, false);
-      popup.Init(text, () => {
-        popup.Hide();
-        FinishClicked();
-      });
-      popup.OnHideFinish += popup.Destroy;
-      popup.Show();
-      return popup;
-    }
-
-    private void FinishClicked() {
-      _session?.Dispose();
-      _level?.Dispose();
-
-      _menu.Visible = true;
-    }
-
-    private void ConnectClicked() {
-      _session?.Dispose();
-
-      var cfg = new ClientConfig(GameName, Version, PlayerCount, _menu.HostName, Port, _menu.PlayerName);
+      var cfg = new ClientConfig(GameName, Version, PlayerCount, _hostName, Port, _playerName);
       try {
         _session = new ClientSession(cfg, this, new NgisUnityLogger());
       }
       catch (Exception e) {
-        CreatePopup(e.Message);
-        return;
+        Debug.LogError(e.Message);
       }
-
-      _statusPopup = CreatePopup("Connecting...");
     }
 
     private void Update() {
@@ -78,16 +37,11 @@ namespace DPong.Level.Debugging {
     private void OnDestroy() {
       _session?.Dispose();
       _level?.Dispose();
-
-      Tr.UnloadLocale();
     }
 
-    public void JoinedToSession() => _statusPopup.UpdateMessage("Waiting for players...");
+    public void JoinedToSession() => Debug.Log("Waiting for players...");
 
     public void SessionStarted(ServerMsgStart msgStart) {
-      _menu.Visible = false;
-      _statusPopup.Hide();
-
       var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
       _level = new NetworkLevelController(inputSource, msgStart);
     }
@@ -100,14 +54,11 @@ namespace DPong.Level.Debugging {
       var hashes = string.Join(", ", msgFinish.Hashes);
       var (frame, simulations) = _level.SimulationStats;
 
-      CreatePopup($"Finished at [{frames}] with state [{hashes}]\nSimulations: {frame} / {simulations}");
+      Debug.Log($"Finished at [{frames}] with state [{hashes}]\nSimulations: {frame} / {simulations}");
     }
 
     public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
-      if (_statusPopup != null)
-        _statusPopup.Hide();
-
-      CreatePopup(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
+      Debug.LogError(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
     }
   }
 }

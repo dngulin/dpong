@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 
 namespace DPong.UI.Holder {
-  public abstract class UIHolderWrapper : MonoBehaviour {
-    internal void InternalInit(UIHolder holder) => _holder = holder;
+  public abstract class UIHolderWrapper : MonoBehaviour, IUserInterface {
+    internal void WrapHolder(UIHolder holder) => _holder = holder;
     private UIHolder _holder;
 
     public event Action OnOpenStart {
@@ -25,6 +25,8 @@ namespace DPong.UI.Holder {
       add => _holder.OnHideFinish += value;
       remove => _holder.OnHideFinish -= value;
     }
+
+    public void SetInitialVisibility(bool visible) => _holder.SetInitialVisibility(visible);
 
     public void Show() => _holder.Show();
     public void Hide() => _holder.Hide();
