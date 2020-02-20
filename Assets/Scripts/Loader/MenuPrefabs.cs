@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace DPong.Loader {
   [CreateAssetMenu(fileName = "LoaderResources", menuName = "DPONG/LoaderResources")]
-  public class LoaderResources : ScriptableObject {
+  public class MenuPrefabs : ScriptableObject {
     public MainMenu MainMenu;
-    public LocalGameMenu LocalGameMenu;
+    public HotSeatMenu HotSeatMenu;
     public NetworkGameMenu NetworkGameMenu;
   }
 }

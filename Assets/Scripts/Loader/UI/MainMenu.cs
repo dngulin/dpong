@@ -8,7 +8,7 @@ namespace DPong.Loader.UI {
     void OnExitGameClicked();
   }
 
-  public class MainMenu : Menu {
+  public class MainMenu : SimpleMenu {
     [SerializeField] private Button _hotSeatButton;
     [SerializeField] private Button _networkButton;
     [SerializeField] private Button _exitGameButton;
