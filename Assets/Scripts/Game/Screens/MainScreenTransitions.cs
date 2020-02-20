@@ -1,6 +1,6 @@
-using DPong.Loader.Navigation;
+using DPong.Game.Navigation;
 
-namespace DPong.Loader.Screens {
+namespace DPong.Game.Screens {
   public readonly struct MainScreenTransitions {
     public readonly NavigationToken HotSeatMenu;
     public readonly NavigationToken NetworkMenu;

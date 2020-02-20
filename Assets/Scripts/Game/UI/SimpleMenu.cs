@@ -2,7 +2,7 @@ using System;
 using DPong.UI;
 using UnityEngine;
 
-namespace DPong.Loader.UI {
+namespace DPong.Game.UI {
   public abstract class SimpleMenu : MonoBehaviour, IUserInterface {
     public void SetInitialVisibility(bool visible) => gameObject.SetActive(visible);
 

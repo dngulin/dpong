@@ -1,11 +1,11 @@
-using DPong.Loader.Navigation;
-using DPong.Loader.Screens;
+using DPong.Game.Navigation;
+using DPong.Game.Screens;
 using DPong.Localization;
 using DPong.Save;
 using DPong.UI;
 using UnityEngine;
 
-namespace DPong.Loader {
+namespace DPong.Game {
   public class GameCompositionRoot : MonoBehaviour {
     private const string SaveFilename = "save.json";
 

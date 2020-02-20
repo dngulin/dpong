@@ -1,8 +1,8 @@
-using DPong.Loader.Navigation;
-using DPong.Loader.UI;
+using DPong.Game.Navigation;
+using DPong.Game.UI;
 using DPong.UI;
 
-namespace DPong.Loader.Screens {
+namespace DPong.Game.Screens {
   public class MainScreen : INavigationPoint, IMainMenuListener {
     private readonly Navigator _navigator;
     private readonly MainScreenTransitions _transitions;

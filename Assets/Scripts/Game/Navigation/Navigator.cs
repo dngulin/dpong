@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DPong.Loader.Navigation {
+namespace DPong.Game.Navigation {
   public class Navigator {
     private readonly Stack<INavigationPoint> _navigationStack = new Stack<INavigationPoint>();
 

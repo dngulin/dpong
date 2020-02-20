@@ -1,4 +1,4 @@
-namespace DPong.Loader.Navigation {
+namespace DPong.Game.Navigation {
   public interface INavigationPoint {
     void Enter();
     void Suspend();

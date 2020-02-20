@@ -1,6 +1,6 @@
-using DPong.Loader.Navigation;
+using DPong.Game.Navigation;
 
-namespace DPong.Loader.Screens {
+namespace DPong.Game.Screens {
   public class NetGameScreen : INavigationPoint {
     void INavigationPoint.Enter() {
       throw new System.NotImplementedException();
