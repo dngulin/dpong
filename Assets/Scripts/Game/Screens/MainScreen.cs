@@ -9,11 +9,11 @@ namespace DPong.Game.Screens {
 
     private readonly MainMenu _menu;
 
-    public MainScreen(UISystem ui, MenuPrefabs prefabs, Navigator navigator, MainScreenTransitions transitions) {
+    public MainScreen(UISystem ui, MainMenu mainMenuPrefab, Navigator navigator, MainScreenTransitions transitions) {
       _navigator = navigator;
       _transitions = transitions;
 
-      _menu = ui.Instantiate(prefabs.MainMenu, UILayer.Background, false);
+      _menu = ui.Instantiate(mainMenuPrefab, UILayer.Background, false);
       _menu.Init(this);
     }
 

@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1ee16e95c3d4acf89a3be8face11442, type: 3}
-  m_Name: LoaderResources
+  m_Name: GameResources
   m_EditorClassIdentifier: 
-  MainMenu: {fileID: 6370045249762492602, guid: 99a801402c0b65a1793887dbbedf58e8,
+  UISystemResources: {fileID: 11400000, guid: 0b0f6277df96b1f4e9f4cc90a1337eb8, type: 2}
+  MainMenuPrefab: {fileID: 6370045249762492602, guid: 99a801402c0b65a1793887dbbedf58e8,
     type: 3}
-  LocalGameMenu: {fileID: 0}
-  NetworkGameMenu: {fileID: 0}
+  HotSeatMenuPrefab: {fileID: 0}
+  NetworkGameMenuPrefab: {fileID: 0}

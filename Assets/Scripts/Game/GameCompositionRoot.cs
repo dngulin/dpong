@@ -10,7 +10,7 @@ namespace DPong.Game {
     private const string SaveFilename = "save.json";
 
     [SerializeField] private Canvas _canvas;
-    [SerializeField] private MenuPrefabs _menuPrefabs;
+    [SerializeField] private GameResources _resources;
 
     private SaveSystem _save;
     private UISystem _ui;
@@ -21,7 +21,7 @@ namespace DPong.Game {
       }
 
       _save = new SaveSystem(SaveFilename);
-      _ui = new UISystem(_canvas);
+      _ui = new UISystem(_resources.UISystemResources, _canvas);
 
       var navigator = new Navigator();
 
@@ -29,7 +29,7 @@ namespace DPong.Game {
       var netGameToken = navigator.Register(new NetGameScreen());
 
       var transitions = new MainScreenTransitions(hotSeatToken, netGameToken);
-      var mainMenu = new MainScreen(_ui, _menuPrefabs, navigator, transitions);
+      var mainMenu = new MainScreen(_ui, _resources.MainMenuPrefab, navigator, transitions);
 
       navigator.Enter(mainMenu);
     }

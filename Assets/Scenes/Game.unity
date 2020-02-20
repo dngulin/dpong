@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 1410141352}
-  _menuPrefabs: {fileID: 0}
+  _resources: {fileID: 11400000, guid: 62318bfa30959391792b8d55c61f9f6f, type: 2}
 --- !u!4 &428147532
 Transform:
   m_ObjectHideFlags: 0
