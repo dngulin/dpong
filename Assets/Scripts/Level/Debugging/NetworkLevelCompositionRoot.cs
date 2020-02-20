@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
-  public class NetworkLevelDebugLoader : MonoBehaviour, IClientSessionWorker {
+  public class NetworkLevelCompositionRoot : MonoBehaviour, IClientSessionWorker {
     private const string GameName = "dPONG";
     private const byte PlayerCount = 2;
     private const int Port = 5081;

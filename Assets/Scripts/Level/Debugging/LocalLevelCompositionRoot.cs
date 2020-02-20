@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
-  public class LocalLevelDebugLoader : MonoBehaviour {
+  public class LocalLevelCompositionRoot : MonoBehaviour {
 
     [SerializeField] private string _leftName = "LeftPlayer";
     [SerializeField] private bool _leftIsBot;

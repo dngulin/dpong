@@ -398,7 +398,7 @@ GameObject:
   - component: {fileID: 1968492353}
   - component: {fileID: 1968492352}
   m_Layer: 0
-  m_Name: Loader
+  m_Name: CompositionRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

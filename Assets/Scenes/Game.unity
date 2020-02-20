@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 428147532}
   - component: {fileID: 428147531}
   m_Layer: 0
-  m_Name: Loader
+  m_Name: CompositionRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 1410141352}
-  _resources: {fileID: 11400000, guid: 62318bfa30959391792b8d55c61f9f6f, type: 2}
+  _menuPrefabs: {fileID: 0}
 --- !u!4 &428147532
 Transform:
   m_ObjectHideFlags: 0
