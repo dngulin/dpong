@@ -16,6 +16,9 @@ namespace DPong.InputSource.Sources {
     public Keys GetKeys() {
       var keys = Keys.None;
 
+      if (!Application.isFocused)
+        return keys;
+
       if (_up.isPressed) keys |= Keys.Up;
       if (_down.isPressed) keys |= Keys.Down;
 
