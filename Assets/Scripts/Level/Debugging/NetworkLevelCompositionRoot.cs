@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DPong.InputSource;
+using DPong.InputSource.Sources;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
 using NGIS.Session.Client;

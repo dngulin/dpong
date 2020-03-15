@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RepeatDelay: 0.5
-  m_RepeatRate: 0.1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
   m_ActionsAsset: {fileID: -944628639613478452, guid: dc4453016fa384166bc82b7859aa4bb0,
     type: 3}
   m_PointAction: {fileID: 1054132383583890850, guid: dc4453016fa384166bc82b7859aa4bb0,
@@ -175,8 +175,8 @@ MonoBehaviour:
     type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 1025543830046995696, guid: dc4453016fa384166bc82b7859aa4bb0,
     type: 3}
-  m_TrackedDeviceSelectAction: {fileID: 2559092417903258184, guid: dc4453016fa384166bc82b7859aa4bb0,
-    type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!114 &321844384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +236,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 1410141352}
-  _resources: {fileID: 11400000, guid: 62318bfa30959391792b8d55c61f9f6f, type: 2}
 --- !u!4 &428147532
 Transform:
   m_ObjectHideFlags: 0
@@ -286,8 +285,8 @@ Camera:
   m_GameObject: {fileID: 928111668}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -298,13 +297,13 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 1
-    height: 1
+    width: 30
+    height: 20
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 11
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

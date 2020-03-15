@@ -9,9 +9,9 @@ namespace DPong.UI {
 
     private readonly UISystemResources _resources;
 
-    public UISystem(UISystemResources resources, Canvas canvas) {
-      _resources = resources;
+    public UISystem(Canvas canvas) {
       _root = canvas.transform;
+      _resources = Resources.Load<UISystemResources>("UISystemResources");
 
       foreach (var layer in new[] {UILayer.Background, UILayer.Windows, UILayer.Foreground})
         CreateLayer(layer);

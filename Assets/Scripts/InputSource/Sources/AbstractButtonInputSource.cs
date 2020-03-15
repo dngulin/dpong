@@ -1,8 +1,9 @@
 using DPong.Level;
 using DPong.Level.State;
+using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 
-namespace DPong.InputSource {
+namespace DPong.InputSource.Sources {
   public abstract class AbstractButtonInputSource : IInputSource {
     private readonly ButtonControl _up;
     private readonly ButtonControl _down;

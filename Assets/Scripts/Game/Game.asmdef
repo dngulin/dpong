@@ -1,10 +1,12 @@
 {
-    "name": "Loader",
+    "name": "Game",
     "references": [
         "Localization",
         "Save",
         "UI",
-        "InputSource"
+        "InputSource",
+        "Level",
+        "Level.Data"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

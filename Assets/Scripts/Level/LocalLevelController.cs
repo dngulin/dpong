@@ -40,7 +40,7 @@ namespace DPong.Level {
     }
 
     public void Dispose() {
-      _view?.Dispose();
+      _view.Dispose();
     }
   }
 }

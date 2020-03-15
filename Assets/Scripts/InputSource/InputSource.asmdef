@@ -2,6 +2,7 @@
     "name": "InputSource",
     "references": [
         "Unity.InputSystem",
+        "Localization",
         "Level",
         "Level.State"
     ],

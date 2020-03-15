@@ -1,7 +1,8 @@
+using DPong.Game.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Game.UI {
+namespace DPong.Game.Screens.Main {
   public interface IMainMenuListener {
     void OnHotSeatClicked();
     void OnNetworkClicked();

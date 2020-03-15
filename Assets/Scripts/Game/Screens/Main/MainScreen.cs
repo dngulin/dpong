@@ -1,19 +1,29 @@
 using DPong.Game.Navigation;
-using DPong.Game.UI;
 using DPong.UI;
+using UnityEngine;
 
-namespace DPong.Game.Screens {
+namespace DPong.Game.Screens.Main {
   public class MainScreen : INavigationPoint, IMainMenuListener {
+    public readonly struct Transitions {
+      public readonly NavigationToken HotSeatMenu;
+      public readonly NavigationToken NetworkMenu;
+
+      public Transitions(NavigationToken hotSeatMenu, NavigationToken networkMenu) {
+        HotSeatMenu = hotSeatMenu;
+        NetworkMenu = networkMenu;
+      }
+    }
+
     private readonly Navigator _navigator;
-    private readonly MainScreenTransitions _transitions;
+    private readonly Transitions _transitions;
 
     private readonly MainMenu _menu;
 
-    public MainScreen(UISystem ui, MainMenu mainMenuPrefab, Navigator navigator, MainScreenTransitions transitions) {
+    public MainScreen(UISystem ui, Navigator navigator, Transitions transitions) {
       _navigator = navigator;
       _transitions = transitions;
 
-      _menu = ui.Instantiate(mainMenuPrefab, UILayer.Background, false);
+      _menu = ui.Instantiate(Resources.Load<MainMenu>("MainMenu"), UILayer.Background, false);
       _menu.Init(this);
     }
 

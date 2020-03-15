@@ -1,0 +1,128 @@
+using System;
+using DPong.Game.Navigation;
+using DPong.InputSource;
+using DPong.InputSource.Extensions;
+using DPong.Level;
+using DPong.Level.Data;
+using DPong.Save;
+using DPong.UI;
+using PGM.ScaledNum;
+using UnityEngine;
+
+namespace DPong.Game.Screens.HotSeatGame {
+  public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ITickable, IDisposable {
+    private readonly Navigator _navigator;
+    private readonly SaveSystem _saveSystem;
+    private readonly InputSourceProvider _inputSources;
+
+    private readonly UISystem _uiSystem;
+
+    private HotSeatGameMenu _menu;
+    private readonly HotSeatGameSave _save;
+
+    private LocalLevelController _levelController;
+
+    private bool _disposed;
+
+    public HotSeatGameScreen(SaveSystem save, InputSourceProvider inputSources, UISystem ui, Navigator navigator) {
+      _saveSystem = save;
+      _inputSources = inputSources;
+      _uiSystem = ui;
+      _navigator = navigator;
+
+      _save = _saveSystem.TakeState(nameof(HotSeatGameScreen), new HotSeatGameSave());
+    }
+
+    public void Dispose() {
+      if (_disposed)
+        return;
+
+      _levelController?.Dispose();
+      _saveSystem.ReturnState(nameof(HotSeatGameScreen), _save);
+
+      if (_menu != null)
+        UnityEngine.Object.Destroy(_menu.gameObject);
+
+      _disposed = true;
+    }
+
+    void ITickable.FixedTick() => _levelController?.Tick();
+
+    void ITickable.DynamicTick(float dt) {}
+
+    void INavigationPoint.Enter() {
+      _menu = _uiSystem.Instantiate(Resources.Load<HotSeatGameMenu>("HotSeatGameMenu"), UILayer.Background, true);
+      _menu.Init(this);
+
+      UpdateMenu();
+    }
+
+    void INavigationPoint.Suspend() => _menu.Hide();
+    void INavigationPoint.Resume() {
+      _menu.Show();
+      UpdateMenu();
+    }
+
+    void INavigationPoint.Exit() {
+      _saveSystem.WriteSaveToFile();
+
+      UnityEngine.Object.Destroy(_menu.gameObject);
+      _menu = null;
+    }
+
+    private void UpdateMenu() {
+      _menu.SetNickName(Side.Left, _save.LeftName);
+      _menu.SetNickName(Side.Right, _save.RightName);
+
+      _inputSources.Resfresh();
+      _menu.SetSources(Side.Left, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.LeftInput));
+      _menu.SetSources(Side.Right, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.RightInput));
+    }
+
+    void IHotSeatMenuListener.PlayClicked() {
+      if (_save.LeftInput == _save.RightInput) {
+        return;
+      }
+
+      var lPlayer = new PlayerInfo(_save.LeftName, PlayerType.Local);
+      var rPlayer = new PlayerInfo(_save.RightName, PlayerType.Local);
+
+      var tickDuration = Mathf.RoundToInt(Time.fixedDeltaTime * SnMath.Scale);
+      var simSettings = new SimulationSettings(tickDuration, null);
+
+      var levelSettings = new LevelSettings(lPlayer, rPlayer, simSettings);
+
+      var lInput = _inputSources.CreateSource(_save.LeftInput);
+      var rInput = _inputSources.CreateSource(_save.RightInput);
+
+      ((INavigationPoint) this).Suspend();
+      _levelController = new LocalLevelController(levelSettings, lInput, rInput);
+    }
+
+    void IHotSeatMenuListener.BackClicked() => _navigator.Exit(this);
+
+    void IHotSeatMenuListener.NickNameChanged(Side side, string name) {
+      var validated = ValidateName(name);
+      _menu.SetNickName(side, validated);
+      (side == Side.Left ? ref _save.LeftName : ref _save.RightName) = validated;
+    }
+
+    private static string ValidateName(string name) {
+      if (string.IsNullOrEmpty(name))
+        return "Player";
+
+      const int maxLen = 10;
+      if (name.Length > maxLen)
+        return name.Substring(0, maxLen);
+
+      return name;
+    }
+
+    void IHotSeatMenuListener.InputSourceChanged(Side side, int index) {
+      if (index < 0 || index >= _inputSources.Descriptors.Count)
+        return;
+
+      (side == Side.Left ? ref _save.LeftInput : ref _save.RightInput) = _inputSources.Descriptors[index];
+    }
+  }
+}

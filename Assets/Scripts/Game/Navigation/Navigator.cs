@@ -14,11 +14,13 @@ namespace DPong.Game.Navigation {
       return token;
     }
 
-    public void Enter(NavigationToken token) {
-      if (_registeredPoints.TryGetValue(token.Id, out var point))
-        Enter(point);
+    public void Clear() => _registeredPoints.Clear();
 
-      throw new InvalidOperationException($"Navigation point with token '{token.Id}' does not registered!");
+    public void Enter(NavigationToken token) {
+      if (!_registeredPoints.TryGetValue(token.Id, out var point))
+        throw new InvalidOperationException($"Navigation point with token '{token.Id}' does not registered!");
+
+      Enter(point);
     }
 
     public void Enter(INavigationPoint point) {
