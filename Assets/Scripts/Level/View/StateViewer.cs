@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace DPong.Level.View {
   public abstract class StateViewer: MonoBehaviour {
-    private IDynamicStateContainer _stateContainer;
+    private StateContainer _stateContainer;
     protected LevelSettings Settings;
 
     private float _tickDuration = 1.0f / 60;
     private float _displayedTickTime;
 
-    public void Init(IDynamicStateContainer stateContainer, LevelSettings settings) {
+    public void Init(StateContainer stateContainer, LevelSettings settings) {
       _stateContainer = stateContainer;
       _stateContainer.OnCurrentStateChanged += OnCurrentStateChanged;
 
