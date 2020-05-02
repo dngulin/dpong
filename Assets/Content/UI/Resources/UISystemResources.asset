@@ -15,3 +15,4 @@ MonoBehaviour:
   _dialogHolder: {fileID: 6440453020022303798, guid: aa41b28472c33dd328e63a38e2caefbe,
     type: 3}
   _fullScreenHolder: {fileID: 0}
+  MsgBox: {fileID: 6827481914395593052, guid: 5a3d5ef687525c1dcb5f1b99ec13bd1e, type: 3}

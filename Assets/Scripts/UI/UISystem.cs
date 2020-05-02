@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
+using DPong.Localization;
+using DPong.UI.Common;
 using DPong.UI.Holder;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DPong.UI {
   public class UISystem {
@@ -37,8 +41,8 @@ namespace DPong.UI {
       return ui;
     }
 
-    public T InstantiateWrapped<T>(UIHolder holder, UILayer layer, bool visible) where T : UIHolderWrapper {
-      var holderInstance = Object.Instantiate(holder, _layers[layer]);
+    public T InstantiateWrapped<T>(UIHolder prefab, UILayer layer, bool visible) where T : UIHolderWrapper {
+      var holderInstance = Object.Instantiate(prefab, _layers[layer]);
       var wrapperInstance = holderInstance.ContentRoot.GetComponent<T>();
 
       wrapperInstance.WrapHolder(holderInstance);
@@ -47,9 +51,9 @@ namespace DPong.UI {
       return wrapperInstance;
     }
 
-    public T InstantiateAndWrap<T>(UIHolder holder, T wrapper, UILayer layer, bool visible) where T : UIHolderWrapper {
-      var holderInstance = Object.Instantiate(holder, _layers[layer]);
-      var wrapperInstance = Object.Instantiate(wrapper, holderInstance.ContentRoot);
+    public T InstantiateAndWrap<T>(UIHolder holderPrefab, T wrapperPrefab, UILayer layer, bool visible) where T : UIHolderWrapper {
+      var holderInstance = Object.Instantiate(holderPrefab, _layers[layer]);
+      var wrapperInstance = Object.Instantiate(wrapperPrefab, holderInstance.ContentRoot);
 
       wrapperInstance.WrapHolder(holderInstance);
       wrapperInstance.SetInitialVisibility(visible);
@@ -59,6 +63,23 @@ namespace DPong.UI {
 
     public T InstantiateWindow<T>(WindowType winType, T wrapper, bool visible) where T : UIHolderWrapper {
       return InstantiateAndWrap(_resources[winType], wrapper, UILayer.Windows, visible);
+    }
+
+    public MessageBox CreateMessageBox(bool visible, string title, string message, string buttonText)
+    {
+      var box = InstantiateAndWrap(_resources[WindowType.Dialog], _resources.MsgBox, UILayer.Windows, visible);
+      box.Init(title, message, buttonText);
+      return box;
+    }
+
+    public MessageBox CreateInfoBox(bool visible, string message)
+    {
+      return CreateMessageBox(visible, Tr._("Information"), message, Tr._("OK"));
+    }
+
+    public MessageBox CreateErrorBox(bool visible, string message)
+    {
+      return CreateMessageBox(visible, Tr._("Error"), message, Tr._("OK"));
     }
   }
 }

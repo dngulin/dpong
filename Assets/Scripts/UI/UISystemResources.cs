@@ -1,4 +1,5 @@
 using System;
+using DPong.UI.Common;
 using DPong.UI.Holder;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace DPong.UI {
   public class UISystemResources : ScriptableObject {
     [SerializeField] private UIHolder _dialogHolder;
     [SerializeField] private UIHolder _fullScreenHolder;
+
+    public MessageBox MsgBox;
 
     public UIHolder this[WindowType windowType] {
       get {

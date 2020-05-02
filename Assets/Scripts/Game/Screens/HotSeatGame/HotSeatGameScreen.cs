@@ -4,6 +4,7 @@ using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
 using DPong.Level.Data;
+using DPong.Localization;
 using DPong.Save;
 using DPong.UI;
 using PGM.ScaledNum;
@@ -80,7 +81,11 @@ namespace DPong.Game.Screens.HotSeatGame {
     }
 
     void IHotSeatMenuListener.PlayClicked() {
-      if (_save.LeftInput == _save.RightInput) {
+      if (_save.LeftInput == _save.RightInput)
+      {
+        var errBox = _uiSystem.CreateErrorBox(false, Tr._("Same control settings are used for both sides"));
+        errBox.Show();
+        errBox.OnHideFinish += errBox.Destroy;
         return;
       }
 
@@ -111,7 +116,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       if (string.IsNullOrEmpty(name))
         return "Player";
 
-      const int maxLen = 10;
+      const int maxLen = 12;
       if (name.Length > maxLen)
         return name.Substring(0, maxLen);
 
