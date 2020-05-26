@@ -3,6 +3,7 @@ using DPong.Level.State;
 using DPong.Localization;
 using DPong.UI;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DPong.Level.UI
 {
@@ -59,7 +60,8 @@ namespace DPong.Level.UI
 
         public void Dispose()
         {
-            _pausePanel.Dispose();
+            if (_pausePanel != null)
+                Object.Destroy(_pausePanel.gameObject);
         }
     }
 }

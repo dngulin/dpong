@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace DPong.Level.UI
 {
-    public class PausePanel : UIHolder, IDisposable
+    public class PausePanel : UIHolder
     {
         public event Action OnCLick;
 
@@ -14,12 +14,6 @@ namespace DPong.Level.UI
         private void Awake()
         {
             _button.onClick.AddListener(() => OnCLick?.Invoke());
-        }
-
-        public void Dispose()
-        {
-            if (gameObject != null)
-                Destroy(gameObject);
         }
     }
 }
