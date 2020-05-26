@@ -1,12 +1,14 @@
-﻿using DPong.InputSource;
-using DPong.InputSource.Sources;
+﻿using DPong.InputSource.Sources;
 using DPong.Level.Data;
+using DPong.UI;
 using PGM.ScaledNum;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
   public class LocalLevelCompositionRoot : MonoBehaviour {
+
+    [SerializeField] private Canvas _canvas;
 
     [SerializeField] private string _leftName = "LeftPlayer";
     [SerializeField] private bool _leftIsBot;
@@ -21,10 +23,17 @@ namespace DPong.Level.Debugging {
       var lInputSrc = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
       var rInputSrc = new KeyboardInputSource(Keyboard.current, Key.UpArrow, Key.DownArrow);
 
-      _levelController = new LocalLevelController(levelInfo, lInputSrc, rInputSrc);
+      var uiSystem = new UISystem(_canvas);
+
+      _levelController = new LocalLevelController(levelInfo, lInputSrc, rInputSrc, uiSystem);
     }
 
     private void FixedUpdate() => _levelController?.Tick();
+
+    private void OnDestroy()
+    {
+      _levelController?.Dispose();
+    }
 
     private LevelSettings CreateLevelInfo() {
       var leftPlayer = new PlayerInfo(_leftName, _leftIsBot ? PlayerType.Bot : PlayerType.Local);

@@ -1,10 +1,12 @@
 {
     "name": "Level",
     "references": [
+        "UI",
         "Level.Data",
         "Level.State",
         "Level.Model",
         "Level.View",
+        "Level.UI",
         "Level.Networking"
     ],
     "includePlatforms": [],

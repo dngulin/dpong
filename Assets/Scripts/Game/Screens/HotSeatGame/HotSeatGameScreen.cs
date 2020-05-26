@@ -101,7 +101,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       var rInput = _inputSources.CreateSource(_save.RightInput);
 
       ((INavigationPoint) this).Suspend();
-      _levelController = new LocalLevelController(levelSettings, lInput, rInput);
+      _levelController = new LocalLevelController(levelSettings, lInput, rInput, _uiSystem);
     }
 
     void IHotSeatMenuListener.BackClicked() => _navigator.Exit(this);

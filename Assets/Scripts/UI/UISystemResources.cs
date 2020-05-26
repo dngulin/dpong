@@ -4,7 +4,7 @@ using DPong.UI.Holder;
 using UnityEngine;
 
 namespace DPong.UI {
-  [CreateAssetMenu(fileName = "UISystemResources", menuName = "DPONG/UISystemResources")]
+  [CreateAssetMenu(fileName = "UISystemResources", menuName = "DPong/UISystemResources")]
   public class UISystemResources : ScriptableObject {
     [SerializeField] private UIHolder _dialogHolder;
     [SerializeField] private UIHolder _fullScreenHolder;
