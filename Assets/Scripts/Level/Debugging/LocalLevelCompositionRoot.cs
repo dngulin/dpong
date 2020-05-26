@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
-  public class LocalLevelCompositionRoot : MonoBehaviour {
+  public class LocalLevelCompositionRoot : MonoBehaviour, ILevelExitListener {
 
     [SerializeField] private Canvas _canvas;
 
@@ -25,10 +25,12 @@ namespace DPong.Level.Debugging {
 
       var uiSystem = new UISystem(_canvas);
 
-      _levelController = new LocalLevelController(levelInfo, lInputSrc, rInputSrc, uiSystem);
+      _levelController = new LocalLevelController(levelInfo, lInputSrc, rInputSrc, uiSystem, this);
     }
 
     private void FixedUpdate() => _levelController?.Tick();
+
+    void ILevelExitListener.Exit() => Destroy(gameObject);
 
     private void OnDestroy()
     {

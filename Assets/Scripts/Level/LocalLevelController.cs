@@ -22,7 +22,10 @@ namespace DPong.Level {
     private bool _paused;
     private bool _finished;
 
-    public LocalLevelController(LevelSettings settings, IInputSource lInputSrc, IInputSource rInputSrc, UISystem uiSystem) {
+    private readonly ILevelExitListener _exitListener;
+
+    public LocalLevelController(LevelSettings settings, IInputSource lInputSrc, IInputSource rInputSrc, UISystem uiSystem, ILevelExitListener exitListener) {
+      _exitListener = exitListener;
       _aiInputSrc = new AiInputSource();
       _lInputSrc = settings.PlayerLeft.Type == PlayerType.Local ? lInputSrc : null;
       _rInoutSrc = settings.PlayerRight.Type == PlayerType.Local ? rInputSrc : null;
@@ -54,9 +57,6 @@ namespace DPong.Level {
     void ILevelUIListener.PauseCLicked() => _paused = true;
     void ILevelUIListener.ResumeCLicked() => _paused = false;
 
-    void ILevelUIListener.ExitCLicked()
-    {
-      throw new NotImplementedException();
-    }
+    void ILevelUIListener.ExitCLicked() => _exitListener.Exit();
   }
 }

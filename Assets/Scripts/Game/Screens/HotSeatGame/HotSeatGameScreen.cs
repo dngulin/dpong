@@ -11,7 +11,7 @@ using PGM.ScaledNum;
 using UnityEngine;
 
 namespace DPong.Game.Screens.HotSeatGame {
-  public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ITickable, IDisposable {
+  public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ILevelExitListener, ITickable, IDisposable {
     private readonly Navigator _navigator;
     private readonly SaveSystem _saveSystem;
     private readonly InputSourceProvider _inputSources;
@@ -101,7 +101,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       var rInput = _inputSources.CreateSource(_save.RightInput);
 
       ((INavigationPoint) this).Suspend();
-      _levelController = new LocalLevelController(levelSettings, lInput, rInput, _uiSystem);
+      _levelController = new LocalLevelController(levelSettings, lInput, rInput, _uiSystem, this);
     }
 
     void IHotSeatMenuListener.BackClicked() => _navigator.Exit(this);
@@ -128,6 +128,12 @@ namespace DPong.Game.Screens.HotSeatGame {
         return;
 
       (side == Side.Left ? ref _save.LeftInput : ref _save.RightInput) = _inputSources.Descriptors[index];
+    }
+
+    void ILevelExitListener.Exit()
+    {
+      _levelController.Dispose();
+      ((INavigationPoint) this).Resume();
     }
   }
 }
