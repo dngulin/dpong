@@ -29,7 +29,7 @@ namespace DPong.Level.UI
             _listener = listener;
             _resources = Resources.Load<LevelUIResources>("LevelUIResources");
 
-            _pausePanel = _uiSystem.Instantiate(_resources.pausePanel, UILayer.Background, true);
+            _pausePanel = _uiSystem.Instantiate(_resources.PausePanel, UILayer.Background, true);
             _pausePanel.OnCLick += ShowPause;
         }
 
@@ -37,12 +37,20 @@ namespace DPong.Level.UI
         {
             _listener.PauseCLicked();
 
-            var dialog = _uiSystem.CreateInfoBox(false, "Just pause!");
+            var dialog = _uiSystem.InstantiateWindow(WindowType.Dialog, _resources.PauseDialog, false);
             dialog.Show();
             dialog.OnHideFinish += () =>
             {
                 dialog.Destroy();
-                _listener.ResumeCLicked(); // TODO: Dispatch resume / exit
+                switch (dialog.Result)
+                {
+                    case PauseDialog.Intent.Resume:
+                        _listener.ResumeCLicked();
+                        break;
+                    case PauseDialog.Intent.Exit:
+                        _listener.ExitCLicked();
+                        break;
+                }
             };
         }
 

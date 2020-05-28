@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c10d93252349b296d0acd6cbda6a91, type: 3}
   m_Name: LevelUIResources
   m_EditorClassIdentifier: 
-  pausePanel: {fileID: 4769992506011366966, guid: cdba059d432ab7a9eaea1d19ab679ab5,
+  PausePanel: {fileID: 4769992506011366966, guid: cdba059d432ab7a9eaea1d19ab679ab5,
     type: 3}
+  PauseDialog: {fileID: 0}
