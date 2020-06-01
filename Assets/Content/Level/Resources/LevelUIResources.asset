@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PausePanel: {fileID: 4769992506011366966, guid: cdba059d432ab7a9eaea1d19ab679ab5,
     type: 3}
-  PauseDialog: {fileID: 0}
+  PauseDialog: {fileID: -6828100336441413531, guid: 45575ed9d6bf70fd6a7ef94976b19799,
+    type: 3}
