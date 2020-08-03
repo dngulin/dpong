@@ -41,8 +41,8 @@ namespace DPong.UI.Holder {
       _canvasGroup.alpha = visible ? 1 : 0;
       _canvasGroup.interactable = visible;
 
-      _animator.Play(AnimatorHashes.States[_state]);
-      _animator.SetBool(AnimatorHashes.Params[Param.IsOpened], visible);
+      _animator.Play(AnimatorHashes.GetStateHash(_state));
+      _animator.SetBool(AnimatorHashes.GetParameterHash(Param.IsOpened), visible);
       _animator.Update(0f);
 
       _animator.GetBehaviour<UIHolderStateMachineBehaviour>().OnStateEntered += state => {
@@ -73,8 +73,8 @@ namespace DPong.UI.Holder {
 
     public Transform ContentRoot => _contentRoot;
 
-    public void Show() => _animator.SetBool(AnimatorHashes.Params[Param.IsOpened], true);
+    public void Show() => _animator.SetBool(AnimatorHashes.GetParameterHash(Param.IsOpened), true);
 
-    public void Hide() => _animator.SetBool(AnimatorHashes.Params[Param.IsOpened], false);
+    public void Hide() => _animator.SetBool(AnimatorHashes.GetParameterHash(Param.IsOpened), false);
   }
 }

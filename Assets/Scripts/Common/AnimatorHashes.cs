@@ -4,26 +4,31 @@ using UnityEngine;
 
 namespace DPong.Common {
   public class AnimatorHashes<TState, TParam> where TState : unmanaged where TParam : unmanaged {
-    public readonly Dictionary<TState, int> States;
-    public readonly Dictionary<TParam, int> Params;
+    private readonly Dictionary<TState, int> _states;
+    private readonly Dictionary<TParam, int> _params;
 
-    public readonly Dictionary<int, TState> HashToStateMap = new Dictionary<int, TState>();
+    private readonly Dictionary<int, TState> _hashToStateMap = new Dictionary<int, TState>();
 
     public AnimatorHashes() {
-      States = new Dictionary<TState, int>(new EnumComparer<TState>());
-      Params = new Dictionary<TParam, int>(new EnumComparer<TParam>());
+      _states = new Dictionary<TState, int>(new EnumComparer<TState>());
+      _params = new Dictionary<TParam, int>(new EnumComparer<TParam>());
 
       foreach (var state in (TState[]) Enum.GetValues(typeof(TState))) {
         var stateHash = Animator.StringToHash(state.ToString());
 
-        States.Add(state, stateHash);
-        HashToStateMap.Add(stateHash, state);
+        _states.Add(state, stateHash);
+        _hashToStateMap.Add(stateHash, state);
       }
 
       foreach (var param in (TParam[]) Enum.GetValues(typeof(TParam))) {
-        Params.Add(param, Animator.StringToHash(param.ToString()));
+        _params.Add(param, Animator.StringToHash(param.ToString()));
       }
     }
+
+    public int GetStateHash(TState state) => _states[state];
+    public int GetParameterHash(TParam state) => _params[state];
+
+    public bool TryGetStateByHash(int hash, out TState state) => _hashToStateMap.TryGetValue(hash, out state);
 
     private class EnumComparer<TEnum> : IEqualityComparer<TEnum> where TEnum : unmanaged {
       public bool Equals(TEnum x, TEnum y) => AsInt(x) == AsInt(y);
