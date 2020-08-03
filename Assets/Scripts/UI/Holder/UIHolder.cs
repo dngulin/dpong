@@ -15,8 +15,7 @@ namespace DPong.UI.Holder {
       IsOpened
     }
 
-    internal static readonly AnimatorHashes<State, Param> AnimatorHashes =
-      new AnimatorHashes<State, Param>(state => (int) state, param => (int) param);
+    internal static readonly AnimatorHashes<State, Param> AnimatorHashes = new AnimatorHashes<State, Param>();
 
     [SerializeField] private Animator _animator;
     [SerializeField] private Transform _contentRoot;
