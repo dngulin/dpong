@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DPong.Level.Data;
 using DPong.Level.Model;
 using DPong.Level.Networking;
@@ -17,22 +16,20 @@ namespace DPong.Level {
     private readonly IInputSource _inputSrc;
 
     private readonly Side _side;
-    private readonly long _tickDuration;
 
     private readonly LevelModel _model;
     private readonly LevelView _view;
 
+    private readonly FrameTimer _frameTimer;
+    private readonly StateBuffer _stateBuffer;
+    private readonly InputBuffer _inputBuffer;
+
+    private readonly Queue<ClientMsgInputs> _inputSendQueue;
+
     private SimulationState _simulationState;
-    private uint _simulationCounter;
 
     private uint _frame;
-    private readonly StateBuffer _stateBuffer;
-
-    private readonly Stopwatch _frameTimer = new Stopwatch();
-    private uint _frameTimerOffset;
-
-    private readonly InputBuffer _inputBuffer;
-    private readonly Queue<ClientMsgInputs> _inputSendQueue;
+    private uint _simulationCounter;
 
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
 
@@ -40,7 +37,7 @@ namespace DPong.Level {
       _inputSrc = inputSrc;
 
       _side = (Side) msgStart.YourIndex;
-      _tickDuration = SnMath.One / msgStart.TicksPerSecond;
+      long tickDuration = SnMath.One / msgStart.TicksPerSecond;
 
       var stateCount = msgStart.TicksPerSecond / 2 + 1;
       _inputSendQueue = new Queue<ClientMsgInputs>(stateCount);
@@ -55,7 +52,7 @@ namespace DPong.Level {
       var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex == 1 ? PlayerType.Local : PlayerType.Remote);
 
       var randomState = Pcg.CreateState(new Random(msgStart.Seed));
-      var simSettings = new SimulationSettings(_tickDuration, randomState);
+      var simSettings = new SimulationSettings(tickDuration, randomState);
 
       var settings = new LevelSettings(left, right, simSettings);
 
@@ -65,7 +62,7 @@ namespace DPong.Level {
       _view = new LevelView(_stateBuffer[0], settings);
       _simulationState = SimulationState.Active;
 
-      _frameTimer.Start();
+      _frameTimer = new FrameTimer(tickDuration);
     }
 
     public void InputReceived(ServerMsgInput msgInput) {
@@ -77,10 +74,8 @@ namespace DPong.Level {
         throw new Exception($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
 
       var remoteFrame = msgInput.Frame - InputDelay;
-      if (remoteFrame > _frame) {
-        _frameTimer.Restart();
-        _frameTimerOffset = remoteFrame;
-      }
+      if (remoteFrame > _frame)
+        _frameTimer.SyncCurrentFrame(remoteFrame);
 
       var receivedKeys = (Keys) msgInput.InputMask;
 
@@ -178,9 +173,7 @@ namespace DPong.Level {
 
     private uint GetTargetSimulationFrame() {
       var maxReachableFrame = Math.Max(_frame + _inputBuffer.CountApproved(), _stateBuffer.Count - 1);
-      var timeBasedFrame = _frameTimerOffset + (uint) (_frameTimer.ElapsedMilliseconds / _tickDuration);
-
-      return Math.Min(timeBasedFrame, maxReachableFrame);
+      return Math.Min(maxReachableFrame, _frameTimer.CurrentFrame);
     }
 
     private bool SimulateNextState(uint frame) {
