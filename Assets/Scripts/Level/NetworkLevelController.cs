@@ -9,6 +9,7 @@ using DPong.Level.View;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
 using PGM.Random;
+using PGM.ScaledNum;
 
 namespace DPong.Level {
   public class NetworkLevelController : IDisposable {
@@ -25,12 +26,12 @@ namespace DPong.Level {
     private uint _simulationCounter;
 
     private uint _frame;
-    private readonly StateBuffer _states;
+    private readonly StateBuffer _stateBuffer;
 
     private readonly Stopwatch _frameTimer = new Stopwatch();
     private uint _frameTimerOffset;
 
-    private readonly InputBuffer _inputs;
+    private readonly InputBuffer _inputBuffer;
     private readonly Queue<ClientMsgInputs> _inputSendQueue;
 
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
@@ -39,16 +40,16 @@ namespace DPong.Level {
       _inputSrc = inputSrc;
 
       _side = (Side) msgStart.YourIndex;
-      _tickDuration = 1000 / msgStart.TicksPerSecond;
+      _tickDuration = SnMath.One / msgStart.TicksPerSecond;
 
       var stateCount = msgStart.TicksPerSecond / 2 + 1;
       _inputSendQueue = new Queue<ClientMsgInputs>(stateCount);
 
-      _states = new StateBuffer(stateCount);
-      _inputs = new InputBuffer(stateCount * 2 - 1);
+      _stateBuffer = new StateBuffer(stateCount);
+      _inputBuffer = new InputBuffer(stateCount * 2 - 1);
 
       for (uint frame = 0; frame < InputDelay; frame++)
-        _inputs[frame].Approved = true;
+        _inputBuffer[frame].Approved = true;
 
       var left = new PlayerInfo(msgStart.Players[0], msgStart.YourIndex == 0 ? PlayerType.Local : PlayerType.Remote);
       var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex == 1 ? PlayerType.Local : PlayerType.Remote);
@@ -59,9 +60,9 @@ namespace DPong.Level {
       var settings = new LevelSettings(left, right, simSettings);
 
       _model = new LevelModel(settings);
-      _states[0] = _model.CreateInitialState();
+      _stateBuffer[0] = _model.CreateInitialState();
 
-      _view = new LevelView(_states[0], settings);
+      _view = new LevelView(_stateBuffer[0], settings);
       _simulationState = SimulationState.Active;
 
       _frameTimer.Start();
@@ -71,7 +72,7 @@ namespace DPong.Level {
       if (msgInput.PlayerIndex == (byte) _side)
         throw new Exception("My side inputs received");
 
-      var (min, max) = _inputs.GetWindow(_frame);
+      var (min, max) = _inputBuffer.GetReachableFramesRange(_frame);
       if (msgInput.Frame < min || msgInput.Frame > max || msgInput.Frame < InputDelay)
         throw new Exception($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
 
@@ -81,22 +82,22 @@ namespace DPong.Level {
         _frameTimerOffset = remoteFrame;
       }
 
-      var msgKeys = (Keys) msgInput.InputMask;
+      var receivedKeys = (Keys) msgInput.InputMask;
 
       for (var frame = msgInput.Frame; frame <= max; frame++) {
-        ref var input = ref _inputs[frame];
+        ref var input = ref _inputBuffer[frame];
 
         if (input.Approved) throw new Exception("Try to rewrite approved input");
 
-        ref var enemySideKeys = ref msgInput.PlayerIndex == 0 ? ref input.Left : ref input.Right;
+        ref var storedKeys = ref msgInput.PlayerIndex == 0 ? ref input.Left : ref input.Right;
 
         if (frame == msgInput.Frame) {
           input.Approved = true;
           if (frame < _frame)
-            input.MisPredicted = msgKeys != enemySideKeys; // Was simulated with wrong value
+            input.MisPredicted = receivedKeys != storedKeys; // Was simulated with wrong value
         }
 
-        enemySideKeys = msgKeys; // Primitive input state prediction
+        storedKeys = receivedKeys; // Primitive input state prediction
       }
     }
 
@@ -106,26 +107,26 @@ namespace DPong.Level {
 
       switch (_simulationState) {
         case SimulationState.Inactive:
-        case SimulationState.Finished:
+        case SimulationState.FinishedByApprovedInput:
           return (_inputSendQueue, null);
 
         case SimulationState.Active:
           _simulationState = Simulate();
           break;
 
-        case SimulationState.PreFinished:
-          _simulationState = _inputs[_frame - 1].Approved ? SimulationState.Finished : Simulate();
+        case SimulationState.FinishedByPredictedInput:
+          _simulationState = _inputBuffer[_frame - 1].Approved ? SimulationState.FinishedByApprovedInput : Simulate();
           break;
 
         default:
           throw new ArgumentOutOfRangeException();
       }
 
-      if (_simulationState == SimulationState.Finished)
-        finishMsg = new ClientMsgFinished(_frame, _states[_frame].CalculateHash());
+      if (_simulationState == SimulationState.FinishedByApprovedInput)
+        finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateHash());
 
       if (simulationCounter != _simulationCounter)
-        _view.StateContainer.SetPreviousAndCurrentStates(_states[_frame - 1], _states[_frame]);
+        _view.StateContainer.SetPreviousAndCurrentStates(_stateBuffer[_frame - 1], _stateBuffer[_frame]);
 
       return (_inputSendQueue, finishMsg);
     }
@@ -141,16 +142,16 @@ namespace DPong.Level {
     private SimulationState ProcessMisPredictedStates() {
       var simulationState = _simulationState;
 
-      for (var frame = GetFirstMisPredictedFrame(); frame < _frame; frame++) {
+      for (var frame = _inputBuffer.GetFirstMisPredictedFrame(_frame); frame < _frame; frame++) {
         var finished = SimulateNextState(frame);
 
-        ref var input = ref _inputs[frame];
+        ref var input = ref _inputBuffer[frame];
         if (input.Approved)
           input.MisPredicted = false;
 
         if (finished) {
           _frame = frame + 1;
-          return input.Approved ? SimulationState.Finished : SimulationState.PreFinished;
+          return input.Approved ? SimulationState.FinishedByApprovedInput : SimulationState.FinishedByPredictedInput;
         }
 
         simulationState = SimulationState.Active;
@@ -164,37 +165,30 @@ namespace DPong.Level {
       for (; _frame < targetFrame;) {
         PushLocalInputs();
         var finished = SimulateNextState(_frame++);
-        _inputs.HandleFrameIncremented(_frame);
+        _inputBuffer.HandleFrameIncremented(_frame);
 
         if (finished)
-          return _inputs[_frame - 1].Approved ? SimulationState.Finished : SimulationState.PreFinished;
+          return _inputBuffer[_frame - 1].Approved ?
+            SimulationState.FinishedByApprovedInput :
+            SimulationState.FinishedByPredictedInput;
       }
 
       return SimulationState.Active;
     }
 
     private uint GetTargetSimulationFrame() {
-      var maxReachableFrame = Math.Max(_frame + _inputs.CountApproved(), _states.Count - 1);
+      var maxReachableFrame = Math.Max(_frame + _inputBuffer.CountApproved(), _stateBuffer.Count - 1);
       var timeBasedFrame = _frameTimerOffset + (uint) (_frameTimer.ElapsedMilliseconds / _tickDuration);
 
       return Math.Min(timeBasedFrame, maxReachableFrame);
     }
 
-    private uint GetFirstMisPredictedFrame() {
-      var (min, _) = _inputs.GetWindow(_frame);
-      for (var frame = min; frame < _frame; frame++) {
-        if (_inputs[frame].MisPredicted)
-          return frame;
-      }
-      return _frame;
-    }
-
     private bool SimulateNextState(uint frame) {
-      var state = _states[frame];
-      var input = _inputs[frame];
+      var state = _stateBuffer[frame];
+      var input = _inputBuffer[frame];
 
       var finished = _model.Tick(ref state, input.Left, input.Right);
-      _states[frame + 1] = state;
+      _stateBuffer[frame + 1] = state;
       _simulationCounter++;
 
       return finished;
@@ -204,7 +198,7 @@ namespace DPong.Level {
       var frame = _frame + InputDelay;
       var keys = _inputSrc.GetKeys();
 
-      (_side == Side.Left ? ref _inputs[frame].Left : ref _inputs[frame].Right) = keys;
+      (_side == Side.Left ? ref _inputBuffer[frame].Left : ref _inputBuffer[frame].Right) = keys;
       _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
     }
 

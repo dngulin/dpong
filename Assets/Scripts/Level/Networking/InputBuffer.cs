@@ -13,8 +13,8 @@ namespace DPong.Level.Networking {
 
     public ref NetworkInputs this[uint index] => ref _inputs[index % _inputs.Length];
 
-    public void HandleFrameIncremented(uint frame) {
-      var (_, max) = GetWindow(frame);
+    public void HandleFrameIncremented(uint currentFrame) {
+      var (_, max) = GetReachableFramesRange(currentFrame);
       var prevMax = this[max - 1];
       this[max] = new NetworkInputs {
         Left = prevMax.Left,
@@ -24,10 +24,10 @@ namespace DPong.Level.Networking {
       };
     }
 
-    public (uint, uint) GetWindow(uint frame) {
+    public (uint, uint) GetReachableFramesRange(uint currentFrame) {
       var len = (uint) _inputs.Length;
       var range = len / 2;
-      return frame < range ? (0, len - 1) : (frame - range, frame + range);
+      return currentFrame < range ? (0, len - 1) : (currentFrame - range, currentFrame + range);
     }
 
     public uint CountApproved() {
@@ -37,6 +37,15 @@ namespace DPong.Level.Networking {
         if (input.Approved) approved++;
 
       return approved;
+    }
+
+    public uint GetFirstMisPredictedFrame(uint currentFrame) {
+      var (min, _) = GetReachableFramesRange(currentFrame);
+      for (var frame = min; frame < currentFrame; frame++) {
+        if (this[frame].MisPredicted)
+          return frame;
+      }
+      return currentFrame;
     }
   }
 }
