@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DPong.InputSource;
 using DPong.InputSource.Sources;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
@@ -40,17 +39,17 @@ namespace DPong.Level.Debugging {
       _level?.Dispose();
     }
 
-    public void JoinedToSession() => Debug.Log("Waiting for players...");
+    void IClientSessionWorker.JoinedToSession() => Debug.Log("Waiting for players...");
 
-    public void SessionStarted(ServerMsgStart msgStart) {
+    void IClientSessionWorker.SessionStarted(ServerMsgStart msgStart) {
       var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
       _level = new NetworkLevelController(inputSource, msgStart);
     }
 
-    public void InputReceived(ServerMsgInput msgInput) => _level.InputReceived(msgInput);
-    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process() => _level.Process();
+    void IClientSessionWorker.InputReceived(ServerMsgInput msgInput) => _level.InputReceived(msgInput);
+    (Queue<ClientMsgInputs>, ClientMsgFinished?) IClientSessionWorker.Process() => _level.Process();
 
-    public void SessionFinished(ServerMsgFinish msgFinish) {
+    void IClientSessionWorker.SessionFinished(ServerMsgFinish msgFinish) {
       var frames = string.Join(", ", msgFinish.Frames);
       var hashes = string.Join(", ", msgFinish.Hashes);
       var (frame, simulations) = _level.SimulationStats;
@@ -58,7 +57,7 @@ namespace DPong.Level.Debugging {
       Debug.Log($"Finished at [{frames}] with state [{hashes}]\nSimulations: {frame} / {simulations}");
     }
 
-    public void SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId = null) {
+    void IClientSessionWorker.SessionClosedWithError(ClientSessionError errorId, ServerErrorId? serverErrorId) {
       Debug.LogError(serverErrorId.HasValue ? $"{errorId}: {serverErrorId.Value}" : errorId.ToString());
     }
   }
