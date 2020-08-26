@@ -28,22 +28,29 @@ namespace DPong.Level {
 
     private SimulationState _simulationState;
 
-    private uint _frame;
+    private uint _frame; // Simulated frame index
     private uint _simulationCounter;
 
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
 
     public NetworkLevelController(IInputSource inputSrc, ServerMsgStart msgStart) {
       _inputSrc = inputSrc;
-
       _side = (Side) msgStart.YourIndex;
-      long tickDuration = SnMath.One / msgStart.TicksPerSecond;
 
-      var stateCount = msgStart.TicksPerSecond / 2 + 1;
-      _inputSendQueue = new Queue<ClientMsgInputs>(stateCount);
+      // Buffers layout & usage
+      // -----------------------------------------
+      // Frame:  n-3  n-2  n-1   n   n+1  n+2  n+3
+      // State:  [ ]  [ ]  [ ]  [^]
+      // Input:  [ ]  [ ]  [ ]  [^]  [ ]  [ ]  [ ]
+      // -----------------------------------------
+      // State[0] = f(settings)
+      // State[n+1] = f(State[n], Input[n])
 
-      _stateBuffer = new StateBuffer(stateCount);
-      _inputBuffer = new InputBuffer(stateCount * 2 - 1);
+      var bufferRange = msgStart.TicksPerSecond / 2 + 1;
+      _stateBuffer = new StateBuffer(bufferRange);
+      _inputBuffer = new InputBuffer(bufferRange * 2 - 1);
+
+      _inputSendQueue = new Queue<ClientMsgInputs>(bufferRange);
 
       for (uint frame = 0; frame < InputDelay; frame++)
         _inputBuffer[frame].Approved = true;
@@ -51,6 +58,7 @@ namespace DPong.Level {
       var left = new PlayerInfo(msgStart.Players[0], msgStart.YourIndex == 0 ? PlayerType.Local : PlayerType.Remote);
       var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex == 1 ? PlayerType.Local : PlayerType.Remote);
 
+      long tickDuration = SnMath.One / msgStart.TicksPerSecond;
       var randomState = Pcg.CreateState(new Random(msgStart.Seed));
       var simSettings = new SimulationSettings(tickDuration, randomState);
 
