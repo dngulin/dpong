@@ -17,6 +17,6 @@ namespace DPong.Level.Networking {
       _timer.Restart();
     }
 
-    public uint CurrentFrame => _offset + (uint) (_timer.ElapsedMilliseconds / _tickDuration);
+    public uint Current => _offset + (uint) (_timer.ElapsedMilliseconds / _tickDuration);
   }
 }

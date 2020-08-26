@@ -69,7 +69,7 @@ namespace DPong.Level {
       if (msgInput.PlayerIndex == (byte) _side)
         throw new Exception("My side inputs received");
 
-      var (min, max) = _inputBuffer.GetReachableFramesRange(_frame);
+      var (min, max) = _inputBuffer.GetFramesRange(_frame);
       if (msgInput.Frame < min || msgInput.Frame > max || msgInput.Frame < InputDelay)
         throw new Exception($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
 
@@ -156,7 +156,8 @@ namespace DPong.Level {
     }
 
     private SimulationState ProcessFutureStates() {
-      var targetFrame = GetTargetSimulationFrame();
+      var targetFrame = Math.Min(_frameTimer.Current, _inputBuffer.GetMaxReachableFrame(_frame));
+
       for (; _frame < targetFrame;) {
         PushLocalInputs();
         var finished = SimulateNextState(_frame++);
@@ -169,11 +170,6 @@ namespace DPong.Level {
       }
 
       return SimulationState.Active;
-    }
-
-    private uint GetTargetSimulationFrame() {
-      var maxReachableFrame = Math.Max(_frame + _inputBuffer.CountApproved(), _stateBuffer.Count - 1);
-      return Math.Min(maxReachableFrame, _frameTimer.CurrentFrame);
     }
 
     private bool SimulateNextState(uint frame) {
