@@ -45,7 +45,7 @@ namespace DPong.Level.Networking {
       var length = (uint) _inputs.Length;
       var range = length / 2;
       if (currentFrame < range)
-        advanceSteps += range - currentFrame + 1;
+        advanceSteps += range - currentFrame;
 
       return currentFrame + advanceSteps;
     }
