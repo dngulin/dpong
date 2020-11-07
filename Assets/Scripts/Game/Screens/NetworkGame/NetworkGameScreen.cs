@@ -1,8 +1,8 @@
 using System;
 using DPong.Game.Navigation;
 using DPong.InputSource;
+using DPong.InputSource.Extensions;
 using DPong.Level;
-using DPong.Localization;
 using DPong.Save;
 using DPong.UI;
 using NGIS.Message.Server;
@@ -55,15 +55,23 @@ namespace DPong.Game.Screens.NetworkGame {
 
     void INavigationPoint.Enter() {
       _menu = _uiSystem.Instantiate(Resources.Load<NetworkGameMenu>("NetworkGameMenu"), UILayer.Background, true);
-      // _menu.Init(this);
-      // Set menu values from save
+      _menu.Init(this);
+      UpdateMenu();
     }
 
     void INavigationPoint.Suspend() => _menu.Hide();
 
     void INavigationPoint.Resume() {
+      UpdateMenu();
       _menu.Show();
-      // Set menu values from save
+    }
+
+    private void UpdateMenu() {
+      _menu.SetPlayerName(_save.Name);
+      _menu.SetServerAddress(_save.Host);
+
+      _inputSources.Resfresh();
+      _menu.SetInputSources(_inputSources.Names, _inputSources.Descriptors.IndexOf(_save.Input));
     }
 
     void INavigationPoint.Exit() {
@@ -85,7 +93,9 @@ namespace DPong.Game.Screens.NetworkGame {
         _session = new ClientSession(cfg, null);
       }
       catch (Exception e) {
-        _uiSystem.CreateErrorBox(false,  e.Message).Show();
+        var errMsg = _uiSystem.CreateErrorBox(false, e.Message);
+        errMsg.OnHideFinish += errMsg.Destroy;
+        errMsg.Show();
         return;
       }
 
@@ -94,12 +104,16 @@ namespace DPong.Game.Screens.NetworkGame {
 
     void INetworkGameMenuListener.BackClicked() => _navigator.Exit(this);
 
-    void INetworkGameMenuListener.NickNameChanged(string name) {
-      throw new NotImplementedException();
+    void INetworkGameMenuListener.PlayerNameChanged(string name) {
+      // TODO: Impl
     }
 
     void INetworkGameMenuListener.InputSourceChanged(int srcIndex) {
-      throw new NotImplementedException();
+      // TODO: Impl
+    }
+
+    void INetworkGameMenuListener.ServerAddressChanged(string address) {
+      // TODO: Impl
     }
 
     private void Tick() {

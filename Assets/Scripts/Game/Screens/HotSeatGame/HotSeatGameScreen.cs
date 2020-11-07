@@ -72,12 +72,12 @@ namespace DPong.Game.Screens.HotSeatGame {
     }
 
     private void UpdateMenu() {
-      _menu.SetNickName(Side.Left, _save.LeftName);
-      _menu.SetNickName(Side.Right, _save.RightName);
+      _menu.SetPlayerName(Side.Left, _save.LeftName);
+      _menu.SetPlayerName(Side.Right, _save.RightName);
 
       _inputSources.Resfresh();
-      _menu.SetSources(Side.Left, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.LeftInput));
-      _menu.SetSources(Side.Right, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.RightInput));
+      _menu.SetInputSources(Side.Left, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.LeftInput));
+      _menu.SetInputSources(Side.Right, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.RightInput));
     }
 
     void IHotSeatMenuListener.PlayClicked() {
@@ -108,7 +108,7 @@ namespace DPong.Game.Screens.HotSeatGame {
 
     void IHotSeatMenuListener.NickNameChanged(Side side, string name) {
       var validated = ValidateName(name);
-      _menu.SetNickName(side, validated);
+      _menu.SetPlayerName(side, validated);
       (side == Side.Left ? ref _save.LeftName : ref _save.RightName) = validated;
     }
 

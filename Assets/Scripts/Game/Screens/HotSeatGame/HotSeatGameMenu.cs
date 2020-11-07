@@ -34,14 +34,14 @@ namespace DPong.Game.Screens.HotSeatGame {
       _rightSources.onValueChanged.AddListener(index => listener.InputSourceChanged(Side.Right, index));
     }
 
-    public void SetNickName(Side side, string nick) {
+    public void SetPlayerName(Side side, string playerName) {
       switch (side) {
         case Side.Left:
-          _leftName.text = nick;
+          _leftName.text = playerName;
           break;
 
         case Side.Right:
-          _rightName.text = nick;
+          _rightName.text = playerName;
           break;
 
         default:
@@ -49,14 +49,14 @@ namespace DPong.Game.Screens.HotSeatGame {
       }
     }
 
-    public void SetSources(Side side, IReadOnlyList<string> sources, int selected) {
+    public void SetInputSources(Side side, IReadOnlyList<string> sources, int selected) {
       switch (side) {
         case Side.Left:
-          SetSources(_leftSources, sources, selected);
+          SetInputSources(_leftSources, sources, selected);
           break;
 
         case Side.Right:
-          SetSources(_rightSources, sources, selected);
+          SetInputSources(_rightSources, sources, selected);
           break;
 
         default:
@@ -64,7 +64,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       }
     }
 
-    private static void SetSources(Dropdown dropdown, IReadOnlyList<string> sources, int selected) {
+    private static void SetInputSources(Dropdown dropdown, IReadOnlyList<string> sources, int selected) {
       dropdown.options.Clear();
 
       foreach (var source in sources)
