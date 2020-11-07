@@ -1,5 +1,6 @@
 {
     "name": "InputSource",
+    "rootNamespace": "DPong",
     "references": [
         "Unity.InputSystem",
         "Localization",

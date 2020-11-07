@@ -1,5 +1,6 @@
 {
     "name": "Level.View",
+    "rootNamespace": "DPong",
     "references": [
         "Common",
         "Level.Data",

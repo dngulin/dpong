@@ -1,5 +1,6 @@
 {
     "name": "Game",
+    "rootNamespace": "DPong",
     "references": [
         "Localization",
         "Save",

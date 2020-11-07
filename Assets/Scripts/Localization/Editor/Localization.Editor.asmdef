@@ -1,7 +1,8 @@
 {
     "name": "Localization.Editor",
+    "rootNamespace": "DPong",
     "references": [
-      "Localization"
+        "Localization"
     ],
     "includePlatforms": [
         "Editor"

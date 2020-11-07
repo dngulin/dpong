@@ -1,5 +1,6 @@
 {
     "name": "UI",
+    "rootNamespace": "DPong",
     "references": [
         "Localization",
         "Common"

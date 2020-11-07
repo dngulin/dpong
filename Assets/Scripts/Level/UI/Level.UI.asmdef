@@ -1,5 +1,6 @@
 {
     "name": "Level.UI",
+    "rootNamespace": "DPong",
     "references": [
         "UI",
         "Localization",

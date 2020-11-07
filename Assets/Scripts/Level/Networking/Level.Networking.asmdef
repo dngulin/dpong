@@ -1,5 +1,6 @@
 {
     "name": "Level.Networking",
+    "rootNamespace": "DPong",
     "references": [
         "Level.State"
     ],

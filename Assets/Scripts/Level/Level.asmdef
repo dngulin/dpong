@@ -1,5 +1,6 @@
 {
     "name": "Level",
+    "rootNamespace": "DPong",
     "references": [
         "UI",
         "Level.Data",

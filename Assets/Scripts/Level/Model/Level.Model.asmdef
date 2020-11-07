@@ -1,5 +1,6 @@
 {
     "name": "Level.Model",
+    "rootNamespace": "DPong",
     "references": [
         "Common",
         "Level.Data",

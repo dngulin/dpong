@@ -1,5 +1,6 @@
 {
     "name": "Common",
+    "rootNamespace": "DPong",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
