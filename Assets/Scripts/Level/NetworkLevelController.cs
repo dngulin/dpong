@@ -73,7 +73,7 @@ namespace DPong.Level {
       _frameTimer = new FrameTimer(tickDuration);
     }
 
-    public void InputReceived(ServerMsgInput msgInput) {
+    private void HandleReceivedInput(ServerMsgInput msgInput) {
       if (msgInput.PlayerIndex == (byte) _side)
         throw new Exception("My side inputs received");
 
@@ -104,7 +104,10 @@ namespace DPong.Level {
       }
     }
 
-    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process() {
+    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process(Queue<ServerMsgInput> remoteInputs) {
+      while (remoteInputs.Count > 0)
+        HandleReceivedInput(remoteInputs.Dequeue());
+
       var simulationCounter = _simulationCounter;
       ClientMsgFinished? finishMsg = null;
 
