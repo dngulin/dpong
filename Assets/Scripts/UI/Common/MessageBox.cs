@@ -1,4 +1,3 @@
-using System;
 using DPong.UI.Holder;
 using UnityEngine;
 using UnityEngine.UI;

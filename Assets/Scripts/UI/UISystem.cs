@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using DPong.Localization;
 using DPong.UI.Common;
