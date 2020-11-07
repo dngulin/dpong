@@ -88,7 +88,7 @@ namespace DPong.Game.Screens.NetworkGame {
     }
 
     void INetworkGameMenuListener.PlayClicked() {
-      var cfg = new DPongClientConfig(_save.Host, _save.Port, _save.Name);
+      var cfg = new DPongClientConfig(_save.Host, _save.Name);
       try {
         _session = new ClientSession(cfg, null);
       }

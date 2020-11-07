@@ -6,6 +6,5 @@ namespace DPong.Game.Screens.NetworkGame {
     public InputSourceDescriptor Input;
 
     public string Host = "server.ttyh.ru";
-    public int Port = 5081;
   }
 }
