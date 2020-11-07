@@ -2,6 +2,7 @@ using System;
 using DPong.Game.Navigation;
 using DPong.InputSource;
 using DPong.Level;
+using DPong.Localization;
 using DPong.Save;
 using DPong.UI;
 using NGIS.Message.Server;
@@ -79,12 +80,19 @@ namespace DPong.Game.Screens.NetworkGame {
     }
 
     void INetworkGameMenuListener.PlayClicked() {
-      throw new NotImplementedException();
+      var cfg = new DPongClientConfig(_save.Host, _save.Port, _save.Name);
+      try {
+        _session = new ClientSession(cfg, null);
+      }
+      catch (Exception e) {
+        _uiSystem.CreateErrorBox(false,  e.Message).Show();
+        return;
+      }
+
+      // TODO: Show connection UI
     }
 
-    void INetworkGameMenuListener.BackClicked() {
-      throw new NotImplementedException();
-    }
+    void INetworkGameMenuListener.BackClicked() => _navigator.Exit(this);
 
     void INetworkGameMenuListener.NickNameChanged(string name) {
       throw new NotImplementedException();
@@ -106,7 +114,7 @@ namespace DPong.Game.Screens.NetworkGame {
           HandleSessionError(result.SessionError, result.ServerErrorId);
           break;
         case ProcessingResult.ResultType.Joined:
-          // TODO: Update UI
+          // TODO: Update Connection UI
           break;
         case ProcessingResult.ResultType.Started:
           HandleSessionStarted(result.StartMessage);
@@ -126,7 +134,7 @@ namespace DPong.Game.Screens.NetworkGame {
     }
 
     private void HandleSessionStarted(ServerMsgStart msgStart) {
-      // TODO: Hide connecting UI
+      // TODO: Hide Connection UI
       var inputSource = _inputSources.CreateSource(_save.Input);
       _level = new NetworkLevelController(inputSource, msgStart);
     }

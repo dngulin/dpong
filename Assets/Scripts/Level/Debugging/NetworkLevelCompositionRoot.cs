@@ -6,10 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
   public class NetworkLevelCompositionRoot : MonoBehaviour {
-    private const string GameName = "dPONG";
-    private const byte PlayerCount = 2;
     private const int Port = 5081;
-    private const ushort Version = 0;
 
     [SerializeField] private string _hostName;
     [SerializeField] private string _playerName;
@@ -18,7 +15,7 @@ namespace DPong.Level.Debugging {
     private NetworkLevelController _level;
 
     private void Awake() {
-      var cfg = new ClientConfig(GameName, Version, PlayerCount, _hostName, Port, _playerName);
+      var cfg = new DPongClientConfig(_hostName, Port, _playerName);
       try {
         _session = new ClientSession(cfg, new NgisUnityLogger());
       }
