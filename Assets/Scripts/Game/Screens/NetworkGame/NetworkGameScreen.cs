@@ -71,7 +71,7 @@ namespace DPong.Game.Screens.NetworkGame {
       _menu.SetPlayerName(_save.Name);
       _menu.SetServerAddress(_save.Host);
 
-      _inputSources.Resfresh();
+      _inputSources.Refresh();
       _menu.SetInputSources(_inputSources.Names, _inputSources.Descriptors.IndexOf(_save.Input));
     }
 

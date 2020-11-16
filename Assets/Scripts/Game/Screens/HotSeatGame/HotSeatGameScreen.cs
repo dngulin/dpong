@@ -76,7 +76,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       _menu.SetPlayerName(Side.Left, _save.LeftName);
       _menu.SetPlayerName(Side.Right, _save.RightName);
 
-      _inputSources.Resfresh();
+      _inputSources.Refresh();
       _menu.SetInputSources(Side.Left, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.LeftInput));
       _menu.SetInputSources(Side.Right, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.RightInput));
     }

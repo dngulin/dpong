@@ -16,11 +16,9 @@ namespace DPong.InputSource {
     public IReadOnlyList<InputSourceDescriptor> Descriptors => _descriptors;
     public IReadOnlyList<string> Names => _names;
 
-    public InputSourceProvider() {
-      Resfresh();
-    }
+    public InputSourceProvider() => Refresh();
 
-    public void Resfresh() {
+    public void Refresh() {
       _descriptors.Clear();
       _names.Clear();
 
