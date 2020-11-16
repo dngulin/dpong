@@ -1,5 +1,6 @@
 using System;
 using DPong.Game.Navigation;
+using DPong.Game.Validation;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
@@ -107,20 +108,9 @@ namespace DPong.Game.Screens.HotSeatGame {
     void IHotSeatMenuListener.BackClicked() => _navigator.Exit(this);
 
     void IHotSeatMenuListener.NickNameChanged(Side side, string name) {
-      var validated = ValidateName(name);
+      var validated = PlayerDataValidator.ValidateNickName(name);
       _menu.SetPlayerName(side, validated);
       (side == Side.Left ? ref _save.LeftName : ref _save.RightName) = validated;
-    }
-
-    private static string ValidateName(string name) {
-      if (string.IsNullOrEmpty(name))
-        return "Player";
-
-      const int maxLen = 12;
-      if (name.Length > maxLen)
-        return name.Substring(0, maxLen);
-
-      return name;
     }
 
     void IHotSeatMenuListener.InputSourceChanged(Side side, int index) {

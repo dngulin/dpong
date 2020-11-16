@@ -1,5 +1,6 @@
 using System;
 using DPong.Game.Navigation;
+using DPong.Game.Validation;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
@@ -105,15 +106,22 @@ namespace DPong.Game.Screens.NetworkGame {
     void INetworkGameMenuListener.BackClicked() => _navigator.Exit(this);
 
     void INetworkGameMenuListener.PlayerNameChanged(string name) {
-      // TODO: Impl
+      var validated = PlayerDataValidator.ValidateNickName(name);
+      _menu.SetPlayerName(validated);
+      _save.Name = validated;
     }
 
-    void INetworkGameMenuListener.InputSourceChanged(int srcIndex) {
-      // TODO: Impl
+    void INetworkGameMenuListener.InputSourceChanged(int index) {
+      if (index < 0 || index >= _inputSources.Descriptors.Count)
+        return;
+
+      _save.Input = _inputSources.Descriptors[index];
     }
 
     void INetworkGameMenuListener.ServerAddressChanged(string address) {
-      // TODO: Impl
+      var validated = address.Trim();
+      _menu.SetServerAddress(validated);
+      _save.Host = validated;
     }
 
     private void Tick() {
