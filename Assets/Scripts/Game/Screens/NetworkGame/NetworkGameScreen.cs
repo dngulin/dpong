@@ -162,7 +162,12 @@ namespace DPong.Game.Screens.NetworkGame {
     }
 
     private void HandleActiveSession() {
-      var (inputs, optMsgFinish) = _level.Process(_session.ReceivedInputs); // TODO: catch exceptions?
+      if (!_level.HandleReceivedInputs(_session.ReceivedInputs)) {
+        HandleSessionError(SessionError.ProtocolError);
+        return;
+      }
+
+      var (inputs, optMsgFinish) = _level.Process();
       var optError = _session.SendMessages(inputs, optMsgFinish);
       if (optError.HasValue)
         HandleSessionError(optError.Value);

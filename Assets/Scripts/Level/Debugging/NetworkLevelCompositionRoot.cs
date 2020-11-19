@@ -46,7 +46,12 @@ namespace DPong.Level.Debugging {
           break;
 
         case ProcessingResult.ResultType.Active:
-          var (inputs, optMsgFinish) = _level.Process(_session.ReceivedInputs);
+          if (!_level.HandleReceivedInputs(_session.ReceivedInputs)) {
+            Debug.LogError(SessionError.ProtocolError);
+            break;
+          }
+
+          var (inputs, optMsgFinish) = _level.Process();
           var optError = _session.SendMessages(inputs, optMsgFinish);
           if (optError.HasValue)
             Debug.LogError(optError.Value);

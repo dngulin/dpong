@@ -73,13 +73,26 @@ namespace DPong.Level {
       _frameTimer = new FrameTimer(tickDuration);
     }
 
-    private void HandleReceivedInput(ServerMsgInput msgInput) {
-      if (msgInput.PlayerIndex == (byte) _side)
-        throw new Exception("My side inputs received");
+    public bool HandleReceivedInputs(Queue<ServerMsgInput> remoteInputs) {
+      while (remoteInputs.Count > 0) {
+        if (!HandleReceivedInput(remoteInputs.Dequeue()))
+          return false;
+      }
+
+      return true;
+    }
+
+    private bool HandleReceivedInput(ServerMsgInput msgInput) {
+      if (msgInput.PlayerIndex == (byte) _side) {
+        // TODO:  _log.Error("My side inputs received");
+        return false;
+      }
 
       var (min, max) = _inputBuffer.GetFramesRange(_frame);
-      if (msgInput.Frame < min || msgInput.Frame > max || msgInput.Frame < InputDelay)
-        throw new Exception($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
+      if (msgInput.Frame < min || msgInput.Frame > max || msgInput.Frame < InputDelay) {
+        // TODO: _log.Error($"Failed to write frame input {msgInput.Frame} ({min}, {max})");
+        return false;
+      }
 
       var remoteFrame = msgInput.Frame - InputDelay;
       if (remoteFrame > _frame)
@@ -90,7 +103,10 @@ namespace DPong.Level {
       for (var frame = msgInput.Frame; frame <= max; frame++) {
         ref var input = ref _inputBuffer[frame];
 
-        if (input.Approved) throw new Exception("Try to rewrite approved input");
+        if (input.Approved) {
+          // TODO: _log.Error("Try to rewrite approved input");
+          return false;
+        }
 
         ref var storedKeys = ref msgInput.PlayerIndex == 0 ? ref input.Left : ref input.Right;
 
@@ -102,12 +118,11 @@ namespace DPong.Level {
 
         storedKeys = receivedKeys; // Primitive input state prediction
       }
+
+      return true;
     }
 
-    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process(Queue<ServerMsgInput> remoteInputs) {
-      while (remoteInputs.Count > 0)
-        HandleReceivedInput(remoteInputs.Dequeue());
-
+    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process() {
       var simulationCounter = _simulationCounter;
       ClientMsgFinished? finishMsg = null;
 
