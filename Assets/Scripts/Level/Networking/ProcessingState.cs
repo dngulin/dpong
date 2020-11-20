@@ -1,5 +1,5 @@
 namespace DPong.Level.Networking {
-  public enum SimulationState {
+  public enum ProcessingState {
     Inactive,
     Active,
     FinishedByPredictedInput,

@@ -26,7 +26,7 @@ namespace DPong.Level {
 
     private readonly Queue<ClientMsgInputs> _inputSendQueue;
 
-    private SimulationState _simulationState;
+    private ProcessingState _processingState;
 
     private uint _frame; // Simulated frame index
     private uint _simulationCounter;
@@ -68,7 +68,7 @@ namespace DPong.Level {
       _stateBuffer[0] = _model.CreateInitialState();
 
       _view = new LevelView(_stateBuffer[0], settings);
-      _simulationState = SimulationState.Active;
+      _processingState = ProcessingState.Active;
 
       _frameTimer = new FrameTimer(tickDuration);
     }
@@ -126,24 +126,24 @@ namespace DPong.Level {
       var simulationCounter = _simulationCounter;
       ClientMsgFinished? finishMsg = null;
 
-      switch (_simulationState) {
-        case SimulationState.Inactive:
-        case SimulationState.FinishedByApprovedInput:
+      switch (_processingState) {
+        case ProcessingState.Inactive:
+        case ProcessingState.FinishedByApprovedInput:
           return (_inputSendQueue, null);
 
-        case SimulationState.Active:
-          _simulationState = Simulate();
+        case ProcessingState.Active:
+          _processingState = Simulate();
           break;
 
-        case SimulationState.FinishedByPredictedInput:
-          _simulationState = _inputBuffer[_frame - 1].Approved ? SimulationState.FinishedByApprovedInput : Simulate();
+        case ProcessingState.FinishedByPredictedInput:
+          _processingState = _inputBuffer[_frame - 1].Approved ? ProcessingState.FinishedByApprovedInput : Simulate();
           break;
 
         default:
           throw new ArgumentOutOfRangeException();
       }
 
-      if (_simulationState == SimulationState.FinishedByApprovedInput)
+      if (_processingState == ProcessingState.FinishedByApprovedInput)
         finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateHash());
 
       if (simulationCounter != _simulationCounter)
@@ -152,16 +152,16 @@ namespace DPong.Level {
       return (_inputSendQueue, finishMsg);
     }
 
-    private SimulationState Simulate() {
+    private ProcessingState Simulate() {
       var resimulationResult = ProcessMisPredictedStates();
-      if (resimulationResult != SimulationState.Active)
+      if (resimulationResult != ProcessingState.Active)
         return resimulationResult;
 
       return ProcessFutureStates();
     }
 
-    private SimulationState ProcessMisPredictedStates() {
-      var simulationState = _simulationState;
+    private ProcessingState ProcessMisPredictedStates() {
+      var simulationState = _processingState;
 
       for (var frame = _inputBuffer.GetFirstMisPredictedFrame(_frame); frame < _frame; frame++) {
         var finished = SimulateNextState(frame);
@@ -172,16 +172,16 @@ namespace DPong.Level {
 
         if (finished) {
           _frame = frame + 1;
-          return input.Approved ? SimulationState.FinishedByApprovedInput : SimulationState.FinishedByPredictedInput;
+          return input.Approved ? ProcessingState.FinishedByApprovedInput : ProcessingState.FinishedByPredictedInput;
         }
 
-        simulationState = SimulationState.Active;
+        simulationState = ProcessingState.Active;
       }
 
       return simulationState;
     }
 
-    private SimulationState ProcessFutureStates() {
+    private ProcessingState ProcessFutureStates() {
       var targetFrame = Math.Min(_frameTimer.Current, _inputBuffer.GetMaxReachableFrame(_frame));
 
       for (; _frame < targetFrame;) {
@@ -191,11 +191,11 @@ namespace DPong.Level {
 
         if (finished)
           return _inputBuffer[_frame - 1].Approved ?
-            SimulationState.FinishedByApprovedInput :
-            SimulationState.FinishedByPredictedInput;
+            ProcessingState.FinishedByApprovedInput :
+            ProcessingState.FinishedByPredictedInput;
       }
 
-      return SimulationState.Active;
+      return ProcessingState.Active;
     }
 
     private bool SimulateNextState(uint frame) {
