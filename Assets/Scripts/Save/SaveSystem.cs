@@ -66,6 +66,9 @@ namespace DPong.Save {
     }
 
     public void WriteSaveToFile() {
+      foreach (var pair in _memoryStates)
+        _serializedStates[pair.Key] = JObject.FromObject(pair.Value, _serializer);
+
       using (var textWriter = new StreamWriter(File.Create(_saveFilePath), _utf8))
       using (var jsonWriter = new JsonTextWriter(textWriter)) {
         _serializer.Serialize(jsonWriter, _serializedStates);
