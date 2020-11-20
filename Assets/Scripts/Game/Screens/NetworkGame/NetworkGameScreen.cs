@@ -11,8 +11,7 @@ using NGIS.Session.Client;
 using UnityEngine;
 
 namespace DPong.Game.Screens.NetworkGame {
-  // TODO: Too many interfaces. Aggregate session and level in one object (ILevelExitListener, IClientSessionWorker)
-  public class NetworkGameScreen : INavigationPoint, INetworkGameMenuListener, ILevelExitListener, ITickable, IDisposable {
+  public class NetworkGameScreen : INavigationPoint, INetworkGameMenuListener, ILevelExitListener, IDisposable {
     private readonly Navigator _navigator;
     private readonly SaveSystem _saveSystem;
     private readonly InputSourceProvider _inputSources;
@@ -51,18 +50,26 @@ namespace DPong.Game.Screens.NetworkGame {
       _disposed = true;
     }
 
-    void ITickable.FixedTick() {}
-    void ITickable.DynamicTick(float dt) => Tick();
-
     void INavigationPoint.Enter() {
       _menu = _uiSystem.Instantiate(Resources.Load<NetworkGameMenu>("NetworkGameMenu"), UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
     }
 
-    void INavigationPoint.Suspend() => _menu.Hide();
+    void INavigationPoint.Suspend() => HideMenu();
 
-    void INavigationPoint.Resume() {
+    void INavigationPoint.Resume() => ShowMenu();
+
+    void INavigationPoint.Exit() {
+      _saveSystem.WriteSaveToFile();
+
+      UnityEngine.Object.Destroy(_menu.gameObject);
+      _menu = null;
+    }
+
+    void INavigationPoint.Tick(float dt) => Tick();
+
+    private void ShowMenu() {
       UpdateMenu();
       _menu.Show();
     }
@@ -75,17 +82,12 @@ namespace DPong.Game.Screens.NetworkGame {
       _menu.SetInputSources(_inputSources.Names, _inputSources.Descriptors.IndexOf(_save.Input));
     }
 
-    void INavigationPoint.Exit() {
-      _saveSystem.WriteSaveToFile();
-
-      UnityEngine.Object.Destroy(_menu.gameObject);
-      _menu = null;
-    }
+    private void HideMenu() => _menu.Hide();
 
     void ILevelExitListener.Exit() {
       _level?.Dispose();
       _session?.Dispose();
-      ((INavigationPoint) this).Resume();
+      ShowMenu();
     }
 
     void INetworkGameMenuListener.PlayClicked() {
@@ -100,6 +102,7 @@ namespace DPong.Game.Screens.NetworkGame {
         return;
       }
 
+      HideMenu();
       // TODO: Show connection UI
     }
 

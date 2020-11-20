@@ -12,7 +12,7 @@ using PGM.ScaledNum;
 using UnityEngine;
 
 namespace DPong.Game.Screens.HotSeatGame {
-  public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ILevelExitListener, ITickable, IDisposable {
+  public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ILevelExitListener, IDisposable {
     private readonly Navigator _navigator;
     private readonly SaveSystem _saveSystem;
     private readonly InputSourceProvider _inputSources;
@@ -48,28 +48,27 @@ namespace DPong.Game.Screens.HotSeatGame {
       _disposed = true;
     }
 
-    void ITickable.FixedTick() => _levelController?.Tick();
-
-    void ITickable.DynamicTick(float dt) {}
+    void INavigationPoint.Tick(float dt) => _levelController?.Tick();
 
     void INavigationPoint.Enter() {
       _menu = _uiSystem.Instantiate(Resources.Load<HotSeatGameMenu>("HotSeatGameMenu"), UILayer.Background, true);
       _menu.Init(this);
-
       UpdateMenu();
     }
 
-    void INavigationPoint.Suspend() => _menu.Hide();
-    void INavigationPoint.Resume() {
-      _menu.Show();
-      UpdateMenu();
-    }
+    void INavigationPoint.Suspend() => HideMenu();
+    void INavigationPoint.Resume() => ShowMenu();
 
     void INavigationPoint.Exit() {
       _saveSystem.WriteSaveToFile();
 
       UnityEngine.Object.Destroy(_menu.gameObject);
       _menu = null;
+    }
+
+    private void ShowMenu() {
+      UpdateMenu();
+      _menu.Show();
     }
 
     private void UpdateMenu() {
@@ -80,6 +79,8 @@ namespace DPong.Game.Screens.HotSeatGame {
       _menu.SetInputSources(Side.Left, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.LeftInput));
       _menu.SetInputSources(Side.Right, _inputSources.Names, _inputSources.Descriptors.IndexOf(_save.RightInput));
     }
+
+    private void HideMenu() => _menu.Hide();
 
     void IHotSeatMenuListener.PlayClicked() {
       if (_save.LeftInput == _save.RightInput)
@@ -101,7 +102,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       var lInput = _inputSources.CreateSource(_save.LeftInput);
       var rInput = _inputSources.CreateSource(_save.RightInput);
 
-      ((INavigationPoint) this).Suspend();
+      HideMenu();
       _levelController = new LocalLevelController(levelSettings, lInput, rInput, _uiSystem, this);
     }
 
@@ -123,7 +124,7 @@ namespace DPong.Game.Screens.HotSeatGame {
     void ILevelExitListener.Exit()
     {
       _levelController.Dispose();
-      ((INavigationPoint) this).Resume();
+      ShowMenu();
     }
   }
 }

@@ -14,27 +14,40 @@ namespace DPong.Game.Screens.Main {
       }
     }
 
+    private readonly UISystem _ui;
     private readonly Navigator _navigator;
     private readonly Transitions _transitions;
 
-    private readonly MainMenu _menu;
+    private MainMenu _menu;
 
     public MainScreen(UISystem ui, Navigator navigator, Transitions transitions) {
+      _ui = ui;
       _navigator = navigator;
       _transitions = transitions;
+    }
 
-      _menu = ui.Instantiate(Resources.Load<MainMenu>("MainMenu"), UILayer.Background, false);
+    void INavigationPoint.Enter() {
+      _menu = _ui.Instantiate(Resources.Load<MainMenu>("MainMenu"), UILayer.Background, true);
       _menu.Init(this);
     }
 
-    void INavigationPoint.Enter() => _menu.Show();
     void INavigationPoint.Suspend() => _menu.Hide();
     void INavigationPoint.Resume() => _menu.Show();
-    void INavigationPoint.Exit() => ExitGame();
+
+    void INavigationPoint.Exit() {
+      if (_menu != null) {
+        Object.Destroy(_menu.gameObject);
+        _menu = null;
+      }
+
+      ExitGame();
+    }
+
+    void INavigationPoint.Tick(float dt) {}
 
     void IMainMenuListener.OnHotSeatClicked() => _navigator.Enter(_transitions.HotSeatMenu);
     void IMainMenuListener.OnNetworkClicked() => _navigator.Enter(_transitions.NetworkMenu);
-    void IMainMenuListener.OnExitGameClicked() => ExitGame();
+    void IMainMenuListener.OnExitGameClicked() => _navigator.Exit(this);
 
     private static void ExitGame() {
 #if UNITY_EDITOR

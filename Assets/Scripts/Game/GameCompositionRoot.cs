@@ -17,10 +17,10 @@ namespace DPong.Game {
     [SerializeField] private Canvas _canvas;
 
     private SaveSystem _save;
+    private Navigator _navigator;
+
     private readonly List<IDisposable> _disposables = new List<IDisposable>();
     private readonly List<ITickable> _tickables = new List<ITickable>();
-
-    private Navigator _navigator;
 
     private void Awake() {
       if (Application.systemLanguage == SystemLanguage.Russian) {
@@ -30,34 +30,28 @@ namespace DPong.Game {
       _save = new SaveSystem(SaveFilename);
       _navigator = new Navigator();
 
+      _tickables.Add(_navigator);
+
       var ui = new UISystem(_canvas);
       var inputs = new InputSourceProvider();
 
       var hotSeatScreen = new HotSeatGameScreen(_save, inputs, ui, _navigator);
       var netGameScreen = new NetworkGameScreen(_save, inputs, ui, _navigator);
 
+      _disposables.Add(hotSeatScreen);
+      _disposables.Add(netGameScreen);
+
       var hotSeatToken = _navigator.Register(hotSeatScreen);
       var netGameToken = _navigator.Register(netGameScreen);
       var transitions = new MainScreen.Transitions(hotSeatToken, netGameToken);
 
-      var mainMenuScreen = new MainScreen(ui, _navigator, transitions);
-
-      _disposables.Add(hotSeatScreen);
-      _disposables.Add(netGameScreen);
-
-      _tickables.Add(hotSeatScreen);
-      _tickables.Add(netGameScreen);
-
-      _navigator.Enter(mainMenuScreen);
-    }
-
-    private void FixedUpdate() {
-      foreach (var tickable in _tickables) tickable.FixedTick();
+      _navigator.Enter(new MainScreen(ui, _navigator, transitions));
     }
 
     private void Update() {
-      var dt = Time.deltaTime;
-      foreach (var tickable in _tickables) tickable.DynamicTick(dt);
+      var dt = Time.unscaledDeltaTime;
+      foreach (var tickable in _tickables)
+        tickable.Tick(dt);
     }
 
     private void OnApplicationFocus(bool hasFocus) {
@@ -75,8 +69,6 @@ namespace DPong.Game {
 
       _disposables.ForEach(d => d.Dispose());
       _disposables.Clear();
-
-      _navigator.Clear();
 
       _save.WriteSaveToFile();
       Tr.UnloadLocale();

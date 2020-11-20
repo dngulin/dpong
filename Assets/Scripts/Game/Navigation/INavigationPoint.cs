@@ -4,5 +4,7 @@ namespace DPong.Game.Navigation {
     void Suspend();
     void Resume();
     void Exit();
+
+    void Tick(float dt);
   }
 }

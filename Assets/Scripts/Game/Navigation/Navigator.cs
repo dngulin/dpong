@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace DPong.Game.Navigation {
-  public class Navigator {
+  public class Navigator : ITickable {
     private readonly Stack<INavigationPoint> _navigationStack = new Stack<INavigationPoint>();
 
     private uint _lastToken;
@@ -13,8 +13,6 @@ namespace DPong.Game.Navigation {
       _registeredPoints.Add(token.Id, point);
       return token;
     }
-
-    public void Clear() => _registeredPoints.Clear();
 
     public void Enter(NavigationToken token) {
       if (!_registeredPoints.TryGetValue(token.Id, out var point))
@@ -43,6 +41,11 @@ namespace DPong.Game.Navigation {
 
       if (_navigationStack.Count > 0)
         _navigationStack.Peek().Resume();
+    }
+
+    void ITickable.Tick(float dt) {
+      if (_navigationStack.Count > 0)
+        _navigationStack.Peek().Tick(dt);
     }
   }
 }
