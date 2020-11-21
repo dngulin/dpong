@@ -123,9 +123,6 @@ namespace DPong.Level {
     }
 
     public (Queue<ClientMsgInputs>, ClientMsgFinished?) Tick() {
-      var simulationCounter = _simulationCounter;
-      ClientMsgFinished? finishMsg = null;
-
       switch (_processingState) {
         case ProcessingState.Inactive:
         case ProcessingState.FinishedByApprovedInput:
@@ -143,13 +140,12 @@ namespace DPong.Level {
           throw new ArgumentOutOfRangeException();
       }
 
-      // TODO: Get blending factor?
-
+      ClientMsgFinished? finishMsg = null;
       if (_processingState == ProcessingState.FinishedByApprovedInput)
         finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateHash());
 
-      if (simulationCounter != _simulationCounter)
-        _view.UpdateState(_stateBuffer[_frame - 1], _stateBuffer[_frame], 1f);
+      if (_frame > 0)
+        _view.UpdateState(_stateBuffer[_frame - 1], _stateBuffer[_frame], _frameTimer.GetBlendingFactor(_frame));
 
       return (_inputSendQueue, finishMsg);
     }
