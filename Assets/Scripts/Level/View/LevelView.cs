@@ -35,7 +35,7 @@ namespace DPong.Level.View {
     }
 
     public void UpdateState(in LevelState l, in LevelState r, float t) {
-      const float threshold = 0.05f;
+      const float threshold = 0.001f;
 
       if (t < threshold) {
         ApplyState(l);

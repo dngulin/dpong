@@ -16,6 +16,9 @@ namespace DPong.Level.Debugging {
     [SerializeField] private string _rightName = "RightPlayer";
     [SerializeField] private bool _rightIsBot;
 
+    [Range(0, 1)]
+    [SerializeField] private float _timeScale = 1.0f;
+
     private LocalLevel _level;
 
     private void Awake() {
@@ -28,7 +31,10 @@ namespace DPong.Level.Debugging {
       _level = new LocalLevel(levelInfo, lInputSrc, rInputSrc, uiSystem, this);
     }
 
-    private void Update() => _level?.Tick(Time.unscaledDeltaTime);
+    private void Update() {
+      Time.timeScale = _timeScale;
+      _level?.Tick(Time.deltaTime);
+    }
 
     void ILevelExitListener.Exit() => Destroy(gameObject);
 
