@@ -19,7 +19,7 @@ namespace DPong.Game.Screens.NetworkGame {
     private readonly UISystem _uiSystem;
 
     private ClientSession _session;
-    private NetworkLevelController _level;
+    private NetworkLevel _level;
 
     private NetworkGameMenu _menu;
     private readonly NetworkGameSave _save;
@@ -161,7 +161,7 @@ namespace DPong.Game.Screens.NetworkGame {
     private void HandleSessionStarted(ServerMsgStart msgStart) {
       // TODO: Hide Connection UI
       var inputSource = _inputSources.CreateSource(_save.Input);
-      _level = new NetworkLevelController(inputSource, msgStart);
+      _level = new NetworkLevel(inputSource, msgStart);
     }
 
     private void HandleActiveSession() {
@@ -170,7 +170,7 @@ namespace DPong.Game.Screens.NetworkGame {
         return;
       }
 
-      var (inputs, optMsgFinish) = _level.Process();
+      var (inputs, optMsgFinish) = _level.Tick();
       var optError = _session.SendMessages(inputs, optMsgFinish);
       if (optError.HasValue)
         HandleSessionError(optError.Value);

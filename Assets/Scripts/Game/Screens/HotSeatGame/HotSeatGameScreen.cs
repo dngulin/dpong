@@ -22,7 +22,7 @@ namespace DPong.Game.Screens.HotSeatGame {
     private HotSeatGameMenu _menu;
     private readonly HotSeatGameSave _save;
 
-    private LocalLevelController _levelController;
+    private LocalLevel _level;
 
     private bool _disposed;
 
@@ -39,7 +39,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       if (_disposed)
         return;
 
-      _levelController?.Dispose();
+      _level?.Dispose();
       _saveSystem.ReturnState(nameof(HotSeatGameScreen), _save);
 
       if (_menu != null)
@@ -48,7 +48,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       _disposed = true;
     }
 
-    void INavigationPoint.Tick(float dt) => _levelController?.Tick();
+    void INavigationPoint.Tick(float dt) => _level?.Tick(dt);
 
     void INavigationPoint.Enter() {
       _menu = _uiSystem.Instantiate(Resources.Load<HotSeatGameMenu>("HotSeatGameMenu"), UILayer.Background, true);
@@ -94,7 +94,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       var lPlayer = new PlayerInfo(_save.LeftName, PlayerType.Local);
       var rPlayer = new PlayerInfo(_save.RightName, PlayerType.Local);
 
-      var tickDuration = Mathf.RoundToInt(Time.fixedDeltaTime * SnMath.Scale);
+      var tickDuration = Mathf.RoundToInt(1f / 30 * SnMath.Scale);
       var simSettings = new SimulationSettings(tickDuration, null);
 
       var levelSettings = new LevelSettings(lPlayer, rPlayer, simSettings);
@@ -103,7 +103,7 @@ namespace DPong.Game.Screens.HotSeatGame {
       var rInput = _inputSources.CreateSource(_save.RightInput);
 
       HideMenu();
-      _levelController = new LocalLevelController(levelSettings, lInput, rInput, _uiSystem, this);
+      _level = new LocalLevel(levelSettings, lInput, rInput, _uiSystem, this);
     }
 
     void IHotSeatMenuListener.BackClicked() => _navigator.Exit(this);
@@ -123,7 +123,7 @@ namespace DPong.Game.Screens.HotSeatGame {
 
     void ILevelExitListener.Exit()
     {
-      _levelController.Dispose();
+      _level.Dispose();
       ShowMenu();
     }
   }

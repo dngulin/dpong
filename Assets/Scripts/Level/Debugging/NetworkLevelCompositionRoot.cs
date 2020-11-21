@@ -10,7 +10,7 @@ namespace DPong.Level.Debugging {
     [SerializeField] private string _playerName;
 
     private ClientSession _session;
-    private NetworkLevelController _level;
+    private NetworkLevel _level;
 
     private void Awake() {
       var cfg = new DPongClientConfig(_hostName, _playerName);
@@ -42,7 +42,7 @@ namespace DPong.Level.Debugging {
         case ProcessingResult.ResultType.Started:
           Debug.Log("Session started");
           var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
-          _level = new NetworkLevelController(inputSource, result.StartMessage);
+          _level = new NetworkLevel(inputSource, result.StartMessage);
           break;
 
         case ProcessingResult.ResultType.Active:
@@ -51,7 +51,7 @@ namespace DPong.Level.Debugging {
             break;
           }
 
-          var (inputs, optMsgFinish) = _level.Process();
+          var (inputs, optMsgFinish) = _level.Tick();
           var optError = _session.SendMessages(inputs, optMsgFinish);
           if (optError.HasValue)
             Debug.LogError(optError.Value);

@@ -49,7 +49,7 @@ namespace DPong.Game {
     }
 
     private void Update() {
-      var dt = Time.unscaledDeltaTime;
+      var dt = Time.deltaTime;
       foreach (var tickable in _tickables)
         tickable.Tick(dt);
     }

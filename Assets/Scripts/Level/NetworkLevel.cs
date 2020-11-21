@@ -11,7 +11,7 @@ using PGM.Random;
 using PGM.ScaledNum;
 
 namespace DPong.Level {
-  public class NetworkLevelController : IDisposable {
+  public class NetworkLevel : IDisposable {
     private const uint InputDelay = 2;
     private readonly IInputSource _inputSrc;
 
@@ -33,7 +33,7 @@ namespace DPong.Level {
 
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
 
-    public NetworkLevelController(IInputSource inputSrc, ServerMsgStart msgStart) {
+    public NetworkLevel(IInputSource inputSrc, ServerMsgStart msgStart) {
       _inputSrc = inputSrc;
       _side = (Side) msgStart.YourIndex;
 
@@ -122,7 +122,7 @@ namespace DPong.Level {
       return true;
     }
 
-    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Process() {
+    public (Queue<ClientMsgInputs>, ClientMsgFinished?) Tick() {
       var simulationCounter = _simulationCounter;
       ClientMsgFinished? finishMsg = null;
 
@@ -143,11 +143,13 @@ namespace DPong.Level {
           throw new ArgumentOutOfRangeException();
       }
 
+      // TODO: Get blending factor?
+
       if (_processingState == ProcessingState.FinishedByApprovedInput)
         finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateHash());
 
       if (simulationCounter != _simulationCounter)
-        _view.StateContainer.SetPreviousAndCurrentStates(_stateBuffer[_frame - 1], _stateBuffer[_frame]);
+        _view.UpdateState(_stateBuffer[_frame - 1], _stateBuffer[_frame], 1f);
 
       return (_inputSendQueue, finishMsg);
     }

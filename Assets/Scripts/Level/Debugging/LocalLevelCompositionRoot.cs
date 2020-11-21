@@ -16,7 +16,7 @@ namespace DPong.Level.Debugging {
     [SerializeField] private string _rightName = "RightPlayer";
     [SerializeField] private bool _rightIsBot;
 
-    private LocalLevelController _levelController;
+    private LocalLevel _level;
 
     private void Awake() {
       var levelInfo = CreateLevelInfo();
@@ -25,23 +25,24 @@ namespace DPong.Level.Debugging {
 
       var uiSystem = new UISystem(_canvas);
 
-      _levelController = new LocalLevelController(levelInfo, lInputSrc, rInputSrc, uiSystem, this);
+      _level = new LocalLevel(levelInfo, lInputSrc, rInputSrc, uiSystem, this);
     }
 
-    private void FixedUpdate() => _levelController?.Tick();
+    private void Update() => _level?.Tick(Time.unscaledDeltaTime);
 
     void ILevelExitListener.Exit() => Destroy(gameObject);
 
     private void OnDestroy()
     {
-      _levelController?.Dispose();
+      _level?.Dispose();
     }
 
     private LevelSettings CreateLevelInfo() {
       var leftPlayer = new PlayerInfo(_leftName, _leftIsBot ? PlayerType.Bot : PlayerType.Local);
       var rightPlayer = new PlayerInfo(_rightName, _rightIsBot ? PlayerType.Bot : PlayerType.Local);
 
-      var tickDuration = Mathf.RoundToInt(Time.fixedDeltaTime * SnMath.Scale);
+      const int tps = 25;
+      var tickDuration = Mathf.RoundToInt((float)SnMath.Scale / tps);
       var settings = new SimulationSettings(tickDuration, null);
 
       return new LevelSettings(leftPlayer, rightPlayer, settings);
