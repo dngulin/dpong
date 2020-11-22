@@ -1,11 +1,14 @@
 using System;
 using DPong.InputSource.Sources;
+using DPong.UI;
 using NGIS.Session.Client;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
-  public class NetworkLevelCompositionRoot : MonoBehaviour {
+  public class NetworkLevelCompositionRoot : MonoBehaviour, ILevelExitListener {
+    [SerializeField] private Canvas _canvas;
+
     [SerializeField] private string _hostName;
     [SerializeField] private string _playerName;
 
@@ -42,7 +45,8 @@ namespace DPong.Level.Debugging {
         case ProcessingResult.ResultType.Started:
           Debug.Log("Session started");
           var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
-          _level = new NetworkLevel(inputSource, result.StartMessage);
+          var uiSystem = new UISystem(_canvas);
+          _level = new NetworkLevel(inputSource, uiSystem, this, result.StartMessage);
           break;
 
         case ProcessingResult.ResultType.Active:
@@ -74,5 +78,7 @@ namespace DPong.Level.Debugging {
       _session?.Dispose();
       _level?.Dispose();
     }
+
+    void ILevelExitListener.Exit() => Destroy(gameObject);
   }
 }

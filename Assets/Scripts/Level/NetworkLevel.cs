@@ -4,21 +4,25 @@ using DPong.Level.Data;
 using DPong.Level.Model;
 using DPong.Level.Networking;
 using DPong.Level.State;
+using DPong.Level.UI;
 using DPong.Level.View;
+using DPong.UI;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
 using PGM.Random;
 using PGM.ScaledNum;
 
 namespace DPong.Level {
-  public class NetworkLevel : IDisposable {
+  public class NetworkLevel : ILevelUIListener, IDisposable {
     private const uint InputDelay = 2;
     private readonly IInputSource _inputSrc;
+    private bool _paused;
 
     private readonly Side _side;
 
     private readonly LevelModel _model;
     private readonly LevelView _view;
+    private readonly LevelUI _ui;
 
     private readonly FrameTimer _frameTimer;
     private readonly StateBuffer _stateBuffer;
@@ -31,10 +35,13 @@ namespace DPong.Level {
     private uint _frame; // Simulated frame index
     private uint _simulationCounter;
 
+    private readonly ILevelExitListener _exitListener;
+
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
 
-    public NetworkLevel(IInputSource inputSrc, ServerMsgStart msgStart) {
+    public NetworkLevel(IInputSource inputSrc, UISystem uiSystem, ILevelExitListener exitListener, ServerMsgStart msgStart) {
       _inputSrc = inputSrc;
+      _exitListener = exitListener;
       _side = (Side) msgStart.YourIndex;
 
       // Buffers layout & usage
@@ -68,6 +75,8 @@ namespace DPong.Level {
       _stateBuffer[0] = _model.CreateInitialState();
 
       _view = new LevelView(_stateBuffer[0], settings);
+      _ui = new LevelUI(uiSystem, this);
+
       _processingState = ProcessingState.Active;
 
       _frameTimer = new FrameTimer(tickDuration);
@@ -209,12 +218,16 @@ namespace DPong.Level {
 
     private void PushLocalInputs() {
       var frame = _frame + InputDelay;
-      var keys = _inputSrc.GetKeys();
+      var keys = _paused ? Keys.None : _inputSrc.GetKeys();
 
       (_side == Side.Left ? ref _inputBuffer[frame].Left : ref _inputBuffer[frame].Right) = keys;
       _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
     }
 
     public void Dispose() => _view?.Dispose();
+
+    void ILevelUIListener.PauseCLicked() => _paused = true;
+    void ILevelUIListener.ResumeCLicked() => _paused = false;
+    void ILevelUIListener.ExitCLicked() => _exitListener.Exit();
   }
 }

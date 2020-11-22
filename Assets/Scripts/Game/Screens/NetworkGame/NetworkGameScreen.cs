@@ -148,6 +148,7 @@ namespace DPong.Game.Screens.NetworkGame {
           HandleActiveSession();
           break;
         case ProcessingResult.ResultType.Finished:
+          ShowMenu();
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -161,7 +162,7 @@ namespace DPong.Game.Screens.NetworkGame {
     private void HandleSessionStarted(ServerMsgStart msgStart) {
       // TODO: Hide Connection UI
       var inputSource = _inputSources.CreateSource(_save.Input);
-      _level = new NetworkLevel(inputSource, msgStart);
+      _level = new NetworkLevel(inputSource, _uiSystem, this, msgStart);
     }
 
     private void HandleActiveSession() {
