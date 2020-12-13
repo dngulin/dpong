@@ -4,6 +4,7 @@ using DPong.Game.Validation;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
+using DPong.Localization;
 using DPong.Save;
 using DPong.UI;
 using NGIS.Message.Server;
@@ -13,16 +14,19 @@ using UnityEngine;
 namespace DPong.Game.Screens.NetworkGame {
   public class NetworkGameScreen : INavigationPoint, INetworkGameMenuListener, ILevelExitListener, IDisposable {
     private readonly Navigator _navigator;
-    private readonly SaveSystem _saveSystem;
-    private readonly InputSourceProvider _inputSources;
-
     private readonly UISystem _uiSystem;
+    private readonly InputSourceProvider _inputSources;
+    private readonly SaveSystem _saveSystem;
+
+    private readonly NetworkGameSave _save;
+
+    private NetworkGameMenu _menu;
+    private ConnectionDialog _connectingDlg;
+
+    private bool _isConnecting;
 
     private ClientSession _session;
     private NetworkLevel _level;
-
-    private NetworkGameMenu _menu;
-    private readonly NetworkGameSave _save;
 
     private bool _disposed;
 
@@ -47,6 +51,9 @@ namespace DPong.Game.Screens.NetworkGame {
       if (_menu != null)
         UnityEngine.Object.Destroy(_menu.gameObject);
 
+      if (_connectingDlg != null)
+        UnityEngine.Object.Destroy(_connectingDlg.gameObject);
+
       _disposed = true;
     }
 
@@ -54,6 +61,10 @@ namespace DPong.Game.Screens.NetworkGame {
       _menu = _uiSystem.Instantiate(Resources.Load<NetworkGameMenu>("NetworkGameMenu"), UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
+
+      var splash = Resources.Load<ConnectionDialog>("ConnectionDialog");
+      _connectingDlg = _uiSystem.InstantiateWindow(WindowType.Dialog, splash, false);
+      _connectingDlg.OnCancelClicked += StopConnecting;
     }
 
     void INavigationPoint.Suspend() => HideMenu();
@@ -87,6 +98,10 @@ namespace DPong.Game.Screens.NetworkGame {
     void ILevelExitListener.Exit() {
       _level?.Dispose();
       _session?.Dispose();
+
+      _level = null;
+      _session = null;
+
       ShowMenu();
     }
 
@@ -95,15 +110,15 @@ namespace DPong.Game.Screens.NetworkGame {
       try {
         _session = new ClientSession(cfg, null);
       }
-      catch (Exception e) {
-        var errMsg = _uiSystem.CreateErrorBox(false, e.Message);
-        errMsg.OnHideFinish += errMsg.Destroy;
-        errMsg.Show();
+      catch (Exception) {
+        ShowError(Tr._("Failed to connect to the server"));
+        // TODO: add log?
         return;
       }
 
-      HideMenu();
-      // TODO: Show connection UI
+      _isConnecting = true;
+      _connectingDlg.SetJoinedState(false);
+      _connectingDlg.Show();
     }
 
     void INetworkGameMenuListener.BackClicked() => _navigator.Exit(this);
@@ -139,7 +154,7 @@ namespace DPong.Game.Screens.NetworkGame {
           HandleSessionError(result.SessionError, result.ServerErrorId);
           break;
         case ProcessingResult.ResultType.Joined:
-          // TODO: Update Connection UI
+          _connectingDlg.SetJoinedState(true);
           break;
         case ProcessingResult.ResultType.Started:
           HandleSessionStarted(result.StartMessage);
@@ -148,19 +163,18 @@ namespace DPong.Game.Screens.NetworkGame {
           HandleActiveSession();
           break;
         case ProcessingResult.ResultType.Finished:
-          ShowMenu();
+          _level.ExitWithFinish();
           break;
         default:
           throw new ArgumentOutOfRangeException();
       }
     }
 
-    private void HandleSessionError(SessionError error, ServerErrorId? serverErrorId = null) {
-
-    }
-
     private void HandleSessionStarted(ServerMsgStart msgStart) {
-      // TODO: Hide Connection UI
+      _isConnecting = false;
+      _connectingDlg.Hide();
+      HideMenu();
+
       var inputSource = _inputSources.CreateSource(_save.Input);
       _level = new NetworkLevel(inputSource, _uiSystem, this, msgStart);
     }
@@ -175,6 +189,34 @@ namespace DPong.Game.Screens.NetworkGame {
       var optError = _session.SendMessages(inputs, optMsgFinish);
       if (optError.HasValue)
         HandleSessionError(optError.Value);
+    }
+
+    private void HandleSessionError(SessionError error, ServerErrorId? serverErrorId = null) {
+      var errorMessage = MessageConverter.GetErrorMessage(error, serverErrorId);
+      if (_isConnecting) {
+        _connectingDlg.Hide();
+        StopConnecting();
+        ShowError(errorMessage);
+      }
+      else {
+        _level.ExitWithError(errorMessage);
+      }
+    }
+
+    private void ShowError(string message) {
+      var errMsg = _uiSystem.CreateErrorBox(false, message);
+      errMsg.OnHideFinish += errMsg.Destroy;
+      errMsg.Show();
+    }
+
+    private void StopConnecting() {
+      if (!_isConnecting)
+        return;
+
+      _isConnecting = false;
+
+      _session.Dispose();
+      _session = null;
     }
   }
 }

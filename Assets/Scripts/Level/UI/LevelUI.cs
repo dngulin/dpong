@@ -2,74 +2,128 @@ using System;
 using DPong.Level.State;
 using DPong.Localization;
 using DPong.UI;
+using DPong.UI.Holder;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace DPong.Level.UI
-{
-    public interface ILevelUIListener
-    {
-        void PauseCLicked();
-        void ResumeCLicked();
-        void ExitCLicked();
+namespace DPong.Level.UI {
+  public interface ILevelUIListener {
+    void PauseCLicked();
+    void ResumeCLicked();
+    void ExitCLicked();
+  }
+
+  public class LevelUI : IDisposable {
+    private readonly LevelUIResources _resources;
+    private readonly UISystem _uiSystem;
+
+    private readonly PausePanel _pausePanel;
+
+    private DisplayingDialogType _displayingDialogType;
+    private UIHolderWrapper _displayingDialog;
+
+    private readonly ILevelUIListener _listener;
+
+    public LevelUI(UISystem uiSystem, ILevelUIListener listener) {
+      _uiSystem = uiSystem;
+      _listener = listener;
+      _resources = Resources.Load<LevelUIResources>("LevelUIResources");
+
+      _pausePanel = _uiSystem.Instantiate(_resources.PausePanel, UILayer.Background, true);
+      _pausePanel.OnCLick += ShowPauseDialog;
     }
 
-    public class LevelUI : IDisposable
-    {
-        private readonly LevelUIResources _resources;
-        private readonly UISystem _uiSystem;
+    private void ShowPauseDialog() {
+      if (_displayingDialogType != DisplayingDialogType.None)
+        throw new InvalidOperationException();
 
-        private readonly PausePanel _pausePanel;
+      _displayingDialogType = DisplayingDialogType.Pause;
 
-        private readonly ILevelUIListener _listener;
+      _listener.PauseCLicked();
 
-        public LevelUI(UISystem uiSystem, ILevelUIListener listener)
-        {
-            _uiSystem = uiSystem;
-            _listener = listener;
-            _resources = Resources.Load<LevelUIResources>("LevelUIResources");
+      var dialog = _uiSystem.InstantiateWindow(WindowType.Dialog, _resources.PauseDialog, false);
+      _displayingDialog = dialog;
 
-            _pausePanel = _uiSystem.Instantiate(_resources.PausePanel, UILayer.Background, true);
-            _pausePanel.OnCLick += ShowPause;
+      dialog.Show();
+      dialog.OnHideFinish += () => {
+        ClearDisplayingDialog();
+        switch (dialog.Result) {
+          case PauseDialog.Intent.Resume:
+            _listener.ResumeCLicked();
+            break;
+          case PauseDialog.Intent.Exit:
+            _listener.ExitCLicked();
+            break;
         }
-
-        private void ShowPause()
-        {
-            _listener.PauseCLicked();
-
-            var dialog = _uiSystem.InstantiateWindow(WindowType.Dialog, _resources.PauseDialog, false);
-            dialog.Show();
-            dialog.OnHideFinish += () =>
-            {
-                dialog.Destroy();
-                switch (dialog.Result)
-                {
-                    case PauseDialog.Intent.Resume:
-                        _listener.ResumeCLicked();
-                        break;
-                    case PauseDialog.Intent.Exit:
-                        _listener.ExitCLicked();
-                        break;
-                }
-            };
-        }
-
-        public void ShowResult(HitPointsState hp)
-        {
-            var msg = Tr._("Game finished with result {0}:{1}");
-            var dialog = _uiSystem.CreateInfoBox(false, string.Format(msg, hp.Left, hp.Right));
-            dialog.Show();
-            dialog.OnHideFinish += () =>
-            {
-                dialog.Destroy();
-                _listener.ExitCLicked();
-            };
-        }
-
-        public void Dispose()
-        {
-            if (_pausePanel != null)
-                Object.Destroy(_pausePanel.gameObject);
-        }
+      };
     }
+
+    public void ShowResultDialog(HitPointsState hp) {
+      switch (_displayingDialogType) {
+        case DisplayingDialogType.None:
+          break;
+
+        case DisplayingDialogType.Pause:
+        case DisplayingDialogType.Error:
+          ClearDisplayingDialog();
+          break;
+
+        default:
+          throw new InvalidOperationException();
+      }
+
+      _displayingDialogType = DisplayingDialogType.Result;
+
+      var msg = Tr._("Game finished with result {0}:{1}");
+      var dialog = _uiSystem.CreateInfoBox(false, string.Format(msg, hp.Left, hp.Right));
+      _displayingDialog = dialog;
+
+      dialog.Show();
+      dialog.OnHideFinish += () => {
+        ClearDisplayingDialog();
+        _listener.ExitCLicked();
+      };
+    }
+
+    public void ShowErrorDialog(string error) {
+      switch (_displayingDialogType) {
+        case DisplayingDialogType.None:
+        case DisplayingDialogType.Result:
+          break;
+
+        case DisplayingDialogType.Pause:
+          ClearDisplayingDialog();
+          break;
+
+        default:
+          throw new InvalidOperationException();
+      }
+
+      var dialog = _uiSystem.CreateErrorBox(false, error);
+      _displayingDialog = dialog;
+
+      dialog.Show();
+      dialog.OnHideFinish += () => {
+        ClearDisplayingDialog();
+        _listener.ExitCLicked();
+      };
+    }
+
+    private void ClearDisplayingDialog() {
+      _displayingDialog.Destroy();
+      _displayingDialog = null;
+      _displayingDialogType = DisplayingDialogType.None;
+    }
+
+    public void Dispose() {
+      if (_pausePanel != null)
+        Object.Destroy(_pausePanel.gameObject);
+
+      if (_displayingDialog != null)
+        _displayingDialog.Destroy();
+
+      _displayingDialog = null;
+      _displayingDialogType = DisplayingDialogType.None;
+    }
+  }
 }

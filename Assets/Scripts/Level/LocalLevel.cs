@@ -64,7 +64,7 @@ namespace DPong.Level {
       _view.UpdateState(_previousState, _state, blendingFactor);
 
       if (_finished)
-        _ui.ShowResult(_state.HitPoints);
+        _ui.ShowResultDialog(_state.HitPoints);
     }
 
     public void Dispose() {
