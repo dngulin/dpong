@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DPong.Game.Navigation {
+namespace DPong.Meta.Navigation {
   public class Navigator : ITickable {
     private readonly Stack<INavigationPoint> _navigationStack = new Stack<INavigationPoint>();
 

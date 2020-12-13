@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using DPong.Game.Navigation;
-using DPong.Game.Screens.HotSeatGame;
-using DPong.Game.Screens.Main;
-using DPong.Game.Screens.NetworkGame;
 using DPong.InputSource;
 using DPong.Localization;
+using DPong.Meta.Navigation;
+using DPong.Meta.Screens.HotSeatGame;
+using DPong.Meta.Screens.Main;
+using DPong.Meta.Screens.NetworkGame;
 using DPong.Save;
 using DPong.UI;
 using UnityEngine;
 
-namespace DPong.Game {
+namespace DPong.Meta {
   public class GameCompositionRoot : MonoBehaviour {
     private const string SaveFilename = "save.json";
 

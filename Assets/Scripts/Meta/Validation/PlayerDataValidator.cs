@@ -1,4 +1,4 @@
-namespace DPong.Game.Validation {
+namespace DPong.Meta.Validation {
   public static class PlayerDataValidator {
     private const int NaxNickLength = 10;
     private const string DefaultNickName = "Player";

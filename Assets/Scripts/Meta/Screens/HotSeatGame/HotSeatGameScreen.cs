@@ -1,17 +1,17 @@
 using System;
-using DPong.Game.Navigation;
-using DPong.Game.Validation;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
 using DPong.Level.Data;
 using DPong.Localization;
+using DPong.Meta.Navigation;
+using DPong.Meta.Validation;
 using DPong.Save;
 using DPong.UI;
 using PGM.ScaledNum;
 using UnityEngine;
 
-namespace DPong.Game.Screens.HotSeatGame {
+namespace DPong.Meta.Screens.HotSeatGame {
   public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ILevelExitListener, IDisposable {
     private readonly Navigator _navigator;
     private readonly SaveSystem _saveSystem;

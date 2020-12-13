@@ -1,17 +1,17 @@
 using System;
-using DPong.Game.Navigation;
-using DPong.Game.Validation;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
 using DPong.Localization;
+using DPong.Meta.Navigation;
+using DPong.Meta.Validation;
 using DPong.Save;
 using DPong.UI;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
 using UnityEngine;
 
-namespace DPong.Game.Screens.NetworkGame {
+namespace DPong.Meta.Screens.NetworkGame {
   public class NetworkGameScreen : INavigationPoint, INetworkGameMenuListener, ILevelExitListener, IDisposable {
     private readonly Navigator _navigator;
     private readonly UISystem _uiSystem;

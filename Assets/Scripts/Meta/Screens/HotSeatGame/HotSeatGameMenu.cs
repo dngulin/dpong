@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using DPong.Game.UI;
 using DPong.Level.Data;
+using DPong.Meta.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Game.Screens.HotSeatGame {
+namespace DPong.Meta.Screens.HotSeatGame {
   public interface IHotSeatMenuListener {
     void PlayClicked();
     void BackClicked();

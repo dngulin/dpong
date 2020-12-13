@@ -1,8 +1,8 @@
-using DPong.Game.Navigation;
+using DPong.Meta.Navigation;
 using DPong.UI;
 using UnityEngine;
 
-namespace DPong.Game.Screens.Main {
+namespace DPong.Meta.Screens.Main {
   public class MainScreen : INavigationPoint, IMainMenuListener {
     public readonly struct Transitions {
       public readonly NavigationToken HotSeatMenu;

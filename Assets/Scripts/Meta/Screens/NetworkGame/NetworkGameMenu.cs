@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using DPong.Game.UI;
+using DPong.Meta.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Game.Screens.NetworkGame {
+namespace DPong.Meta.Screens.NetworkGame {
   public interface INetworkGameMenuListener {
     void PlayClicked();
     void BackClicked();
