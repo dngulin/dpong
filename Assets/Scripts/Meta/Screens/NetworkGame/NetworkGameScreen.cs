@@ -167,6 +167,8 @@ namespace DPong.Meta.Screens.NetworkGame {
           HandleActiveSession();
           break;
         case ProcessingResult.ResultType.Finished:
+          var (frame, simCount) = _level.SimulationStats;
+          Debug.Log($"Finished: {frame} : {simCount} ({simCount - frame} resimulations)");
           _level.ExitWithFinish();
           break;
         default:
