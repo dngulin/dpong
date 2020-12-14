@@ -224,7 +224,10 @@ namespace DPong.Level {
       _inputSendQueue.Enqueue(new ClientMsgInputs(frame, (ulong) keys));
     }
 
-    public void Dispose() => _view?.Dispose();
+    public void Dispose() {
+      _view.Dispose();
+      _ui.Dispose();
+    }
 
     void ILevelUIListener.PauseCLicked() => _paused = true;
     void ILevelUIListener.ResumeCLicked() => _paused = false;
