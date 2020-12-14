@@ -61,10 +61,6 @@ namespace DPong.Meta.Screens.NetworkGame {
       _menu = _uiSystem.Instantiate(Resources.Load<NetworkGameMenu>("NetworkGameMenu"), UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
-
-      var splash = Resources.Load<ConnectionDialog>("ConnectionDialog");
-      _connectingDlg = _uiSystem.InstantiateWindow(WindowType.Dialog, splash, false);
-      _connectingDlg.OnCancelClicked += StopConnecting;
     }
 
     void INavigationPoint.Suspend() => HideMenu();
@@ -115,6 +111,14 @@ namespace DPong.Meta.Screens.NetworkGame {
         // TODO: add log?
         return;
       }
+
+      var splash = Resources.Load<ConnectionDialog>("ConnectionDialog");
+      _connectingDlg = _uiSystem.InstantiateWindow(WindowType.Dialog, splash, false);
+      _connectingDlg.OnCancelClicked += StopConnecting;
+      _connectingDlg.OnHideFinish += () => {
+        _connectingDlg.Destroy();
+        _connectingDlg = null;
+      };
 
       _isConnecting = true;
       _connectingDlg.SetJoinedState(false);
