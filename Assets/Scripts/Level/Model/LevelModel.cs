@@ -4,7 +4,7 @@ using PGM.Random;
 
 namespace DPong.Level.Model {
   public class LevelModel {
-    private static readonly Side[] Sides = {Side.Left, Side.Right};
+    private readonly Side[] _sides = {Side.Left, Side.Right};
 
     private readonly PcgState _initialRandomState;
 
@@ -69,7 +69,7 @@ namespace DPong.Level.Model {
     private void CheckGates(ref LevelState state) {
       var ballShape = _ball.GetShape(ref state.Ball);
 
-      foreach (var side in Sides) {
+      foreach (var side in _sides) {
         if (!_collisions.CheckGates(ballShape, side)) continue;
 
         _hitPoints.DecreaseHp(ref state.HitPoints, side);
