@@ -1,7 +1,8 @@
-﻿using DPong.InputSource.Sources;
+﻿using System;
+using DPong.InputSource.Sources;
 using DPong.Level.Data;
 using DPong.UI;
-using PGM.ScaledNum;
+using FxNet.Math;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,10 +47,7 @@ namespace DPong.Level.Debugging {
     private LevelSettings CreateLevelInfo() {
       var leftPlayer = new PlayerInfo(_leftName, _leftIsBot ? PlayerType.Bot : PlayerType.Local);
       var rightPlayer = new PlayerInfo(_rightName, _rightIsBot ? PlayerType.Bot : PlayerType.Local);
-
-      const int tps = 25;
-      var tickDuration = Mathf.RoundToInt((float)SnMath.Scale / tps);
-      var settings = new SimulationSettings(tickDuration, null);
+      var settings = new SimulationSettings(FxNum.FromRatio(1, 25), (ulong) DateTime.UtcNow.Ticks);
 
       return new LevelSettings(leftPlayer, rightPlayer, settings);
     }

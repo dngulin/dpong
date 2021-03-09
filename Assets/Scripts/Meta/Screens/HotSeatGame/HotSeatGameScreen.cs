@@ -8,7 +8,7 @@ using DPong.Meta.Navigation;
 using DPong.Meta.Validation;
 using DPong.Save;
 using DPong.UI;
-using PGM.ScaledNum;
+using FxNet.Math;
 using UnityEngine;
 
 namespace DPong.Meta.Screens.HotSeatGame {
@@ -94,8 +94,8 @@ namespace DPong.Meta.Screens.HotSeatGame {
       var lPlayer = new PlayerInfo(_save.LeftName, PlayerType.Local);
       var rPlayer = new PlayerInfo(_save.RightName, PlayerType.Local);
 
-      var tickDuration = Mathf.RoundToInt(1f / 30 * SnMath.Scale);
-      var simSettings = new SimulationSettings(tickDuration, null);
+      var tickDuration = FxNum.FromRatio(1, 30);
+      var simSettings = new SimulationSettings(tickDuration, (ulong) DateTime.UtcNow.Ticks);
 
       var levelSettings = new LevelSettings(lPlayer, rPlayer, simSettings);
 

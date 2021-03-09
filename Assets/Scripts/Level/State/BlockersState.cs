@@ -1,12 +1,13 @@
-using PGM.ScaledNum;
+using DPong.Common;
+using FxNet.Math;
 
 namespace DPong.Level.State {
   public struct BlockersState {
-    public SnVector2 LeftPosition;
-    public SnVector2 RightPosition;
+    public FxVec2 LeftPosition;
+    public FxVec2 RightPosition;
 
-    public int CalculateHash() {
-      return (LeftPosition.GetHashCode() * 397) ^ RightPosition.GetHashCode();
+    public int CalculateCheckSum() {
+      return (LeftPosition.CalculateCheckSum() * 397) ^ RightPosition.CalculateCheckSum();
     }
   }
 }

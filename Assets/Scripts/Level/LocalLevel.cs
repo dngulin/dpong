@@ -1,5 +1,4 @@
 using System;
-using DPong.Common;
 using DPong.Level.AI;
 using DPong.Level.Data;
 using DPong.Level.Model;
@@ -42,7 +41,7 @@ namespace DPong.Level {
       _view = new LevelView(_state, settings);
       _ui = new LevelUI(uiSystem, this);
 
-      _timer = new SimulationsTimer(settings.Simulation.TickDuration.Unscaled());
+      _timer = new SimulationsTimer((float) settings.Simulation.TickDuration);
     }
 
     public void Tick(float dt) {

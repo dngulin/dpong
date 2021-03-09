@@ -7,10 +7,9 @@ using DPong.Level.State;
 using DPong.Level.UI;
 using DPong.Level.View;
 using DPong.UI;
+using FxNet.Math;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
-using PGM.Random;
-using PGM.ScaledNum;
 
 namespace DPong.Level {
   public class NetworkLevel : ILevelUIListener, IDisposable {
@@ -65,9 +64,8 @@ namespace DPong.Level {
       var left = new PlayerInfo(msgStart.Players[0], msgStart.YourIndex == 0 ? PlayerType.Local : PlayerType.Remote);
       var right = new PlayerInfo(msgStart.Players[1], msgStart.YourIndex == 1 ? PlayerType.Local : PlayerType.Remote);
 
-      long tickDuration = SnMath.One / msgStart.TicksPerSecond;
-      var randomState = Pcg.CreateState(new Random(msgStart.Seed));
-      var simSettings = new SimulationSettings(tickDuration, randomState);
+      var tickDuration = FxNum.FromRatio(1, msgStart.TicksPerSecond);
+      var simSettings = new SimulationSettings(tickDuration, (ulong) msgStart.Seed);
 
       var settings = new LevelSettings(left, right, simSettings);
 
@@ -151,7 +149,7 @@ namespace DPong.Level {
 
       ClientMsgFinished? finishMsg = null;
       if (_processingState == ProcessingState.FinishedByApprovedInput)
-        finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateHash());
+        finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateCheckSum());
 
       if (_frame > 0)
         _view.UpdateState(_stateBuffer[_frame - 1], _stateBuffer[_frame], _frameTimer.GetBlendingFactor(_frame));

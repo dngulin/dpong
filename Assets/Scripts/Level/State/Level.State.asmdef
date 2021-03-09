@@ -1,7 +1,7 @@
 {
     "name": "Level.State",
     "rootNamespace": "DPong",
-    "references": [],
+    "references": ["Common"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -1,12 +1,12 @@
 using DPong.Level.Data;
 using DPong.Level.State;
-using PGM.Random;
+using FxNet.Random;
 
 namespace DPong.Level.Model {
   public class LevelModel {
     private readonly Side[] _sides = {Side.Left, Side.Right};
 
-    private readonly PcgState _initialRandomState;
+    private readonly FxRandomState _initialRandomState;
 
     private readonly HitPointsMechanic _hitPoints;
     private readonly PaceMechanic _pace;
@@ -15,7 +15,7 @@ namespace DPong.Level.Model {
     private readonly CollisionsMechanic _collisions;
 
     public LevelModel(LevelSettings settings) {
-      _initialRandomState = settings.Simulation.RandomState ?? Pcg.CreateState();
+      _initialRandomState = FxRandom.CreteState(settings.Simulation.Seed);
 
       _hitPoints = new HitPointsMechanic(settings.HitPoints);
       _pace = new PaceMechanic(settings.Pace);
@@ -38,7 +38,7 @@ namespace DPong.Level.Model {
       if (_hitPoints.IsLevelCompleted(state.HitPoints))
         return true;
 
-      var (lBlocker, rBlocker) = _blockers.Move(ref state.Blockers, state.Pace, leftKeys, rightKeys);
+      var (lBlocker, rBlocker) = _blockers.Move(ref state, leftKeys, rightKeys);
       var ballMoved = _ball.TryMove(ref state.Ball, ref state.Random, state.Pace);
 
       if (ballMoved) {
@@ -56,21 +56,22 @@ namespace DPong.Level.Model {
       for (var objIdx = 0; objIdx < objCount; objIdx++) {
         var obj = objects[objIdx];
 
-        if (!_collisions.Check(_ball.GetShape(ref state.Ball), obj.State, out var penetration))
+        if (!_collisions.Check(_ball.GetShape(state.Ball), obj.Shape, out var penetration))
           continue;
 
         _ball.Shift(ref state.Ball, -penetration);
-        _ball.Bounce(ref state.Ball, ref state.Random, -penetration.Normalized(), obj.Movement.Normalized());
+        _ball.Bounce(ref state.Ball, ref state.Random, obj.BounceInNormal);
 
         state.Pace = _pace.SpeedUp(state.Pace);
       }
     }
 
     private void CheckGates(ref LevelState state) {
-      var ballShape = _ball.GetShape(ref state.Ball);
+      var ballShape = _ball.GetShape(state.Ball);
 
       foreach (var side in _sides) {
-        if (!_collisions.CheckGates(ballShape, side)) continue;
+        if (!_collisions.CheckGates(ballShape, side))
+          continue;
 
         _hitPoints.DecreaseHp(ref state.HitPoints, side);
         _ball.Freeze(ref state.Ball);

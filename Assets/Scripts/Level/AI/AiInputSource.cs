@@ -1,6 +1,5 @@
-using System;
 using DPong.Level.State;
-using PGM.ScaledNum;
+using FxNet.Math;
 
 namespace DPong.Level.AI {
   public class AiInputSource {
@@ -8,13 +7,13 @@ namespace DPong.Level.AI {
 
     public Keys GetRight(LevelState state) => GetKeys(state.Blockers.RightPosition, state.Ball.Position);
 
-    private Keys GetKeys(in SnVector2 blockerPos, in SnVector2 ballPos) {
+    private Keys GetKeys(in FxVec2 blockerPos, in FxVec2 ballPos) {
       var delta = ballPos - blockerPos;
 
-      if (Math.Abs(delta.X) < 1_250)
+      if (FxMath.Abs(delta.X) < FxNum.FromMillis(1_250))
         return blockerPos.Y < ballPos.Y ? Keys.Up : Keys.Down;
 
-      if (Math.Abs(delta.Y) < delta.Magnitude() / 2)
+      if (FxMath.Abs(delta.Y) < delta.Magnitude() >> 1)
         return Keys.None;
 
       return blockerPos.Y < ballPos.Y ? Keys.Up : Keys.Down;

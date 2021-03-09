@@ -1,50 +1,48 @@
 using DPong.Level.Data;
-using PGM.Collisions;
-using PGM.Collisions.Shapes2D;
-using PGM.ScaledNum;
-using PGM.SceneGraph;
+using FxNet.Collision2D;
+using FxNet.Math;
 
 namespace DPong.Level.Model {
   public class CollisionsMechanic {
-    public BounceObj BorderUp;
-    public BounceObj BorderDown;
+    public readonly BounceObj BorderUp;
+    public readonly BounceObj BorderDown;
 
-    private readonly ShapeState2D _lGateShape;
-    private readonly ShapeState2D _rGateShape;
+    private FxPoly4 _lGateShape;
+    private FxPoly4 _rGateShape;
 
     public CollisionsMechanic(BoardSettings board) {
-      var gatePos = new SnVector2((board.Size.Width + board.GateSize.Width) / 2, 0);
+      var gatePos = new FxVec2((board.Size.Width + board.GateSize.Width) >> 1, 0);
 
-      _lGateShape = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.GateSize), Transform.Translate(-gatePos));
-      _rGateShape = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.GateSize), Transform.Translate(gatePos));
+      _lGateShape = board.GateSize.ToPolygon(-gatePos);
+      _rGateShape = board.GateSize.ToPolygon(gatePos);
 
-      var borderPos = new SnVector2(0, (board.Size.Height + board.BorderSize.Height) / 2);
+      var borderPos = new FxVec2(0, (board.Size.Height + board.BorderSize.Height) >> 1);
 
-      var up = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.BorderSize), Transform.Translate(-borderPos));
-      var down = new ShapeState2D(ShapeType2D.Rect, new ShapeSize2D(board.BorderSize), Transform.Translate(borderPos));
+      var upShape = board.BorderSize.ToPolygon(borderPos);
+      var dnShape = board.BorderSize.ToPolygon(-borderPos);
 
-      BorderUp = new BounceObj(up, SnVector2.Zero);
-      BorderDown = new BounceObj(down, SnVector2.Zero);
+      BorderUp = new BounceObj(upShape, FxVec2.Up);
+      BorderDown = new BounceObj(dnShape, FxVec2.Down);
     }
 
-    public unsafe bool Check(in ShapeState2D a, in ShapeState2D b, out SnVector2 penetration) {
-      penetration = SnVector2.Zero;
+    public unsafe bool Check(in FxCircle a, in FxPoly4 b, out FxVec2 penetration) {
+      penetration = FxVec2.Zero;
 
-      if (!Collision2D.Check(a, b, Shape2D.GetCenter(b.Transform) - Shape2D.GetCenter(a.Transform)))
+      if (!FxCollisionChecker2D.Check(a, b, a.Center - (b.A + b.C) >> 1))
         return false;
 
       const int pLen = 4;
-      var penetrations = stackalloc SnVector2[pLen] {
-        Collision2D.GetPenetration(a, b, SnVector2.Up),
-        Collision2D.GetPenetration(a, b, SnVector2.Left),
-        Collision2D.GetPenetration(a, b, SnVector2.Down),
-        Collision2D.GetPenetration(a, b, SnVector2.Right)
+      var penetrations = stackalloc FxVec2[pLen] {
+        FxCollisionChecker2D.GetPenetration(a, b, FxVec2.Up),
+        FxCollisionChecker2D.GetPenetration(a, b, FxVec2.Left),
+        FxCollisionChecker2D.GetPenetration(a, b, FxVec2.Down),
+        FxCollisionChecker2D.GetPenetration(a, b, FxVec2.Right)
       };
 
-      var minSqMag = long.MaxValue;
+      var minSqMag = FxNum.FromRaw(long.MaxValue);
       var minIndex = 0;
       for (var i = 0; i < pLen; i++) {
-        var curSqMag = penetrations[i].SquareMagnitude();
+        var curSqMag = penetrations[i].SqrMagnitude();
         if (curSqMag >= minSqMag)
           continue;
 
@@ -56,10 +54,9 @@ namespace DPong.Level.Model {
       return true;
     }
 
-    public bool CheckGates(ShapeState2D shape, Side side) {
-      var gates = side == Side.Left ? _lGateShape : _rGateShape;
-      var direction = Shape2D.GetCenter(gates.Transform) - Shape2D.GetCenter(shape.Transform);
-      return Collision2D.Check(shape, gates, direction);
+    public bool CheckGates(in FxCircle ball, Side side) {
+      ref var gates = ref side == Side.Left ? ref _lGateShape : ref _rGateShape;
+      return FxCollisionChecker2D.Check(ball, gates, FxVec2.Right);
     }
   }
 }

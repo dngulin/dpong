@@ -1,14 +1,14 @@
-using PGM.Collisions.Shapes2D;
-using PGM.ScaledNum;
+using FxNet.Collision2D;
+using FxNet.Math;
 
 namespace DPong.Level.Model {
   public readonly struct BounceObj {
-    public readonly ShapeState2D State;
-    public readonly SnVector2 Movement;
+    public readonly FxPoly4 Shape;
+    public readonly FxVec2 BounceInNormal;
 
-    public BounceObj(in ShapeState2D state, in SnVector2 movement) {
-      State = state;
-      Movement = movement;
+    public BounceObj(in FxPoly4 shape, in FxVec2 bounceInNormal) {
+      Shape = shape;
+      BounceInNormal = bounceInNormal;
     }
   }
 }

@@ -1,8 +1,8 @@
-using PGM.Collisions.Shapes2D;
+using FxNet.Math;
 
 namespace DPong.Level.Data {
   public class BlockerSettings {
-    public readonly long Speed = 7_000;
-    public readonly RectSize2D Size = new RectSize2D(1_250, 5_000);
+    public readonly FxNum Speed = FxNum.FromMillis(7_000);
+    public readonly FxRectSize Size = new FxRectSize(FxNum.FromMillis(1_250), FxNum.FromMillis(5_000));
   }
 }

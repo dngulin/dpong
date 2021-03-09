@@ -1,80 +1,62 @@
-using System;
-using DPong.Common;
 using DPong.Level.Data;
 using DPong.Level.State;
-using PGM.Collisions.Shapes2D;
-using PGM.Random;
-using PGM.ScaledNum;
-using PGM.SceneGraph;
+using FxNet.Collision2D;
+using FxNet.Math;
+using FxNet.Random;
+using FxNet.SceneGraph;
 
 namespace DPong.Level.Model {
   public class BallMechanic {
-    private readonly long _tickDuration;
-
-    private readonly long _bounceMovementAngle;
-    private readonly long _bounceRandomAngle;
-
-    private readonly ShapeSize2D _size;
+    private readonly FxNum _tickDuration;
+    private readonly FxNum _bounceDeviationAngle;
+    private readonly FxNum _radius;
 
     public readonly BallState InitialState;
 
-    public BallMechanic(BallSettings ball, long tickDuration) {
+    public BallMechanic(BallSettings settings, in FxNum tickDuration) {
       _tickDuration = tickDuration;
 
-      _size = new ShapeSize2D(ball.Size);
+      _radius = settings.Radius;
 
-      _bounceMovementAngle = ball.BounceMovementAngle;
-      _bounceRandomAngle = ball.BounceRandomAngle;
+      _bounceDeviationAngle = settings.BounceRandomAngle * FxMath.Deg2Rad;
 
       InitialState = new BallState {
-        FreezeCooldown = ball.FreezeTime,
-        Speed = SnVector2.Mul(SnVector2.Up, ball.Speed),
-        Position = SnVector2.Zero
+        FreezeCooldown = settings.FreezeTime,
+        Speed = FxVec2.Up * settings.Speed,
+        Position = FxVec2.Zero
       };
     }
 
-    public ShapeState2D GetShape(ref BallState ball) {
-      return new ShapeState2D(ShapeType2D.Circle, _size, Transform.Translate(ball.Position));
-    }
+    public FxCircle GetShape(in BallState ball) => new FxCircle(ball.Position, _radius);
 
-    public bool TryMove(ref BallState ball, ref PcgState random, long pace) {
+    public bool TryMove(ref BallState ball, ref FxRandomState random, in FxNum pace) {
       if (ball.FreezeCooldown > 0) {
         UpdateCooldown(ref ball, ref random);
         return false;
       }
 
-      var multiplier = SnMath.Mul(_tickDuration, pace);
-      ball.Position += SnVector2.Mul(ball.Speed, multiplier);
+      ball.Position += ball.Speed * (_tickDuration * pace);
       return true;
     }
 
     public void Freeze(ref BallState ball) {
       ball.FreezeCooldown = InitialState.FreezeCooldown;
-      ball.Position = SnVector2.Zero;
+      ball.Position = FxVec2.Zero;
     }
 
-    public void Shift(ref BallState ball, in SnVector2 shift) {
+    public void Shift(ref BallState ball, in FxVec2 shift) {
       ball.Position += shift;
     }
 
-    public void Bounce(ref BallState ball, ref PcgState random, in SnVector2 bounceNorm, in SnVector2 movementNorm) {
-      // Reflect speed vector
-      var dot = SnVector2.Dot(ball.Speed, bounceNorm);
-      ball.Speed -= SnVector2.Mul(bounceNorm, dot * 2);
-
-      // Calculate rotation by blocker movement
-      var cross = SnVector3.Cross(movementNorm.To3D(), bounceNorm.To3D());
-      var movementAngle = Math.Sign(cross.Z) * SnMath.DegToRad(_bounceMovementAngle);
-
-      // Calculate some random rotation
-      var deviation = (int) _bounceRandomAngle;
-      var deviationAngle = SnMath.DegToRad(Pcg.NextRanged(ref random, -deviation, deviation));
-
+    public void Bounce(ref BallState ball, ref FxRandomState random, in FxVec2 bounceNorm) {
       // Apply speed vector rotation
-      ball.Speed *= Transform.Combine(SnVector2.Zero, movementAngle + deviationAngle);
+      ball.Speed = FxVec2.Reflect(ball.Speed, -bounceNorm);
+
+      var angle = random.Next(-_bounceDeviationAngle, _bounceDeviationAngle);
+      ball.Speed = FxRigidTransform2D.CombineMatrix(FxVec2.Zero, angle).MultiplyPoint(ball.Speed);
     }
 
-    private void UpdateCooldown(ref BallState ball, ref PcgState random) {
+    private void UpdateCooldown(ref BallState ball, ref FxRandomState random) {
       ball.FreezeCooldown -= _tickDuration;
       if (ball.FreezeCooldown > 0)
         return;
@@ -83,9 +65,9 @@ namespace DPong.Level.Model {
       SetRandomMovementDirection(ref ball, ref random);
     }
 
-    private void SetRandomMovementDirection(ref BallState ball, ref PcgState random) {
-      var angle = SnMath.DegToRad(45_000) + Pcg.NextRanged(ref random, 0, 4) * SnMath.DegToRad(90_000);
-      ball.Speed = InitialState.Speed * Transform.Combine(SnVector2.Zero, angle);
+    private void SetRandomMovementDirection(ref BallState ball, ref FxRandomState random) {
+      var angle = FxNum.FromRaw(FxMath.PiRaw / 2) * (int) random.Next(0, 4)  + FxNum.FromRaw(FxMath.PiRaw / 4);
+      ball.Speed = FxRigidTransform2D.CombineMatrix(FxVec2.Zero, angle).MultiplyPoint(InitialState.Speed);
     }
   }
 }

@@ -3,7 +3,7 @@ namespace DPong.Level.State {
     public int Left;
     public int Right;
 
-    public int CalculateHash() {
+    public int CalculateCheckSum() {
       return (Left.GetHashCode() * 397) ^ Right.GetHashCode();
     }
   }

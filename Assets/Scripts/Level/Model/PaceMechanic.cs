@@ -1,12 +1,12 @@
 using DPong.Level.Data;
-using PGM.ScaledNum;
+using FxNet.Math;
 
 namespace DPong.Level.Model {
   public class PaceMechanic {
-    public readonly long Default;
+    public readonly FxNum Default;
 
-    private readonly long _inc;
-    private readonly long _max;
+    private readonly FxNum _inc;
+    private readonly FxNum _max;
 
     public PaceMechanic(PaceSettings pace) {
       Default = pace.Default;
@@ -14,6 +14,6 @@ namespace DPong.Level.Model {
       _max = pace.Maximum;
     }
 
-    public long SpeedUp(long pace) => SnMath.Clamp(pace + _inc, Default, _max);
+    public FxNum SpeedUp(in FxNum pace) => FxMath.Clamp(pace + _inc, Default, _max);
   }
 }

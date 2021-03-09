@@ -1,57 +1,58 @@
 using DPong.Level.Data;
 using DPong.Level.State;
-using PGM.Collisions.Shapes2D;
-using PGM.ScaledNum;
-using PGM.SceneGraph;
+using FxNet.Math;
 
 namespace DPong.Level.Model {
   public class BlockersMechanic {
-    private readonly long _tickDuration;
-    private readonly long _speed;
+    private readonly FxNum _tickDuration;
+    private readonly FxNum _speed;
 
-    private readonly long _maxBlockerDeviation;
-    private readonly ShapeSize2D _size;
+    private readonly FxNum _maxBlockerDeviation;
+    private readonly FxRectSize _blockerRect;
 
     public readonly BlockersState InitialState;
 
-    public BlockersMechanic(BlockerSettings blocker, in RectSize2D boardSize, long tickDuration) {
+    public BlockersMechanic(BlockerSettings blocker, in FxRectSize boardSize, in FxNum tickDuration) {
       _tickDuration = tickDuration;
       _speed = blocker.Speed;
 
-      _maxBlockerDeviation = (boardSize.Height - blocker.Size.Height) / 2;
-      _size = new ShapeSize2D(blocker.Size);
+      _maxBlockerDeviation = (boardSize.Height - blocker.Size.Height) >> 1;
+      _blockerRect = blocker.Size;
 
-      var blockerPos = new SnVector2(boardSize.Width / 2, 0);
+      var blockerPos = new FxVec2(boardSize.Width >> 1, 0);
       InitialState = new BlockersState {
         LeftPosition = -blockerPos,
         RightPosition = blockerPos
       };
     }
 
-    public (BounceObj, BounceObj) Move(ref BlockersState blockers, long pace, Keys leftKeys, Keys rightKeys) {
-      var lBlocker = Move(ref blockers.LeftPosition, pace, leftKeys);
-      var rBlocker = Move(ref blockers.RightPosition, pace, rightKeys);
-      return (lBlocker, rBlocker);
+    public (BounceObj, BounceObj) Move(ref LevelState state, Keys leftKeys, Keys rightKeys) {
+      Move(ref state.Blockers.LeftPosition, state.Pace, leftKeys);
+      Move(ref state.Blockers.RightPosition, state.Pace, rightKeys);
+
+      var deltaL = new FxVec2(0, state.Blockers.LeftPosition.Y - state.Ball.Position.Y);
+      var deltaR = new FxVec2(0, state.Blockers.RightPosition.Y - state.Ball.Position.Y);
+
+      return (
+        GetBlockerBounceObj(state.Blockers.LeftPosition, (FxVec2.Left * 20 - deltaL).Normalized()),
+        GetBlockerBounceObj(state.Blockers.RightPosition, (FxVec2.Right * 20 - deltaR).Normalized())
+        );
     }
 
-    private BounceObj Move(ref SnVector2 position, long pace, Keys keys) {
-      if (keys == Keys.None || keys == (Keys.Up | Keys.Down))
-        return GetBlockerBounceObject(position, SnVector2.Zero);
+    private void Move(ref FxVec2 position, in FxNum pace, Keys keys) {
+      if (keys == Keys.None || keys == (Keys.Up | Keys.Down)) return;
 
       var moveSign = keys.HasKey(Keys.Up) ? 1 : -1;
-      var offsetMultiplier = SnMath.Mul(_tickDuration, pace);
-      var offset = SnMath.Mul(_speed * moveSign, offsetMultiplier);
+      var offsetMultiplier = _tickDuration * pace;
+      var offset = _speed * moveSign * offsetMultiplier;
 
       var prevPosition = position;
-      var newY = SnMath.Clamp(prevPosition.Y + offset, -_maxBlockerDeviation, _maxBlockerDeviation);
-      position = new SnVector2(prevPosition.X, newY);
-
-      return GetBlockerBounceObject(position, position - prevPosition);
+      var newY = FxMath.Clamp(prevPosition.Y + offset, -_maxBlockerDeviation, _maxBlockerDeviation);
+      position = new FxVec2(prevPosition.X, newY);
     }
 
-    private BounceObj GetBlockerBounceObject(in SnVector2 position, in SnVector2 movement) {
-      var shapeState = new ShapeState2D(ShapeType2D.Rect, _size, Transform.Translate(position));
-      return new BounceObj(shapeState, movement);
+    private BounceObj GetBlockerBounceObj(in FxVec2 position, in FxVec2 inNormal) {
+      return new BounceObj(_blockerRect.ToPolygon(position), inNormal);
     }
   }
 }

@@ -1,13 +1,13 @@
-using PGM.Random;
+using FxNet.Math;
 
 namespace DPong.Level.Data {
   public class SimulationSettings {
-    public readonly long TickDuration;
-    public readonly PcgState? RandomState;
+    public readonly FxNum TickDuration;
+    public readonly ulong Seed;
 
-    public SimulationSettings(long tickDuration, PcgState? randomState) {
+    public SimulationSettings(in FxNum tickDuration, in ulong seed) {
       TickDuration = tickDuration;
-      RandomState = randomState;
+      Seed = seed;
     }
   }
 }

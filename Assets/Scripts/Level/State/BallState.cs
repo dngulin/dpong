@@ -1,16 +1,17 @@
-using PGM.ScaledNum;
+using DPong.Common;
+using FxNet.Math;
 
 namespace DPong.Level.State {
   public struct BallState {
-    public long FreezeCooldown;
-    public SnVector2 Speed;
-    public SnVector2 Position;
+    public FxNum FreezeCooldown;
+    public FxVec2 Speed;
+    public FxVec2 Position;
 
-    public int CalculateHash() {
-      var hash = FreezeCooldown.GetHashCode();
+    public int CalculateCheckSum() {
+      var hash = FreezeCooldown.CalculateCheckSum();
 
-      hash = (hash * 397) ^ Speed.GetHashCode();
-      hash = (hash * 397) ^ Position.GetHashCode();
+      hash = (hash * 397) ^ Speed.CalculateCheckSum();
+      hash = (hash * 397) ^ Position.CalculateCheckSum();
 
       return hash;
     }
