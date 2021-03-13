@@ -1,0 +1,26 @@
+namespace DPong.Level.State {
+  struct HitPointsState {
+    int Left;
+    int Right;
+  }
+
+  struct BallState {
+    FxNum FreezeCooldown;
+    FxVec2 Speed;
+    FxVec2 Position;
+  }
+
+  struct BlockerState {
+    FxVec2 Position;
+  }
+
+  array BlockerState2 BlockerState[2];
+
+  struct LevelState {
+    FxNum Pace;
+    HitPointsState HitPoints;
+    FxRandomState Random;
+    BallState Ball;
+    BlockerState2 Blockers;
+  }
+}

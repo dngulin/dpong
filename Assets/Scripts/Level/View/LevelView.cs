@@ -62,8 +62,8 @@ namespace DPong.Level.View {
         ballPos = Vector2.Lerp(near.Ball.Position.ToVector2(), far.Ball.Position.ToVector2(), t);
       }
 
-      var lPos = Vector2.Lerp(near.Blockers.LeftPosition.ToVector2(), far.Blockers.LeftPosition.ToVector2(), t);
-      var rPos = Vector2.Lerp(near.Blockers.RightPosition.ToVector2(), far.Blockers.RightPosition.ToVector2(), t);
+      var lPos = Vector2.Lerp(near.Blockers[0].Position.ToVector2(), far.Blockers[0].Position.ToVector2(), t);
+      var rPos = Vector2.Lerp(near.Blockers[1].Position.ToVector2(), far.Blockers[1].Position.ToVector2(), t);
 
       ApplyState(lHp, rHp, ballPos, lPos, rPos);
     }
@@ -74,8 +74,8 @@ namespace DPong.Level.View {
 
       var ballPos = state.Ball.Position.ToVector2();
 
-      var lPos = state.Blockers.LeftPosition.ToVector2();
-      var rPos = state.Blockers.RightPosition.ToVector2();
+      var lPos = state.Blockers[0].Position.ToVector2();
+      var rPos = state.Blockers[1].Position.ToVector2();
 
       ApplyState(lHp, rHp, ballPos, lPos, rPos);
     }

@@ -3,9 +3,9 @@ using FxNet.Math;
 
 namespace DPong.Level.AI {
   public class AiInputSource {
-    public Keys GetLeft(LevelState state) => GetKeys(state.Blockers.LeftPosition, state.Ball.Position);
+    public Keys GetLeft(LevelState state) => GetKeys(state.Blockers[0].Position, state.Ball.Position);
 
-    public Keys GetRight(LevelState state) => GetKeys(state.Blockers.RightPosition, state.Ball.Position);
+    public Keys GetRight(LevelState state) => GetKeys(state.Blockers[1].Position, state.Ball.Position);
 
     private Keys GetKeys(in FxVec2 blockerPos, in FxVec2 ballPos) {
       var delta = ballPos - blockerPos;
