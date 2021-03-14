@@ -1,5 +1,5 @@
-using System;
 using PlainBuffers;
+using PlainBuffers.Generators;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,14 +10,14 @@ namespace DPong.Editor.PlainBuffers {
 
     public static void Compile() {
       var stateCompiler = new PlainBuffersCompiler(
-        new UnityCodeGenerator(new[] {
+        new CSharpUnityCodeGenerator(new[] {
           "FxNet.Math",
           "FxNet.Random"
         }),
         new [] {
-          new ExternStructInfo("FxNum", 8, 8, new[] {"FromRaw(0)"}),
-          new ExternStructInfo("FxVec2", 16, 8, new[] {"Zero", "One", "Top", "Left", "Bottom", "Right"}),
-          new ExternStructInfo("FxRandomState", 32, 8, Array.Empty<string>())
+          ExternStructInfo.WithoutValues("FxNum", 8, 8),
+          ExternStructInfo.WithEnumeratedValues("FxVec2", 16, 8, new[] {"Zero", "Top", "Left", "Bottom", "Right"}),
+          ExternStructInfo.WithoutValues("FxRandomState", 32, 8)
         });
 
       var (errors, warnings) = stateCompiler.Compile(SchemaPath, StatePath);
