@@ -7,7 +7,7 @@ namespace DPong.Editor.PlainBuffers {
   public static class PlainBuffersCompileTool {
     private const string SchemaPath = "Assets/Scripts/Level/State/LevelState.pbs";
     private const string LevelStatePath = "Assets/Scripts/Level/State/LevelState.cs";
-    private const string ViewStatePath = "Assets/Scripts/Level/View/ViewState.cs";
+    private const string LevelViewStatePath = "Assets/Scripts/Level/View/LevelViewState.cs";
 
     public static void Compile() {
       CompileLevelState();
@@ -43,7 +43,7 @@ namespace DPong.Editor.PlainBuffers {
     }
 
     private static void CompileViewState() {
-      Debug.Log("Compile ViewState...");
+      Debug.Log("Compile LevelViewState...");
 
       var stateCompiler = new PlainBuffersCompiler(
         new ViewStateCodeGenerator(new[] {
@@ -57,7 +57,7 @@ namespace DPong.Editor.PlainBuffers {
         },
         new FixedToFloatTypeMapper());
 
-      var (errors, warnings) = stateCompiler.Compile(SchemaPath, ViewStatePath);
+      var (errors, warnings) = stateCompiler.Compile(SchemaPath, LevelViewStatePath);
       foreach (var warning in warnings)
         Debug.LogWarning(warning);
 
@@ -65,7 +65,7 @@ namespace DPong.Editor.PlainBuffers {
         Debug.LogError(error);
 
       if (errors.Length == 0) {
-        Debug.Log("ViewState compiled successfully!");
+        Debug.Log("LevelViewState compiled successfully!");
       }
     }
   }
