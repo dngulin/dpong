@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using PlainBuffers;
 
 namespace DPong.Editor.PlainBuffers {
-  public class ViewStateTypeMapper : IRelatedStructMapper {
+  public class FixedToFloatTypeMapper : ITypeMapper {
     public string RemapNamespace(string ns) => "DPong.Level.View";
 
     public string RemapEnumName(string enumName) => enumName;

@@ -52,12 +52,10 @@ namespace DPong.Editor.PlainBuffers {
           "UnityEngine"
         }),
         new[] {
-          ExternStructInfo.WithoutValues("FxNum", 8, 8),
           ExternStructInfo.WithoutValues("FxRandomState", 32, 8),
-          ExternStructInfo.WithEnumeratedValues("FxVec2", 16, 8, new[] {"Zero", "Top", "Left", "Bottom", "Right"}),
           ExternStructInfo.WithEnumeratedValues("Vector2", 8, 4, new[] {"zero", "top", "left", "bottom", "right"})
         },
-        new ViewStateTypeMapper());
+        new FixedToFloatTypeMapper());
 
       var (errors, warnings) = stateCompiler.Compile(SchemaPath, ViewStatePath);
       foreach (var warning in warnings)

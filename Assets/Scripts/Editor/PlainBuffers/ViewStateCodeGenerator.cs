@@ -1,4 +1,3 @@
-using System;
 using PlainBuffers.CodeGen;
 using PlainBuffers.CodeGen.Data;
 using PlainBuffers.Generators;
