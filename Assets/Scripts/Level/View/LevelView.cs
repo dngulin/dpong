@@ -1,5 +1,4 @@
 using System;
-using DPong.Common;
 using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
@@ -26,7 +25,7 @@ namespace DPong.Level.View {
 
       Resources.UnloadAsset(res);
 
-      ApplyState(initialState);
+      ApplyState(initialState.ToViewState());
     }
 
     public void Dispose() {
@@ -38,54 +37,36 @@ namespace DPong.Level.View {
       const float threshold = 0.001f;
 
       if (t < threshold) {
-        ApplyState(l);
+        ApplyState(l.ToViewState());
       } else if (t > 1f - threshold) {
-        ApplyState(r);
+        ApplyState(r.ToViewState());
       }
       else {
+        var vl = l.ToViewState();
+        var vr = r.ToViewState();
+
         if (t < 0.5f)
-          BlendAndApplyState(l, r, t);
+          BlendAndApplyState(ref vl, vr, t);
         else
-          BlendAndApplyState(r, l, 1f - t);
+          BlendAndApplyState(ref vr, vl, 1f - t);
       }
     }
 
-    private void BlendAndApplyState(in LevelState near, in LevelState far, float t) {
-      var lHp = near.HitPoints.Left;
-      var rHp = near.HitPoints.Right;
+    private void BlendAndApplyState(ref LevelViewState near, in LevelViewState far, float t) {
+      if (near.Ball.FreezeCooldown <= 0 && far.Ball.FreezeCooldown <= 0)
+        near.Ball.Position = Vector2.Lerp(near.Ball.Position, far.Ball.Position, t);
 
-      Vector2 ballPos;
-      if (near.Ball.FreezeCooldown > 0 || far.Ball.FreezeCooldown > 0) {
-        ballPos = near.Ball.Position.ToVector2();
-      }
-      else {
-        ballPos = Vector2.Lerp(near.Ball.Position.ToVector2(), far.Ball.Position.ToVector2(), t);
-      }
+      near.Blockers[0].Position = Vector2.Lerp(near.Blockers[0].Position, far.Blockers[0].Position, t);
+      near.Blockers[1].Position = Vector2.Lerp(near.Blockers[1].Position, far.Blockers[1].Position, t);
 
-      var lPos = Vector2.Lerp(near.Blockers[0].Position.ToVector2(), far.Blockers[0].Position.ToVector2(), t);
-      var rPos = Vector2.Lerp(near.Blockers[1].Position.ToVector2(), far.Blockers[1].Position.ToVector2(), t);
-
-      ApplyState(lHp, rHp, ballPos, lPos, rPos);
+      ApplyState(near);
     }
 
-    private void ApplyState(in LevelState state) {
-      var lHp = state.HitPoints.Left;
-      var rHp = state.HitPoints.Right;
-
-      var ballPos = state.Ball.Position.ToVector2();
-
-      var lPos = state.Blockers[0].Position.ToVector2();
-      var rPos = state.Blockers[1].Position.ToVector2();
-
-      ApplyState(lHp, rHp, ballPos, lPos, rPos);
-    }
-
-    // TODO: Create ViewState
-    private void ApplyState(int lHp, int rHp, in Vector2 ballPos, in Vector2 lPos, in Vector2 rPos) {
-      _board.SetHitPoints(lHp, rHp);
-      _ball.SetPosition(ballPos);
-      _blockerLeft.SetPosition(lPos);
-      _blockerRight.SetPosition(rPos);
+    private void ApplyState(in LevelViewState state) {
+      _board.SetHitPoints(state.HitPoints.Left, state.HitPoints.Right);
+      _ball.SetPosition(state.Ball.Position);
+      _blockerLeft.SetPosition(state.Blockers[0].Position);
+      _blockerRight.SetPosition(state.Blockers[1].Position);
     }
   }
 }
