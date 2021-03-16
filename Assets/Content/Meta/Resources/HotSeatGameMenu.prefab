@@ -485,6 +485,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  m_OnSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -495,6 +498,7 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+  m_ShouldActivateOnSelect: 1
 --- !u!1 &1854790519163273963
 GameObject:
   m_ObjectHideFlags: 0
@@ -1474,6 +1478,7 @@ GameObject:
   - component: {fileID: 3171344490143112165}
   - component: {fileID: 5938712327321735090}
   - component: {fileID: 2165986120277868721}
+  - component: {fileID: 8328432883615211921}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1542,6 +1547,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Play
+--- !u!114 &8328432883615211921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4251768187261572471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &4364986016129657793
 GameObject:
   m_ObjectHideFlags: 0
@@ -2360,6 +2378,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  m_OnSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2370,6 +2391,7 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+  m_ShouldActivateOnSelect: 1
 --- !u!1 &7490618386977912316
 GameObject:
   m_ObjectHideFlags: 0
@@ -2614,6 +2636,7 @@ GameObject:
   - component: {fileID: 7035554244798488717}
   - component: {fileID: 8400116687482793933}
   - component: {fileID: 7357969273862366868}
+  - component: {fileID: 3417865204312539870}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -2682,6 +2705,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Right Player name...
+--- !u!114 &3417865204312539870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7826097255492112400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &7901587901772038609
 GameObject:
   m_ObjectHideFlags: 0
@@ -3024,6 +3060,7 @@ GameObject:
   - component: {fileID: 1644315910698923733}
   - component: {fileID: 8452690996328929803}
   - component: {fileID: 5825853113786191770}
+  - component: {fileID: 1110595247451080409}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -3091,9 +3128,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Back
-
-'
+  m_Text: Back
+--- !u!114 &1110595247451080409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9032655456309267794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &9050550160921398676
 GameObject:
   m_ObjectHideFlags: 0
@@ -3180,6 +3228,7 @@ GameObject:
   - component: {fileID: 7450246391898739509}
   - component: {fileID: 88595593800276120}
   - component: {fileID: 7078219650801803020}
+  - component: {fileID: 6652885450868394497}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -3248,3 +3297,16 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Left palyer name...
+--- !u!114 &6652885450868394497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9103529909940814372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 

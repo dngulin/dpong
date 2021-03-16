@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1292352437805090558}
   - component: {fileID: 8624689149608742227}
   - component: {fileID: 1491025084444445383}
+  - component: {fileID: 8708008797509025567}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -78,7 +79,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Left palyer name...
+  m_Text: Palyer name...
+--- !u!114 &8708008797509025567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638930705100019695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &797646501163178079
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,6 +179,7 @@ GameObject:
   - component: {fileID: 6942866950947234590}
   - component: {fileID: 271959263762255808}
   - component: {fileID: 2761369188217739857}
+  - component: {fileID: 1267610181256473680}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -232,9 +247,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Back
-
-'
+  m_Text: Back
+--- !u!114 &1267610181256473680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851668963413186713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &1260948054998704183
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,6 +734,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  m_OnSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -718,6 +747,7 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+  m_ShouldActivateOnSelect: 1
 --- !u!1 &4279103068826829375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1013,6 +1043,7 @@ GameObject:
   - component: {fileID: 6523795209856634414}
   - component: {fileID: 2657483640434842233}
   - component: {fileID: 7531404827623937402}
+  - component: {fileID: 2986682248260140836}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1081,6 +1112,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Play
+--- !u!114 &2986682248260140836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5587450415243411644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &5680906874024671777
 GameObject:
   m_ObjectHideFlags: 0
@@ -1582,6 +1626,7 @@ GameObject:
   - component: {fileID: 6479243022049275173}
   - component: {fileID: 4428377267618416924}
   - component: {fileID: 108691858235205243}
+  - component: {fileID: 6524968604676022067}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -1649,7 +1694,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Enter server address...
+--- !u!114 &6524968604676022067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6384548603578269389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 802b2b9cdc907ee58b5aa1b266e9ab6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _context: 
 --- !u!1 &7417290767470210116
 GameObject:
   m_ObjectHideFlags: 0
@@ -1782,6 +1840,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  m_OnSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1792,6 +1853,7 @@ MonoBehaviour:
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
+  m_ShouldActivateOnSelect: 1
 --- !u!1 &7921502083611097879
 GameObject:
   m_ObjectHideFlags: 0
