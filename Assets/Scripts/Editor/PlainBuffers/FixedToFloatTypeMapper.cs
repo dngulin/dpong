@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using PlainBuffers;
 
 namespace DPong.Editor.PlainBuffers {
@@ -9,17 +8,13 @@ namespace DPong.Editor.PlainBuffers {
     public string RemapArrayName(string arrayName) => arrayName.Replace("State", "ViewState");
     public string RemapStructName(string structName) => structName.Replace("State", "ViewState");
 
-    public string RemapMemberType(string memberType, Dictionary<string, string> remappedTypes) {
-      if (remappedTypes.TryGetValue(memberType, out var remappedType))
-        return remappedType;
-
+    public string RemapMemberType(string memberType) {
       switch (memberType) {
         case "FxNum": return "float";
         case "FxVec2": return "Vector2";
-        case "FxRandomState": return memberType;
       }
 
-      return memberType.Replace("State", "ViewState");
+      return memberType;
     }
 
     public string RemapMemberDefaultValue(string memberType, string value) {
