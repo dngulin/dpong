@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: DPong\n"
-"POT-Creation-Date: 2020-01-27 21:28+0300\n"
-"PO-Revision-Date: 2020-01-27 21:28+0300\n"
+"POT-Creation-Date: 2021-03-17 00:13+0300\n"
+"PO-Revision-Date: 2021-03-17 00:14+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-Poedit-Basepath: ../Assets\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
@@ -17,17 +17,155 @@ msgstr ""
 "X-Poedit-KeywordsList: _;_n:1,2;_p:1c,2;_pn:1c,2,3\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: Content/Level/Prefabs/UI/DbgConnectMenu.prefab:DbgConnectMenu/Button/Text
-msgid "Start\n"
-msgstr "Играть\n"
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/ResumeButton/Text
+msgid "Resume"
+msgstr ""
 
-#: Content/Level/Prefabs/UI/DbgPopup.prefab:DbgPopup/Button/Text
-msgid "Exit to menu"
-msgstr "Выйти в меню"
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/ExitButton/Text
+msgid "Exit"
+msgstr ""
 
-#: Scripts/Level/Debugging/NetworkLevelDebugLoader.cs:34
-msgid "Localization is loaded!"
-msgstr "Локализация загружена!"
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/Title
+msgid "Confirm exit"
+msgstr ""
 
-#~ msgid "Hello World!"
-#~ msgstr "Привет, мир!"
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/Message
+msgid "Would you like to exit the level?"
+msgstr ""
+
+#: Content/Meta/Resources/ConnectionDialog.prefab:ConnectionDialog/Button/Text
+msgid "Cancel"
+msgstr ""
+
+#: Content/Meta/Resources/ConnectionDialog.prefab:ConnectionDialog/Title
+msgid "Connection status"
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/PlayButton/Text
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/PlayButton/Text
+msgid "Play"
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/BackButton/Text
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/BackButton/Text
+msgid "Back"
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/LeftName/Placeholder
+msgid "Left palyer name..."
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/RightName/Placeholder
+msgid "Right Player name..."
+msgstr ""
+
+#: Content/Meta/Resources/MainMenu.prefab:MainMenu/HotSeatButton/Text
+msgid "Hot Seat"
+msgstr ""
+
+#: Content/Meta/Resources/MainMenu.prefab:MainMenu/NetworkingButton/Text
+msgid "Networking"
+msgstr ""
+
+#: Content/Meta/Resources/MainMenu.prefab:MainMenu/ExitButton/Text
+msgid "Exit Game"
+msgstr ""
+
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/PlayerName/Placeholder
+msgid "Palyer name..."
+msgstr ""
+
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/ServerAddress/Placeholder
+msgid "Enter server address..."
+msgstr ""
+
+#: Scripts/InputSource/InputSourceProvider.cs:42
+msgid "Keyboard"
+msgstr ""
+
+#: Scripts/InputSource/InputSourceProvider.cs:50
+msgid "Arrows"
+msgstr ""
+
+#: Scripts/InputSource/InputSourceProvider.cs:60
+msgid "Gamepad"
+msgstr ""
+
+#: Scripts/InputSource/InputSourceProvider.cs:61
+msgctxt "device name"
+msgid "Unknown"
+msgstr ""
+
+#: Scripts/Level/UI/LevelUI.cs:77
+#, csharp-format
+msgid "Game finished with result {0}:{1}"
+msgstr ""
+
+#: Scripts/Meta/Screens/HotSeatGame/HotSeatGameScreen.cs:88
+msgid "Same control settings are used for both sides"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/ConnectionDialog.cs:22
+msgid "Waiting for other player..."
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/ConnectionDialog.cs:22
+msgid "Connecting to server..."
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:9
+msgid "Internal error occured"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:10
+msgid "Connection lost"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:11
+msgid "Client protocol error"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:14
+msgid "Unknown error"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:20
+msgid "Internal server error"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:21
+msgid "Server protocol error"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:22
+msgid "Incompatible client version"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:23
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:24
+msgid "Nickname is busy"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:25
+msgid "Server connection error"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:26
+msgid "Unknown server error"
+msgstr ""
+
+#: Scripts/Meta/Screens/NetworkGame/NetworkGameScreen.cs:110
+msgid "Failed to connect to the server"
+msgstr ""
+
+#: Scripts/UI/UISystem.cs:76
+msgid "Information"
+msgstr ""
+
+#: Scripts/UI/UISystem.cs:76 Scripts/UI/UISystem.cs:81
+msgid "OK"
+msgstr ""
+
+#: Scripts/UI/UISystem.cs:81
+msgid "Error"
+msgstr ""

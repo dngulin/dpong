@@ -1,8 +1,62 @@
-#: Content/Level/Prefabs/UI/DbgConnectMenu.prefab:DbgConnectMenu/Button/Text
-msgid "Start\n"
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/ResumeButton/Text
+msgid "Resume"
 msgstr ""
 
-#: Content/Level/Prefabs/UI/DbgPopup.prefab:DbgPopup/Button/Text
-msgid "Exit to menu"
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/ExitButton/Text
+msgid "Exit"
+msgstr ""
+
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/Title
+msgid "Confirm exit"
+msgstr ""
+
+#: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/Message
+msgid "Would you like to exit the level?"
+msgstr ""
+
+#: Content/Meta/Resources/ConnectionDialog.prefab:ConnectionDialog/Button/Text
+msgid "Cancel"
+msgstr ""
+
+#: Content/Meta/Resources/ConnectionDialog.prefab:ConnectionDialog/Title
+msgid "Connection status"
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/PlayButton/Text
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/PlayButton/Text
+msgid "Play"
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/BackButton/Text
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/BackButton/Text
+msgid "Back"
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/LeftName/Placeholder
+msgid "Left palyer name..."
+msgstr ""
+
+#: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/RightName/Placeholder
+msgid "Right Player name..."
+msgstr ""
+
+#: Content/Meta/Resources/MainMenu.prefab:MainMenu/HotSeatButton/Text
+msgid "Hot Seat"
+msgstr ""
+
+#: Content/Meta/Resources/MainMenu.prefab:MainMenu/NetworkingButton/Text
+msgid "Networking"
+msgstr ""
+
+#: Content/Meta/Resources/MainMenu.prefab:MainMenu/ExitButton/Text
+msgid "Exit Game"
+msgstr ""
+
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/PlayerName/Placeholder
+msgid "Palyer name..."
+msgstr ""
+
+#: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/ServerAddress/Placeholder
+msgid "Enter server address..."
 msgstr ""
 
