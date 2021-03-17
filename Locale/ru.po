@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: DPong\n"
 "POT-Creation-Date: 2021-03-17 00:13+0300\n"
-"PO-Revision-Date: 2021-03-17 00:14+0300\n"
+"PO-Revision-Date: 2021-03-17 21:12+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru_RU\n"
@@ -19,153 +19,153 @@ msgstr ""
 
 #: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/ResumeButton/Text
 msgid "Resume"
-msgstr ""
+msgstr "Продолжить"
 
 #: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/ExitButton/Text
 msgid "Exit"
-msgstr ""
+msgstr "Выйти"
 
 #: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/Title
 msgid "Confirm exit"
-msgstr ""
+msgstr "Подтвердите выход"
 
 #: Content/Level/Prefabs/UI/PauseDialog.prefab:PauseDialog/Message
 msgid "Would you like to exit the level?"
-msgstr ""
+msgstr "Вы действительно хотите выйти из игры?"
 
 #: Content/Meta/Resources/ConnectionDialog.prefab:ConnectionDialog/Button/Text
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: Content/Meta/Resources/ConnectionDialog.prefab:ConnectionDialog/Title
 msgid "Connection status"
-msgstr ""
+msgstr "Состояние подключения"
 
 #: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/PlayButton/Text
 #: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/PlayButton/Text
 msgid "Play"
-msgstr ""
+msgstr "Играть"
 
 #: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/BackButton/Text
 #: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/BackButton/Text
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/LeftName/Placeholder
 msgid "Left palyer name..."
-msgstr ""
+msgstr "Имя левого игрока..."
 
 #: Content/Meta/Resources/HotSeatGameMenu.prefab:HotSeatGameMenu/RightName/Placeholder
 msgid "Right Player name..."
-msgstr ""
+msgstr "Имя правого игрока..."
 
 #: Content/Meta/Resources/MainMenu.prefab:MainMenu/HotSeatButton/Text
 msgid "Hot Seat"
-msgstr ""
+msgstr "Локальная игра"
 
 #: Content/Meta/Resources/MainMenu.prefab:MainMenu/NetworkingButton/Text
 msgid "Networking"
-msgstr ""
+msgstr "Сетевая игра"
 
 #: Content/Meta/Resources/MainMenu.prefab:MainMenu/ExitButton/Text
 msgid "Exit Game"
-msgstr ""
+msgstr "Выйти из игры"
 
 #: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/PlayerName/Placeholder
 msgid "Palyer name..."
-msgstr ""
+msgstr "Имя игрока..."
 
 #: Content/Meta/Resources/NetworkGameMenu.prefab:NetworkGameMenu/ServerAddress/Placeholder
 msgid "Enter server address..."
-msgstr ""
+msgstr "Введите адрес сервера..."
 
 #: Scripts/InputSource/InputSourceProvider.cs:42
 msgid "Keyboard"
-msgstr ""
+msgstr "Клавиатура"
 
 #: Scripts/InputSource/InputSourceProvider.cs:50
 msgid "Arrows"
-msgstr ""
+msgstr "Стрелки"
 
 #: Scripts/InputSource/InputSourceProvider.cs:60
 msgid "Gamepad"
-msgstr ""
+msgstr "Геймпад"
 
 #: Scripts/InputSource/InputSourceProvider.cs:61
 msgctxt "device name"
 msgid "Unknown"
-msgstr ""
+msgstr "Неизвестное"
 
 #: Scripts/Level/UI/LevelUI.cs:77
 #, csharp-format
 msgid "Game finished with result {0}:{1}"
-msgstr ""
+msgstr "Игра завершилась с разультатом {0}:{1}"
 
 #: Scripts/Meta/Screens/HotSeatGame/HotSeatGameScreen.cs:88
 msgid "Same control settings are used for both sides"
-msgstr ""
+msgstr "Для обеих сторон выбраны одинаковые настрйоки управления"
 
 #: Scripts/Meta/Screens/NetworkGame/ConnectionDialog.cs:22
 msgid "Waiting for other player..."
-msgstr ""
+msgstr "Одидание второго игрока..."
 
 #: Scripts/Meta/Screens/NetworkGame/ConnectionDialog.cs:22
 msgid "Connecting to server..."
-msgstr ""
+msgstr "Подключение к серверу..."
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:9
 msgid "Internal error occured"
-msgstr ""
+msgstr "Произошла внтренняя ошибка"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:10
 msgid "Connection lost"
-msgstr ""
+msgstr "Соединение оборвалось"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:11
 msgid "Client protocol error"
-msgstr ""
+msgstr "Ошибка протокола (клиент)"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:14
 msgid "Unknown error"
-msgstr ""
+msgstr "Неизвестная ошибка"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:20
 msgid "Internal server error"
-msgstr ""
+msgstr "Внутренняя ошибка сервера"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:21
 msgid "Server protocol error"
-msgstr ""
+msgstr "Ошибка протокола (сервер)"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:22
 msgid "Incompatible client version"
-msgstr ""
+msgstr "Версия игры несовместима с сервером"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:23
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:24
 msgid "Nickname is busy"
-msgstr ""
+msgstr "Выбранный ник занят"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:25
 msgid "Server connection error"
-msgstr ""
+msgstr "Ошибка подключения к серверу"
 
 #: Scripts/Meta/Screens/NetworkGame/MessageConverter.cs:26
 msgid "Unknown server error"
-msgstr ""
+msgstr "Неизвестная ошибка сервера"
 
 #: Scripts/Meta/Screens/NetworkGame/NetworkGameScreen.cs:110
 msgid "Failed to connect to the server"
-msgstr ""
+msgstr "Не удалось подключитсья к серверу"
 
 #: Scripts/UI/UISystem.cs:76
 msgid "Information"
-msgstr ""
+msgstr "Информация"
 
 #: Scripts/UI/UISystem.cs:76 Scripts/UI/UISystem.cs:81
 msgid "OK"
-msgstr ""
+msgstr "Ясно"
 
 #: Scripts/UI/UISystem.cs:81
 msgid "Error"
-msgstr ""
+msgstr "Ошибка"
