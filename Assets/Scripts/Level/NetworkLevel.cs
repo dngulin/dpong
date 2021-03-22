@@ -149,7 +149,7 @@ namespace DPong.Level {
 
       ClientMsgFinished? finishMsg = null;
       if (_processingState == ProcessingState.FinishedByApprovedInput)
-        finishMsg = new ClientMsgFinished(_frame, 0/*_stateBuffer[_frame].CalculateCheckSum()*/);
+        finishMsg = new ClientMsgFinished(_frame, _stateBuffer[_frame].CalculateCheckSum());
 
       if (_frame > 0)
         _view.UpdateState(_stateBuffer[_frame - 1], _stateBuffer[_frame], _frameTimer.GetBlendingFactor(_frame));
