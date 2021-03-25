@@ -2,6 +2,7 @@
     "name": "Level.UI",
     "rootNamespace": "DPong",
     "references": [
+        "Assets",
         "UI",
         "Localization",
         "Level.Data",

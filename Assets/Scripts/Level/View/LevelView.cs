@@ -1,4 +1,5 @@
 using System;
+using DPong.Assets;
 using DPong.Level.Data;
 using DPong.Level.State;
 using UnityEngine;
@@ -13,17 +14,15 @@ namespace DPong.Level.View {
     private readonly BlockerView _blockerLeft;
     private readonly BlockerView _blockerRight;
 
-    public LevelView(LevelState initialState, LevelSettings settings) {
+    public LevelView(AssetLoader assetLoader, in LevelState initialState, LevelSettings settings) {
       _viewRoot = new GameObject("LevelViewRoot").transform;
 
-      var res = Resources.Load<LevelViewResources>("LevelViewResources");
+      var res = assetLoader.Load<LevelViewResources>("Assets/Content/Level/LevelViewResources.asset");
 
       _board = UObj.Instantiate(res.Board, _viewRoot).Configured(settings.PlayerLeft, settings.PlayerRight);
       _ball = UObj.Instantiate(res.Ball, _viewRoot);
       _blockerLeft = UObj.Instantiate(res.Blocker, _viewRoot).Configured(Side.Left);
       _blockerRight = UObj.Instantiate(res.Blocker, _viewRoot).Configured(Side.Right);
-
-      Resources.UnloadAsset(res);
 
       ApplyState(initialState.ToViewState());
     }

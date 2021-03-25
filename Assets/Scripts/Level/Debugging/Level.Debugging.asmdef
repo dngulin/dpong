@@ -2,6 +2,7 @@
     "name": "Level.Debugging",
     "rootNamespace": "DPong",
     "references": [
+        "Assets",
         "Unity.InputSystem",
         "InputSource",
         "UI",

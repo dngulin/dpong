@@ -1,4 +1,5 @@
 using System;
+using DPong.Assets;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
@@ -13,10 +14,13 @@ using UnityEngine;
 
 namespace DPong.Meta.Screens.NetworkGame {
   public class NetworkGameScreen : INavigationPoint, INetworkGameMenuListener, ILevelExitListener, IDisposable {
+    private readonly SaveSystem _saveSystem;
+    private readonly AssetLoader _assetLoader;
+
     private readonly Navigator _navigator;
     private readonly UISystem _uiSystem;
+
     private readonly InputSourceProvider _inputSources;
-    private readonly SaveSystem _saveSystem;
 
     private readonly NetworkGameSave _save;
 
@@ -30,8 +34,9 @@ namespace DPong.Meta.Screens.NetworkGame {
 
     private bool _disposed;
 
-    public NetworkGameScreen(SaveSystem save, InputSourceProvider inputSources, UISystem ui, Navigator navigator) {
+    public NetworkGameScreen(SaveSystem save, AssetLoader assetLoader, InputSourceProvider inputSources, UISystem ui, Navigator navigator) {
       _saveSystem = save;
+      _assetLoader = assetLoader;
       _inputSources = inputSources;
       _uiSystem = ui;
       _navigator = navigator;
@@ -58,7 +63,8 @@ namespace DPong.Meta.Screens.NetworkGame {
     }
 
     void INavigationPoint.Enter() {
-      _menu = _uiSystem.Instantiate(Resources.Load<NetworkGameMenu>("NetworkGameMenu"), UILayer.Background, true);
+      var prefab = _assetLoader.Load<NetworkGameMenu>("Assets/Content/Meta/Prefabs/NetworkGameMenu.prefab");
+      _menu = _uiSystem.Instantiate(prefab, UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
     }
@@ -112,7 +118,7 @@ namespace DPong.Meta.Screens.NetworkGame {
         return;
       }
 
-      var splash = Resources.Load<ConnectionDialog>("ConnectionDialog");
+      var splash = _assetLoader.Load<ConnectionDialog>("Assets/Content/Meta/Prefabs/ConnectionDialog.prefab");
       _connectingDlg = _uiSystem.InstantiateWindow(WindowType.Dialog, splash, false);
       _connectingDlg.OnCancelClicked += StopConnecting;
       _connectingDlg.OnHideFinish += () => {
@@ -182,7 +188,8 @@ namespace DPong.Meta.Screens.NetworkGame {
       HideMenu();
 
       var inputSource = _inputSources.CreateSource(_save.Input);
-      _level = new NetworkLevel(inputSource, _uiSystem, this, msgStart);
+      var levelViewFactory = new LevelViewFactory(_assetLoader, _uiSystem);
+      _level = new NetworkLevel(inputSource, levelViewFactory, this, msgStart);
     }
 
     private void HandleActiveSession() {

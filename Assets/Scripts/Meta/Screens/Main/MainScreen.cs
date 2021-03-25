@@ -1,3 +1,4 @@
+using DPong.Assets;
 using DPong.Meta.Navigation;
 using DPong.UI;
 using UnityEngine;
@@ -14,20 +15,23 @@ namespace DPong.Meta.Screens.Main {
       }
     }
 
+    private readonly AssetLoader _assetLoader;
     private readonly UISystem _ui;
     private readonly Navigator _navigator;
     private readonly Transitions _transitions;
 
     private MainMenu _menu;
 
-    public MainScreen(UISystem ui, Navigator navigator, Transitions transitions) {
+    public MainScreen(AssetLoader assetLoader, UISystem ui, Navigator navigator, Transitions transitions) {
+      _assetLoader = assetLoader;
       _ui = ui;
       _navigator = navigator;
       _transitions = transitions;
     }
 
     void INavigationPoint.Enter() {
-      _menu = _ui.Instantiate(Resources.Load<MainMenu>("MainMenu"), UILayer.Background, true);
+      var prefab = _assetLoader.Load<MainMenu>("Assets/Content/Meta/Prefabs/MainMenu.prefab");
+      _menu = _ui.Instantiate(prefab, UILayer.Background, true);
       _menu.Init(this);
     }
 

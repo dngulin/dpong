@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using DPong.Assets;
 using DPong.Localization;
 using DPong.UI.Common;
 using DPong.UI.Holder;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using UObj = UnityEngine.Object;
 
 namespace DPong.UI {
   public class UISystem {
@@ -12,9 +13,9 @@ namespace DPong.UI {
 
     private readonly UISystemResources _resources;
 
-    public UISystem(Canvas canvas) {
+    public UISystem(AssetLoader assetLoader, Canvas canvas) {
       _root = canvas.transform;
-      _resources = Resources.Load<UISystemResources>("UISystemResources");
+      _resources = assetLoader.Load<UISystemResources>("Assets/Content/UI/UISystemResources.asset");
 
       foreach (var layer in new[] {UILayer.Background, UILayer.Windows, UILayer.Foreground})
         CreateLayer(layer);
@@ -35,13 +36,13 @@ namespace DPong.UI {
     }
 
     public T Instantiate<T>(T prefab, UILayer layer, bool visible) where T : MonoBehaviour, IUserInterface {
-      var ui = Object.Instantiate(prefab, _layers[layer]);
+      var ui = UObj.Instantiate(prefab, _layers[layer]);
       ui.SetInitialVisibility(visible);
       return ui;
     }
 
     public T InstantiateWrapped<T>(UIHolder prefab, UILayer layer, bool visible) where T : UIHolderWrapper {
-      var holderInstance = Object.Instantiate(prefab, _layers[layer]);
+      var holderInstance = UObj.Instantiate(prefab, _layers[layer]);
       var wrapperInstance = holderInstance.ContentRoot.GetComponent<T>();
 
       wrapperInstance.WrapHolder(holderInstance);
@@ -51,8 +52,8 @@ namespace DPong.UI {
     }
 
     public T InstantiateAndWrap<T>(UIHolder holderPrefab, T wrapperPrefab, UILayer layer, bool visible) where T : UIHolderWrapper {
-      var holderInstance = Object.Instantiate(holderPrefab, _layers[layer]);
-      var wrapperInstance = Object.Instantiate(wrapperPrefab, holderInstance.ContentRoot);
+      var holderInstance = UObj.Instantiate(holderPrefab, _layers[layer]);
+      var wrapperInstance = UObj.Instantiate(wrapperPrefab, holderInstance.ContentRoot);
 
       wrapperInstance.WrapHolder(holderInstance);
       wrapperInstance.SetInitialVisibility(visible);

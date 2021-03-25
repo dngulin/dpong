@@ -1,4 +1,5 @@
 ﻿using System;
+using DPong.Assets;
 using DPong.InputSource.Sources;
 using DPong.Level.Data;
 using DPong.UI;
@@ -21,15 +22,19 @@ namespace DPong.Level.Debugging {
     [SerializeField] private float _timeScale = 1.0f;
 
     private LocalLevel _level;
+    private AssetLoader _assetLoader;
 
     private void Awake() {
+      _assetLoader = AssetLoader.Create();
+
+      var viewFactory = new LevelViewFactory(_assetLoader, new UISystem(_assetLoader, _canvas));
       var levelInfo = CreateLevelInfo();
+
       var lInputSrc = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
       var rInputSrc = new KeyboardInputSource(Keyboard.current, Key.UpArrow, Key.DownArrow);
+      var inputs = new IInputSource[] {lInputSrc, rInputSrc};
 
-      var uiSystem = new UISystem(_canvas);
-
-      _level = new LocalLevel(levelInfo, lInputSrc, rInputSrc, uiSystem, this);
+      _level = new LocalLevel(levelInfo, inputs, viewFactory, this);
     }
 
     private void Update() {
@@ -42,6 +47,7 @@ namespace DPong.Level.Debugging {
     private void OnDestroy()
     {
       _level?.Dispose();
+      _assetLoader?.Dispose();
     }
 
     private LevelSettings CreateLevelInfo() {

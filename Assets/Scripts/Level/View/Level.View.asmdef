@@ -2,6 +2,7 @@
     "name": "Level.View",
     "rootNamespace": "DPong",
     "references": [
+        "Assets",
         "Common",
         "Level.Data",
         "Level.State"

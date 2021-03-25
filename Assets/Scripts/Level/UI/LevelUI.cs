@@ -1,10 +1,10 @@
 using System;
+using DPong.Assets;
 using DPong.Level.State;
 using DPong.Localization;
 using DPong.UI;
 using DPong.UI.Holder;
-using UnityEngine;
-using Object = UnityEngine.Object;
+using UObj = UnityEngine.Object;
 
 namespace DPong.Level.UI {
   public interface ILevelUIListener {
@@ -24,10 +24,10 @@ namespace DPong.Level.UI {
 
     private readonly ILevelUIListener _listener;
 
-    public LevelUI(UISystem uiSystem, ILevelUIListener listener) {
+    public LevelUI(AssetLoader assetLoader, UISystem uiSystem, ILevelUIListener listener) {
       _uiSystem = uiSystem;
       _listener = listener;
-      _resources = Resources.Load<LevelUIResources>("LevelUIResources");
+      _resources = assetLoader.Load<LevelUIResources>("Assets/Content/Level/LevelUIResources.asset");
 
       _pausePanel = _uiSystem.Instantiate(_resources.PausePanel, UILayer.Background, true);
       _pausePanel.OnCLick += ShowPauseDialog;
@@ -117,7 +117,7 @@ namespace DPong.Level.UI {
 
     public void Dispose() {
       if (_pausePanel != null)
-        Object.Destroy(_pausePanel.gameObject);
+        UObj.Destroy(_pausePanel.gameObject);
 
       if (_displayingDialog != null)
         _displayingDialog.Destroy();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DPong.Assets;
 using DPong.InputSource;
 using DPong.Localization;
 using DPong.Meta.Navigation;
@@ -29,14 +30,16 @@ namespace DPong.Meta {
 
       _save = new SaveSystem(SaveFilename);
       _navigator = new Navigator();
-
       _tickables.Add(_navigator);
 
-      var ui = new UISystem(_canvas);
+      var assetLoader = AssetLoader.Create();
+      _disposables.Add(assetLoader);
+
+      var ui = new UISystem(assetLoader, _canvas);
       var inputs = new InputSourceProvider();
 
-      var hotSeatScreen = new HotSeatGameScreen(_save, inputs, ui, _navigator);
-      var netGameScreen = new NetworkGameScreen(_save, inputs, ui, _navigator);
+      var hotSeatScreen = new HotSeatGameScreen(_save, assetLoader, inputs, ui, _navigator);
+      var netGameScreen = new NetworkGameScreen(_save, assetLoader, inputs, ui, _navigator);
 
       _disposables.Add(hotSeatScreen);
       _disposables.Add(netGameScreen);
@@ -45,7 +48,7 @@ namespace DPong.Meta {
       var netGameToken = _navigator.Register(netGameScreen);
       var transitions = new MainScreen.Transitions(hotSeatToken, netGameToken);
 
-      _navigator.Enter(new MainScreen(ui, _navigator, transitions));
+      _navigator.Enter(new MainScreen(assetLoader, ui, _navigator, transitions));
     }
 
     private void Update() {
@@ -67,7 +70,8 @@ namespace DPong.Meta {
     private void OnDestroy() {
       _tickables.Clear();
 
-      _disposables.ForEach(d => d.Dispose());
+      for (var i = _disposables.Count - 1; i >= 0; i--)
+        _disposables[i].Dispose();
       _disposables.Clear();
 
       _save.WriteSaveToFile();

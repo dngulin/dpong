@@ -1,4 +1,5 @@
 using System;
+using DPong.Assets;
 using DPong.InputSource.Sources;
 using DPong.UI;
 using NGIS.Session.Client;
@@ -14,8 +15,10 @@ namespace DPong.Level.Debugging {
 
     private ClientSession _session;
     private NetworkLevel _level;
+    private AssetLoader _assetLoader;
 
     private void Awake() {
+      _assetLoader = AssetLoader.Create();
       var cfg = new DPongClientConfig(_hostName, _playerName);
       try {
         _session = new ClientSession(cfg, new NgisUnityLogger());
@@ -45,8 +48,8 @@ namespace DPong.Level.Debugging {
         case ProcessingResult.ResultType.Started:
           Debug.Log("Session started");
           var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
-          var uiSystem = new UISystem(_canvas);
-          _level = new NetworkLevel(inputSource, uiSystem, this, result.StartMessage);
+          var viewFactory = new LevelViewFactory(_assetLoader, new UISystem(_assetLoader, _canvas));
+          _level = new NetworkLevel(inputSource, viewFactory, this, result.StartMessage);
           break;
 
         case ProcessingResult.ResultType.Active:
@@ -77,6 +80,7 @@ namespace DPong.Level.Debugging {
     private void OnDestroy() {
       _session?.Dispose();
       _level?.Dispose();
+      _assetLoader?.Dispose();
     }
 
     void ILevelExitListener.Exit() => Destroy(gameObject);

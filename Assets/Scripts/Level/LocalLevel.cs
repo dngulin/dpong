@@ -5,7 +5,6 @@ using DPong.Level.Model;
 using DPong.Level.State;
 using DPong.Level.UI;
 using DPong.Level.View;
-using DPong.UI;
 
 namespace DPong.Level {
   public class LocalLevel : ILevelUIListener, IDisposable {
@@ -27,19 +26,19 @@ namespace DPong.Level {
 
     private readonly ILevelExitListener _exitListener;
 
-    public LocalLevel(LevelSettings settings, IInputSource lInputSrc, IInputSource rInputSrc, UISystem uiSystem, ILevelExitListener exitListener) {
+    public LocalLevel(LevelSettings settings, IInputSource[] inputs, LevelViewFactory viewFactory, ILevelExitListener exitListener) {
       _exitListener = exitListener;
       _aiInputSrc = new AiInputSource();
 
-      _lInputSrc = settings.PlayerLeft.Type == PlayerType.Local ? lInputSrc : null;
-      _rInoutSrc = settings.PlayerRight.Type == PlayerType.Local ? rInputSrc : null;
+      _lInputSrc = settings.PlayerLeft.Type == PlayerType.Local ? inputs[0] : null;
+      _rInoutSrc = settings.PlayerRight.Type == PlayerType.Local ? inputs[1] : null;
 
       _model = new LevelModel(settings);
       _state = _model.CreateInitialState();
       _previousState = _state;
 
-      _view = new LevelView(_state, settings);
-      _ui = new LevelUI(uiSystem, this);
+      _view = viewFactory.CreateView(_state, settings);
+      _ui = viewFactory.CreateUI(this);
 
       _timer = new SimulationsTimer((float) settings.Simulation.TickDuration);
     }

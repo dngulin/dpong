@@ -1,4 +1,5 @@
 using System;
+using DPong.Assets;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
@@ -9,14 +10,15 @@ using DPong.Meta.Validation;
 using DPong.Save;
 using DPong.UI;
 using FxNet.Math;
-using UnityEngine;
 
 namespace DPong.Meta.Screens.HotSeatGame {
   public class HotSeatGameScreen : INavigationPoint, IHotSeatMenuListener, ILevelExitListener, IDisposable {
-    private readonly Navigator _navigator;
     private readonly SaveSystem _saveSystem;
+    private readonly AssetLoader _assetLoader;
+
     private readonly InputSourceProvider _inputSources;
 
+    private readonly Navigator _navigator;
     private readonly UISystem _uiSystem;
 
     private HotSeatGameMenu _menu;
@@ -26,8 +28,9 @@ namespace DPong.Meta.Screens.HotSeatGame {
 
     private bool _disposed;
 
-    public HotSeatGameScreen(SaveSystem save, InputSourceProvider inputSources, UISystem ui, Navigator navigator) {
+    public HotSeatGameScreen(SaveSystem save, AssetLoader assetLoader, InputSourceProvider inputSources, UISystem ui, Navigator navigator) {
       _saveSystem = save;
+      _assetLoader = assetLoader;
       _inputSources = inputSources;
       _uiSystem = ui;
       _navigator = navigator;
@@ -51,7 +54,8 @@ namespace DPong.Meta.Screens.HotSeatGame {
     void INavigationPoint.Tick(float dt) => _level?.Tick(dt);
 
     void INavigationPoint.Enter() {
-      _menu = _uiSystem.Instantiate(Resources.Load<HotSeatGameMenu>("HotSeatGameMenu"), UILayer.Background, true);
+      var prefab = _assetLoader.Load<HotSeatGameMenu>("Assets/Content/Meta/Prefabs/HotSeatGameMenu.prefab");
+      _menu = _uiSystem.Instantiate(prefab, UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
     }
@@ -101,9 +105,11 @@ namespace DPong.Meta.Screens.HotSeatGame {
 
       var lInput = _inputSources.CreateSource(_save.LeftInput);
       var rInput = _inputSources.CreateSource(_save.RightInput);
+      var inputs = new [] {lInput, rInput};
 
       HideMenu();
-      _level = new LocalLevel(levelSettings, lInput, rInput, _uiSystem, this);
+      var levelViewFactory = new LevelViewFactory(_assetLoader, _uiSystem);
+      _level = new LocalLevel(levelSettings, inputs, levelViewFactory, this);
     }
 
     void IHotSeatMenuListener.BackClicked() => _navigator.Exit(this);

@@ -2,6 +2,7 @@
     "name": "Meta",
     "rootNamespace": "DPong",
     "references": [
+        "Assets",
         "Localization",
         "Save",
         "UI",

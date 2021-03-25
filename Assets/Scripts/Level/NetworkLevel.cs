@@ -6,7 +6,6 @@ using DPong.Level.Networking;
 using DPong.Level.State;
 using DPong.Level.UI;
 using DPong.Level.View;
-using DPong.UI;
 using FxNet.Math;
 using NGIS.Message.Client;
 using NGIS.Message.Server;
@@ -38,7 +37,7 @@ namespace DPong.Level {
 
     public (uint, uint) SimulationStats => (_frame, _simulationCounter);
 
-    public NetworkLevel(IInputSource inputSrc, UISystem uiSystem, ILevelExitListener exitListener, ServerMsgStart msgStart) {
+    public NetworkLevel(IInputSource inputSrc, LevelViewFactory viewFactory, ILevelExitListener exitListener, ServerMsgStart msgStart) {
       _inputSrc = inputSrc;
       _exitListener = exitListener;
       _side = (Side) msgStart.YourIndex;
@@ -72,8 +71,8 @@ namespace DPong.Level {
       _model = new LevelModel(settings);
       _stateBuffer[0] = _model.CreateInitialState();
 
-      _view = new LevelView(_stateBuffer[0], settings);
-      _ui = new LevelUI(uiSystem, this);
+      _view = viewFactory.CreateView(_stateBuffer[0], settings);
+      _ui = viewFactory.CreateUI(this);
 
       _processingState = ProcessingState.Active;
 
