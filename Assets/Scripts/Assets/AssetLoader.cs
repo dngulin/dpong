@@ -12,16 +12,16 @@ namespace DPong.Assets {
 #if UNITY_EDITOR
       return new EditorAssetLoader();
 #else
-      return new RuntimeAssetLoader();
+      return new PlayerAssetLoader();
 #endif
     }
   }
 
-  internal class RuntimeAssetLoader : AssetLoader {
+  internal class PlayerAssetLoader : AssetLoader {
     private readonly AssetBundle _bundle;
 
-    public RuntimeAssetLoader() {
-      _bundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "DPongAssets"));
+    public PlayerAssetLoader() {
+      _bundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "dpong"));
     }
 
     public override T Load<T>(string name) => _bundle.LoadAsset<T>(name);
