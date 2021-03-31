@@ -30,7 +30,7 @@ namespace DPong.Meta.Screens.Main {
     }
 
     void INavigationPoint.Enter() {
-      var prefab = _assetLoader.Load<MainMenu>("Assets/Content/Meta/Prefabs/MainMenu.prefab");
+      var prefab = _assetLoader.LoadFromPrefab<MainMenu>("Assets/Content/Meta/Prefabs/MainMenu.prefab");
       _menu = _ui.Instantiate(prefab, UILayer.Background, true);
       _menu.Init(this);
     }

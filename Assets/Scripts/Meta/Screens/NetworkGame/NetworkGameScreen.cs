@@ -63,7 +63,7 @@ namespace DPong.Meta.Screens.NetworkGame {
     }
 
     void INavigationPoint.Enter() {
-      var prefab = _assetLoader.Load<NetworkGameMenu>("Assets/Content/Meta/Prefabs/NetworkGameMenu.prefab");
+      var prefab = _assetLoader.LoadFromPrefab<NetworkGameMenu>("Assets/Content/Meta/Prefabs/NetworkGameMenu.prefab");
       _menu = _uiSystem.Instantiate(prefab, UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
@@ -118,7 +118,7 @@ namespace DPong.Meta.Screens.NetworkGame {
         return;
       }
 
-      var splash = _assetLoader.Load<ConnectionDialog>("Assets/Content/Meta/Prefabs/ConnectionDialog.prefab");
+      var splash = _assetLoader.LoadFromPrefab<ConnectionDialog>("Assets/Content/Meta/Prefabs/ConnectionDialog.prefab");
       _connectingDlg = _uiSystem.InstantiateWindow(WindowType.Dialog, splash, false);
       _connectingDlg.OnCancelClicked += StopConnecting;
       _connectingDlg.OnHideFinish += () => {

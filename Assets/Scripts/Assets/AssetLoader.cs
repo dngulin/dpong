@@ -6,6 +6,7 @@ using UObj = UnityEngine.Object;
 namespace DPong.Assets {
   public abstract class AssetLoader : IDisposable {
     public abstract T Load<T>(string name) where T : UObj;
+    public T LoadFromPrefab<T>(string name) where T : Component => Load<GameObject>(name).GetComponent<T>();
     public abstract void Dispose();
 
     public static AssetLoader Create() {
@@ -24,7 +25,8 @@ namespace DPong.Assets {
       _bundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, "dpong"));
     }
 
-    public override T Load<T>(string name) => _bundle.LoadAsset<T>(name);
+    public override T Load<T>(string name) => _bundle.LoadAsset<T>(name.ToLower());
+
     public override void Dispose() => _bundle.Unload(true);
   }
 

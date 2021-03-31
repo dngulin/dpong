@@ -54,7 +54,7 @@ namespace DPong.Meta.Screens.HotSeatGame {
     void INavigationPoint.Tick(float dt) => _level?.Tick(dt);
 
     void INavigationPoint.Enter() {
-      var prefab = _assetLoader.Load<HotSeatGameMenu>("Assets/Content/Meta/Prefabs/HotSeatGameMenu.prefab");
+      var prefab = _assetLoader.LoadFromPrefab<HotSeatGameMenu>("Assets/Content/Meta/Prefabs/HotSeatGameMenu.prefab");
       _menu = _uiSystem.Instantiate(prefab, UILayer.Background, true);
       _menu.Init(this);
       UpdateMenu();
