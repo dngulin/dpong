@@ -27,20 +27,18 @@ namespace DPong.Level.Model {
     }
 
     public (BounceObj, BounceObj) Move(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      Move(ref state.Blockers[0].Position, state.Pace, leftKeys);
-      Move(ref state.Blockers[1].Position, state.Pace, rightKeys);
-
-      var deltaL = new FxVec2(0, state.Blockers[0].Position.Y - state.Ball.Position.Y);
-      var deltaR = new FxVec2(0, state.Blockers[1].Position.Y - state.Ball.Position.Y);
+      var dl = Move(ref state.Blockers[0].Position, state.Pace, leftKeys);
+      var dr = Move(ref state.Blockers[1].Position, state.Pace, rightKeys);
 
       return (
-        GetBlockerBounceObj(state.Blockers[0].Position, (FxVec2.Left * 20 - deltaL).Normalized()),
-        GetBlockerBounceObj(state.Blockers[1].Position, (FxVec2.Right * 20 - deltaR).Normalized())
+        GetBlockerBounceObj(state.Blockers[0].Position, (FxVec2.Left * 20 - dl).Normalized()),
+        GetBlockerBounceObj(state.Blockers[1].Position, (FxVec2.Right * 20 - dr).Normalized())
         );
     }
 
-    private void Move(ref FxVec2 position, in FxNum pace, Keys keys) {
-      if (keys == Keys.None || keys == (Keys.Up | Keys.Down)) return;
+    private FxVec2 Move(ref FxVec2 position, in FxNum pace, Keys keys) {
+      if (keys == Keys.None || keys == (Keys.Up | Keys.Down))
+        return FxVec2.Zero;
 
       var moveSign = keys.HasKey(Keys.Up) ? 1 : -1;
       var offsetMultiplier = _tickDuration * pace;
@@ -49,6 +47,8 @@ namespace DPong.Level.Model {
       var prevPosition = position;
       var newY = FxMath.Clamp(prevPosition.Y + offset, -_maxBlockerDeviation, _maxBlockerDeviation);
       position = new FxVec2(prevPosition.X, newY);
+
+      return position - prevPosition;
     }
 
     private BounceObj GetBlockerBounceObj(in FxVec2 position, in FxVec2 inNormal) {
