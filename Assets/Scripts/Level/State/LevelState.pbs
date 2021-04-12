@@ -1,5 +1,5 @@
 namespace DPong.Level.State {
-  struct HitPointsState {
+  struct ScoresState {
     int Left;
     int Right;
   }
@@ -18,7 +18,7 @@ namespace DPong.Level.State {
 
   struct LevelState {
     FxNum Pace;
-    HitPointsState HitPoints;
+    ScoresState Scores;
     FxRandomState Random;
     BallState Ball;
     BlockerState2 Blockers;

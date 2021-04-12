@@ -58,7 +58,7 @@ namespace DPong.Level.UI {
       };
     }
 
-    public void ShowResultDialog(HitPointsState hp) {
+    public void ShowResultDialog(in ScoresState hp) {
       switch (_displayingDialogType) {
         case DisplayingDialogType.None:
           break;

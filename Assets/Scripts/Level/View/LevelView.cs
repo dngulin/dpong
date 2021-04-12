@@ -62,7 +62,7 @@ namespace DPong.Level.View {
     }
 
     private void ApplyState(in LevelViewState state) {
-      _board.SetHitPoints(state.HitPoints.Left, state.HitPoints.Right);
+      _board.SetScore(state.Scores.Left, state.Scores.Right);
       _ball.SetPosition(state.Ball.Position);
       _blockerLeft.SetPosition(state.Blockers[0].Position);
       _blockerRight.SetPosition(state.Blockers[1].Position);

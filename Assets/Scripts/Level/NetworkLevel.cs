@@ -230,7 +230,7 @@ namespace DPong.Level {
     void ILevelUIListener.ResumeCLicked() => _paused = false;
     void ILevelUIListener.ExitCLicked() => _exitListener.Exit();
 
-    public void ExitWithFinish() => _ui.ShowResultDialog(_stateBuffer[_frame].HitPoints);
+    public void ExitWithFinish() => _ui.ShowResultDialog(_stateBuffer[_frame].Scores);
     public void ExitWithError(string error) => _ui.ShowErrorDialog(error);
   }
 }

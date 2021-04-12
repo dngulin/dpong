@@ -8,7 +8,7 @@ namespace DPong.Level.Model {
 
     private readonly FxRandomState _initialRandomState;
 
-    private readonly HitPointsMechanic _hitPoints;
+    private readonly ScoreMechanic _score;
     private readonly PaceMechanic _pace;
     private readonly BlockersMechanic _blockers;
     private readonly BallMechanic _ball;
@@ -17,7 +17,7 @@ namespace DPong.Level.Model {
     public LevelModel(LevelSettings settings) {
       _initialRandomState = FxRandom.CreteState(settings.Simulation.Seed);
 
-      _hitPoints = new HitPointsMechanic(settings.HitPoints);
+      _score = new ScoreMechanic(settings.HitPoints);
       _pace = new PaceMechanic(settings.Pace);
       _blockers = new BlockersMechanic(settings.Blocker, settings.Board.Size, settings.Simulation.TickDuration);
       _ball = new BallMechanic(settings.Ball, settings.Simulation.TickDuration);
@@ -28,14 +28,14 @@ namespace DPong.Level.Model {
       return new LevelState {
         Random = _initialRandomState,
         Pace = _pace.Default,
-        HitPoints = _hitPoints.InitialState,
+        Scores = _score.InitialState,
         Ball = _ball.InitialState,
         Blockers = _blockers.InitialState
       };
     }
 
     public bool Tick(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      if (_hitPoints.IsLevelCompleted(state.HitPoints))
+      if (_score.IsLevelCompleted(state.Scores))
         return true;
 
       var (lBlocker, rBlocker) = _blockers.Move(ref state, leftKeys, rightKeys);
@@ -69,11 +69,11 @@ namespace DPong.Level.Model {
     private void CheckGates(ref LevelState state) {
       var ballShape = _ball.GetShape(state.Ball);
 
-      foreach (var side in _sides) {
-        if (!_collisions.CheckGates(ballShape, side))
+      foreach (var gatesSide in _sides) {
+        if (!_collisions.CheckGates(ballShape, gatesSide))
           continue;
 
-        _hitPoints.DecreaseHp(ref state.HitPoints, side);
+        _score.HandleGoal(ref state.Scores, gatesSide);
         _ball.Freeze(ref state.Ball);
 
         state.Pace = _pace.Default;
