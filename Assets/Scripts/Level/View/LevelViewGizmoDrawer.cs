@@ -2,7 +2,7 @@ using DPong.Level.Data;
 using UnityEngine;
 
 namespace DPong.Level.View {
-  public class StateGizmoDrawer : MonoBehaviour {
+  public class LevelViewGizmoDrawer : MonoBehaviour {
     public bool DrawInterpolationSources;
 
     private LevelSettings _settings;

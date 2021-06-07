@@ -15,7 +15,7 @@ namespace DPong.Level.View {
     private readonly BlockerView _blockerRight;
 
 #if UNITY_EDITOR
-    private readonly StateGizmoDrawer _gizmoDrawer;
+    private readonly LevelViewGizmoDrawer _gizmoDrawer;
 #endif
 
     public LevelView(AssetLoader assetLoader, in LevelState initialState, LevelSettings settings) {
@@ -31,7 +31,7 @@ namespace DPong.Level.View {
       var viewState = initialState.ToViewState();
 
 #if UNITY_EDITOR
-      _gizmoDrawer = _viewRoot.gameObject.AddComponent<StateGizmoDrawer>();
+      _gizmoDrawer = _viewRoot.gameObject.AddComponent<LevelViewGizmoDrawer>();
       _gizmoDrawer.Init(settings);
 #endif
 
