@@ -9,8 +9,9 @@ using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
   public class LocalLevelCompositionRoot : MonoBehaviour, ILevelExitListener {
-
     [SerializeField] private Canvas _canvas;
+
+    [SerializeField] private int _simulationFrameRate = 30;
 
     [SerializeField] private string _leftName = "LeftPlayer";
     [SerializeField] private bool _leftIsBot;
@@ -53,7 +54,7 @@ namespace DPong.Level.Debugging {
     private LevelSettings CreateLevelInfo() {
       var leftPlayer = new PlayerInfo(_leftName, _leftIsBot ? PlayerType.Bot : PlayerType.Local);
       var rightPlayer = new PlayerInfo(_rightName, _rightIsBot ? PlayerType.Bot : PlayerType.Local);
-      var settings = new SimulationSettings(FxNum.FromRatio(1, 25), (ulong) DateTime.UtcNow.Ticks);
+      var settings = new SimulationSettings(FxNum.FromRatio(1, _simulationFrameRate), (ulong) DateTime.UtcNow.Ticks);
 
       return new LevelSettings(leftPlayer, rightPlayer, settings);
     }

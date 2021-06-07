@@ -153,11 +153,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 1123158594}
+  _simulationFrameRate: 45
   _leftName: PlayerLeft
   _leftIsBot: 1
   _rightName: PlayerRight
   _rightIsBot: 1
-  _timeScale: 0.455
+  _timeScale: 1
 --- !u!4 &343145141
 Transform:
   m_ObjectHideFlags: 0
