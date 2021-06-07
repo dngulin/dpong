@@ -6,13 +6,17 @@ using UnityEngine;
 using UObj = UnityEngine.Object;
 
 namespace DPong.Level.View {
-  public class LevelView: IDisposable {
+  public class LevelView : IDisposable {
     private readonly Transform _viewRoot;
 
     private readonly BoardView _board;
     private readonly BallView _ball;
     private readonly BlockerView _blockerLeft;
     private readonly BlockerView _blockerRight;
+
+#if UNITY_EDITOR
+    private readonly StateGizmoDrawer _gizmoDrawer;
+#endif
 
     public LevelView(AssetLoader assetLoader, in LevelState initialState, LevelSettings settings) {
       _viewRoot = new GameObject("LevelViewRoot").transform;
@@ -24,7 +28,14 @@ namespace DPong.Level.View {
       _blockerLeft = UObj.Instantiate(res.Blocker, _viewRoot).Configured(Side.Left);
       _blockerRight = UObj.Instantiate(res.Blocker, _viewRoot).Configured(Side.Right);
 
-      ApplyState(initialState.ToViewState());
+      var viewState = initialState.ToViewState();
+
+#if UNITY_EDITOR
+      _gizmoDrawer = _viewRoot.gameObject.AddComponent<StateGizmoDrawer>();
+      _gizmoDrawer.Init(settings);
+#endif
+
+      ApplyState(viewState, false);
     }
 
     public void Dispose() {
@@ -36,13 +47,18 @@ namespace DPong.Level.View {
       const float threshold = 0.001f;
 
       if (t < threshold) {
-        ApplyState(l.ToViewState());
-      } else if (t > 1f - threshold) {
-        ApplyState(r.ToViewState());
+        ApplyState(l.ToViewState(), false);
+      }
+      else if (t > 1f - threshold) {
+        ApplyState(r.ToViewState(), false);
       }
       else {
         var vl = l.ToViewState();
         var vr = r.ToViewState();
+
+#if UNITY_EDITOR
+        _gizmoDrawer.SetInterpolationSources(vl, vr);
+#endif
 
         if (t < 0.5f)
           BlendAndApplyState(ref vl, vr, t);
@@ -58,14 +74,21 @@ namespace DPong.Level.View {
       near.Blockers[0].Position = Vector2.Lerp(near.Blockers[0].Position, far.Blockers[0].Position, t);
       near.Blockers[1].Position = Vector2.Lerp(near.Blockers[1].Position, far.Blockers[1].Position, t);
 
-      ApplyState(near);
+      ApplyState(near, true);
     }
 
-    private void ApplyState(in LevelViewState state) {
+    private void ApplyState(in LevelViewState state, bool interpolated) {
       _board.SetScore(state.Scores.Left, state.Scores.Right);
       _ball.SetPosition(state.Ball.Position);
       _blockerLeft.SetPosition(state.Blockers[0].Position);
       _blockerRight.SetPosition(state.Blockers[1].Position);
+
+#if UNITY_EDITOR
+      if (!interpolated)
+        _gizmoDrawer.SetInterpolationSources(state, state);
+
+      _gizmoDrawer.SetInterpolationResult(state);
+#endif
     }
   }
 }

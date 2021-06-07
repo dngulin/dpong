@@ -153,11 +153,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvas: {fileID: 1123158594}
-  _leftName: DONIL
+  _leftName: PlayerLeft
   _leftIsBot: 1
-  _rightName: DASHA
+  _rightName: PlayerRight
   _rightIsBot: 1
-  _timeScale: 1
+  _timeScale: 0.455
 --- !u!4 &343145141
 Transform:
   m_ObjectHideFlags: 0
