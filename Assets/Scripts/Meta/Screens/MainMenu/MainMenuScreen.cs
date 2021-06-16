@@ -27,16 +27,6 @@ namespace DPong.Meta.Screens.MainMenu {
       _menu.Init(this);
     }
 
-    public override void Pause(DPong game) => _menu.Hide();
-    public override void Resume(DPong game) => _menu.Show();
-
-    public override void Finish(DPong game) {
-      if (_menu != null) {
-        Object.Destroy(_menu.gameObject);
-        _menu = null;
-      }
-    }
-
     public override Transition Tick(DPong game, float dt) {
       var intent = _intent;
       _intent = Intent.None;
@@ -50,5 +40,9 @@ namespace DPong.Meta.Screens.MainMenu {
           throw new ArgumentOutOfRangeException();
       }
     }
+
+    public override void Pause(DPong game) => _menu.Hide();
+    public override void Resume(DPong game) => _menu.Show();
+    public override void Finish(DPong game) => Object.Destroy(_menu.gameObject);
   }
 }
