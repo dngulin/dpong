@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using DPong.Assets;
-using DPong.InputSource;
 using DPong.Localization;
-using DPong.Meta.Navigation;
-using DPong.Meta.Screens.HotSeatGame;
-using DPong.Meta.Screens.Main;
-using DPong.Meta.Screens.NetworkGame;
-using DPong.Save;
-using DPong.UI;
+using DPong.Meta.Screens.MainMenu;
+using DPong.StateTracker;
 using UnityEngine;
 
 namespace DPong.Meta {
@@ -17,65 +9,42 @@ namespace DPong.Meta {
 
     [SerializeField] private Canvas _canvas;
 
-    private SaveSystem _save;
-    private Navigator _navigator;
-
-    private readonly List<IDisposable> _disposables = new List<IDisposable>();
-    private readonly List<ITickable> _tickables = new List<ITickable>();
+    private DPong _dPong;
+    private GameStateTracker<DPong> _gameStateTracker;
 
     private void Awake() {
       if (Application.systemLanguage == SystemLanguage.Russian) {
         Tr.LoadLocale("ru");
       }
 
-      _save = new SaveSystem(SaveFilename);
-      _navigator = new Navigator();
-      _tickables.Add(_navigator);
-
-      var assetLoader = AssetLoader.Create();
-      _disposables.Add(assetLoader);
-
-      var ui = new UISystem(assetLoader, _canvas);
-      var inputs = new InputSourceProvider();
-
-      var hotSeatScreen = new HotSeatGameScreen(_save, assetLoader, inputs, ui, _navigator);
-      var netGameScreen = new NetworkGameScreen(_save, assetLoader, inputs, ui, _navigator);
-
-      _disposables.Add(hotSeatScreen);
-      _disposables.Add(netGameScreen);
-
-      var hotSeatToken = _navigator.Register(hotSeatScreen);
-      var netGameToken = _navigator.Register(netGameScreen);
-      var transitions = new MainScreen.Transitions(hotSeatToken, netGameToken);
-
-      _navigator.Enter(new MainScreen(assetLoader, ui, _navigator, transitions));
+      _dPong = new DPong(SaveFilename, _canvas);
+      _gameStateTracker = new GameStateTracker<DPong>(_dPong, new MainMenuScreen());
     }
 
     private void Update() {
-      var dt = Time.deltaTime;
-      foreach (var tickable in _tickables)
-        tickable.Tick(dt);
-    }
-
-    private void OnApplicationFocus(bool hasFocus) {
-      if (!hasFocus)
-        _save.WriteSaveToFile();
+      var finished = _gameStateTracker.Tick(Time.deltaTime);
+      if (finished)
+        ExitGame();
     }
 
     private void OnApplicationPause(bool pauseStatus) {
       if (pauseStatus)
-        _save.WriteSaveToFile();
+        _dPong.Save.WriteCaches();
     }
 
     private void OnDestroy() {
-      _tickables.Clear();
+      _dPong.Save.WriteCaches();
+      _dPong.Dispose();
 
-      for (var i = _disposables.Count - 1; i >= 0; i--)
-        _disposables[i].Dispose();
-      _disposables.Clear();
-
-      _save.WriteSaveToFile();
       Tr.UnloadLocale();
+    }
+
+    private static void ExitGame() {
+#if UNITY_EDITOR
+      UnityEditor.EditorApplication.isPlaying = false;
+#else
+      Application.Quit();
+#endif
     }
   }
 }

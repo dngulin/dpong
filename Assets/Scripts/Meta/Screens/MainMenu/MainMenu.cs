@@ -2,7 +2,7 @@ using DPong.Meta.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Meta.Screens.Main {
+namespace DPong.Meta.Screens.MainMenu {
   public interface IMainMenuListener {
     void OnHotSeatClicked();
     void OnNetworkClicked();

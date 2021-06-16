@@ -15,7 +15,7 @@ namespace DPong.Level.UI {
 
   public class LevelUI : IDisposable {
     private readonly LevelUIResources _resources;
-    private readonly UISystem _uiSystem;
+    private readonly UiSystem _uiSystem;
 
     private readonly PausePanel _pausePanel;
 
@@ -24,7 +24,7 @@ namespace DPong.Level.UI {
 
     private readonly ILevelUIListener _listener;
 
-    public LevelUI(AssetLoader assetLoader, UISystem uiSystem, ILevelUIListener listener) {
+    public LevelUI(AssetLoader assetLoader, UiSystem uiSystem, ILevelUIListener listener) {
       _uiSystem = uiSystem;
       _listener = listener;
       _resources = assetLoader.Load<LevelUIResources>("Assets/Content/Level/LevelUIResources.asset");

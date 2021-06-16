@@ -7,13 +7,13 @@ using UnityEngine;
 using UObj = UnityEngine.Object;
 
 namespace DPong.UI {
-  public class UISystem {
+  public class UiSystem {
     private readonly Transform _root;
     private readonly Dictionary<UILayer, Transform> _layers = new Dictionary<UILayer, Transform>();
 
     private readonly UISystemResources _resources;
 
-    public UISystem(AssetLoader assetLoader, Canvas canvas) {
+    public UiSystem(AssetLoader assetLoader, Canvas canvas) {
       _root = canvas.transform;
       _resources = assetLoader.Load<UISystemResources>("Assets/Content/UI/UISystemResources.asset");
 

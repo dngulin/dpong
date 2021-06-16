@@ -48,7 +48,7 @@ namespace DPong.Level.Debugging {
         case ProcessingResult.ResultType.Started:
           Debug.Log("Session started");
           var inputSource = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);
-          var viewFactory = new LevelViewFactory(_assetLoader, new UISystem(_assetLoader, _canvas));
+          var viewFactory = new LevelViewFactory(_assetLoader, new UiSystem(_assetLoader, _canvas));
           _level = new NetworkLevel(inputSource, viewFactory, this, result.StartMessage);
           break;
 

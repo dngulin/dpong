@@ -1,6 +1,6 @@
 using DPong.InputSource.Data;
 
-namespace DPong.Meta.Screens.NetworkGame {
+namespace DPong.Meta.Screens.NetworkMenu {
   public class NetworkGameSave {
     public string Name = "Player";
     public InputSourceDescriptor Input;

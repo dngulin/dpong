@@ -4,7 +4,7 @@ using DPong.UI.Holder;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Meta.Screens.NetworkGame {
+namespace DPong.Meta.Screens.NetworkMenu {
   public class ConnectionDialog : UIHolderWrapper {
     [SerializeField] private Button _cancelButton;
     [SerializeField] private Text _message;

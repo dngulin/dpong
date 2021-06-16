@@ -3,7 +3,7 @@ using DPong.Meta.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Meta.Screens.NetworkGame {
+namespace DPong.Meta.Screens.NetworkMenu {
   public interface INetworkGameMenuListener {
     void PlayClicked();
     void BackClicked();

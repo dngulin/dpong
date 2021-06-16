@@ -8,9 +8,9 @@ using DPong.UI;
 namespace DPong.Level {
   public readonly struct LevelViewFactory {
     private readonly AssetLoader _assetLoader;
-    private readonly UISystem _uiSystem;
+    private readonly UiSystem _uiSystem;
 
-    public LevelViewFactory(AssetLoader assetLoader, UISystem uiSystem) {
+    public LevelViewFactory(AssetLoader assetLoader, UiSystem uiSystem) {
       _assetLoader = assetLoader;
       _uiSystem = uiSystem;
     }

@@ -1,16 +1,7 @@
 {
-    "name": "Meta",
+    "name": "StateTracker",
     "rootNamespace": "DPong",
-    "references": [
-        "Assets",
-        "Localization",
-        "Save",
-        "UI",
-        "InputSource",
-        "StateTracker",
-        "Level",
-        "Level.Data"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

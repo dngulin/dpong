@@ -1,27 +1,18 @@
 using System;
-using DPong.Assets;
 using DPong.InputSource;
 using DPong.InputSource.Extensions;
 using DPong.Level;
 using DPong.Localization;
-using DPong.Meta.Navigation;
 using DPong.Meta.Validation;
 using DPong.Save;
+using DPong.StateTracker;
 using DPong.UI;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
 using UnityEngine;
 
-namespace DPong.Meta.Screens.NetworkGame {
-  public class NetworkGameScreen : INavigationPoint, INetworkGameMenuListener, ILevelExitListener, IDisposable {
-    private readonly SaveSystem _saveSystem;
-    private readonly AssetLoader _assetLoader;
-
-    private readonly Navigator _navigator;
-    private readonly UISystem _uiSystem;
-
-    private readonly InputSourceProvider _inputSources;
-
+namespace DPong.Meta.Screens.NetworkMenu {
+  public class NetworkMenuScreen : GameState<DPong>, INetworkGameMenuListener, ILevelExitListener {
     private readonly NetworkGameSave _save;
 
     private NetworkGameMenu _menu;
@@ -32,79 +23,61 @@ namespace DPong.Meta.Screens.NetworkGame {
     private ClientSession _session;
     private NetworkLevel _level;
 
-    private bool _disposed;
 
-    public NetworkGameScreen(SaveSystem save, AssetLoader assetLoader, InputSourceProvider inputSources, UISystem ui, Navigator navigator) {
-      _saveSystem = save;
-      _assetLoader = assetLoader;
-      _inputSources = inputSources;
-      _uiSystem = ui;
-      _navigator = navigator;
-
-      _save = _saveSystem.TakeState(nameof(NetworkGameScreen), new NetworkGameSave());
+    public NetworkMenuScreen(SaveSystem saveSystem) {
+      _save = saveSystem.TakeState(nameof(NetworkMenuScreen), new NetworkGameSave());
     }
 
-    public void Dispose() {
-      if (_disposed)
-        return;
+    public override void Start(DPong game) {
+      var prefab = game.Assets.LoadFromPrefab<NetworkGameMenu>("Assets/Content/Meta/Prefabs/NetworkGameMenu.prefab");
+      _menu = game.Ui.Instantiate(prefab, UILayer.Background, true);
+      _menu.Init(this);
+      UpdateMenu(game.InputSources);
+    }
+
+    public override void Pause(DPong game) => HideMenu();
+
+    public override void Resume(DPong game) => ShowMenu(game.InputSources);
+
+    public override void Finish(DPong game) {
+      game.Save.WriteCaches();
+      game.Save.ReturnState(nameof(NetworkMenuScreen), _save);
 
       _level?.Dispose();
       _session?.Dispose();
-
-      _saveSystem.ReturnState(nameof(NetworkGameScreen), _save);
-
-      if (_menu != null)
-        UnityEngine.Object.Destroy(_menu.gameObject);
-
-      if (_connectingDlg != null)
-        UnityEngine.Object.Destroy(_connectingDlg.gameObject);
-
-      _disposed = true;
-    }
-
-    void INavigationPoint.Enter() {
-      var prefab = _assetLoader.LoadFromPrefab<NetworkGameMenu>("Assets/Content/Meta/Prefabs/NetworkGameMenu.prefab");
-      _menu = _uiSystem.Instantiate(prefab, UILayer.Background, true);
-      _menu.Init(this);
-      UpdateMenu();
-    }
-
-    void INavigationPoint.Suspend() => HideMenu();
-
-    void INavigationPoint.Resume() => ShowMenu();
-
-    void INavigationPoint.Exit() {
-      _saveSystem.WriteSaveToFile();
 
       UnityEngine.Object.Destroy(_menu.gameObject);
       _menu = null;
     }
 
-    void INavigationPoint.Tick(float dt) => Tick();
+    public override Transition Tick(DPong game, float dt) {
+      Tick();
+      return Transition.None();
+    }
 
-    private void ShowMenu() {
-      UpdateMenu();
+    private void ShowMenu(InputSourceProvider inputSources) {
+      UpdateMenu(inputSources);
       _menu.Show();
     }
 
-    private void UpdateMenu() {
+    private void UpdateMenu(InputSourceProvider inputSources) {
       _menu.SetPlayerName(_save.Name);
       _menu.SetServerAddress(_save.Host);
 
-      _inputSources.Refresh();
-      _menu.SetInputSources(_inputSources.Names, _inputSources.Descriptors.IndexOf(_save.Input));
+      inputSources.Refresh();
+      _menu.SetInputSources(inputSources.Names, inputSources.Descriptors.IndexOf(_save.Input));
     }
 
     private void HideMenu() => _menu.Hide();
 
     void ILevelExitListener.Exit() {
-      _level?.Dispose();
+      /*_level?.Dispose();
       _session?.Dispose();
 
       _level = null;
       _session = null;
 
-      ShowMenu();
+      ShowMenu();*/
     }
 
     void INetworkGameMenuListener.PlayClicked() {
@@ -118,7 +91,7 @@ namespace DPong.Meta.Screens.NetworkGame {
         return;
       }
 
-      var splash = _assetLoader.LoadFromPrefab<ConnectionDialog>("Assets/Content/Meta/Prefabs/ConnectionDialog.prefab");
+      /*var splash = _assetLoader.LoadFromPrefab<ConnectionDialog>("Assets/Content/Meta/Prefabs/ConnectionDialog.prefab");
       _connectingDlg = _uiSystem.InstantiateWindow(WindowType.Dialog, splash, false);
       _connectingDlg.OnCancelClicked += StopConnecting;
       _connectingDlg.OnHideFinish += () => {
@@ -128,10 +101,12 @@ namespace DPong.Meta.Screens.NetworkGame {
 
       _isConnecting = true;
       _connectingDlg.SetJoinedState(false);
-      _connectingDlg.Show();
+      _connectingDlg.Show();*/
     }
 
-    void INetworkGameMenuListener.BackClicked() => _navigator.Exit(this);
+    void INetworkGameMenuListener.BackClicked() {
+      /*_contextTracker.Exit(this);*/
+    }
 
     void INetworkGameMenuListener.PlayerNameChanged(string name) {
       var validated = PlayerDataValidator.ValidateNickName(name);
@@ -140,10 +115,10 @@ namespace DPong.Meta.Screens.NetworkGame {
     }
 
     void INetworkGameMenuListener.InputSourceChanged(int index) {
-      if (index < 0 || index >= _inputSources.Descriptors.Count)
+      /*if (index < 0 || index >= _inputSources.Descriptors.Count)
         return;
 
-      _save.Input = _inputSources.Descriptors[index];
+      _save.Input = _inputSources.Descriptors[index];*/
     }
 
     void INetworkGameMenuListener.ServerAddressChanged(string address) {
@@ -187,9 +162,9 @@ namespace DPong.Meta.Screens.NetworkGame {
       _connectingDlg.Hide();
       HideMenu();
 
-      var inputSource = _inputSources.CreateSource(_save.Input);
+      /*var inputSource = _inputSources.CreateSource(_save.Input);
       var levelViewFactory = new LevelViewFactory(_assetLoader, _uiSystem);
-      _level = new NetworkLevel(inputSource, levelViewFactory, this, msgStart);
+      _level = new NetworkLevel(inputSource, levelViewFactory, this, msgStart);*/
     }
 
     private void HandleActiveSession() {
@@ -217,9 +192,9 @@ namespace DPong.Meta.Screens.NetworkGame {
     }
 
     private void ShowError(string message) {
-      var errMsg = _uiSystem.CreateErrorBox(false, message);
+      /*var errMsg = _uiSystem.CreateErrorBox(false, message);
       errMsg.OnHideFinish += errMsg.Destroy;
-      errMsg.Show();
+      errMsg.Show();*/
     }
 
     private void StopConnecting() {

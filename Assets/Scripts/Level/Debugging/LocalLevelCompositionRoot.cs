@@ -28,7 +28,7 @@ namespace DPong.Level.Debugging {
     private void Awake() {
       _assetLoader = AssetLoader.Create();
 
-      var viewFactory = new LevelViewFactory(_assetLoader, new UISystem(_assetLoader, _canvas));
+      var viewFactory = new LevelViewFactory(_assetLoader, new UiSystem(_assetLoader, _canvas));
       var levelInfo = CreateLevelInfo();
 
       var lInputSrc = new KeyboardInputSource(Keyboard.current, Key.W, Key.S);

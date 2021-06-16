@@ -5,12 +5,12 @@ using DPong.Meta.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace DPong.Meta.Screens.HotSeatGame {
+namespace DPong.Meta.Screens.HotSeatMenu {
   public interface IHotSeatMenuListener {
     void PlayClicked();
     void BackClicked();
-    void NickNameChanged(Side side, string name);
-    void InputSourceChanged(Side side, int srcIndex);
+    void NickNameChanged(Side side, string nick);
+    void InputSrcChanged(Side side, int srcIndex);
   }
 
   public class HotSeatGameMenu : SimpleMenu {
@@ -30,8 +30,8 @@ namespace DPong.Meta.Screens.HotSeatGame {
       _leftName.onEndEdit.AddListener(nick => listener.NickNameChanged(Side.Left, nick));
       _rightName.onEndEdit.AddListener(nick => listener.NickNameChanged(Side.Right, nick));
 
-      _leftSources.onValueChanged.AddListener(index => listener.InputSourceChanged(Side.Left, index));
-      _rightSources.onValueChanged.AddListener(index => listener.InputSourceChanged(Side.Right, index));
+      _leftSources.onValueChanged.AddListener(index => listener.InputSrcChanged(Side.Left, index));
+      _rightSources.onValueChanged.AddListener(index => listener.InputSrcChanged(Side.Right, index));
     }
 
     public void SetPlayerName(Side side, string playerName) {

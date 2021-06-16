@@ -65,7 +65,7 @@ namespace DPong.Save {
       _serializedStates[name] = JObject.FromObject(state, _serializer);
     }
 
-    public void WriteSaveToFile() {
+    public void WriteCaches() {
       foreach (var pair in _memoryStates)
         _serializedStates[pair.Key] = JObject.FromObject(pair.Value, _serializer);
 
