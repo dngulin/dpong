@@ -22,12 +22,10 @@ namespace DPong.Level {
     private LevelState _state;
 
     private bool _paused;
-    private bool _finished;
+    private bool _simulationFinished;
+    private bool _needToExit;
 
-    private readonly ILevelExitListener _exitListener;
-
-    public LocalLevel(LevelSettings settings, IInputSource[] inputs, LevelViewFactory viewFactory, ILevelExitListener exitListener) {
-      _exitListener = exitListener;
+    public LocalLevel(LevelSettings settings, IInputSource[] inputs, LevelViewFactory viewFactory) {
       _aiInputSrc = new AiInputSource();
 
       _lInputSrc = settings.PlayerLeft.Type == PlayerType.Local ? inputs[0] : null;
@@ -43,8 +41,16 @@ namespace DPong.Level {
       _timer = new SimulationsTimer((float) settings.Simulation.TickDuration);
     }
 
-    public void Tick(float dt) {
-      if (_finished || _paused) return;
+    void ILevelUIListener.PauseCLicked() => _paused = true;
+    void ILevelUIListener.ResumeCLicked() => _paused = false;
+    void ILevelUIListener.ExitCLicked() => _needToExit = true;
+
+    public bool Tick(float dt) {
+      if (_needToExit)
+        return true;
+
+      if (_simulationFinished || _paused)
+        return false;
 
       var (simulations, blendingFactor) = _timer.Tick(dt);
 
@@ -53,26 +59,23 @@ namespace DPong.Level {
         var rightKeys = _rInoutSrc?.GetKeys() ?? _aiInputSrc.GetRight(_state);
 
         _previousState = _state;
-        _finished = _model.Tick(ref _state, leftKeys, rightKeys);
+        _simulationFinished = _model.Tick(ref _state, leftKeys, rightKeys);
 
-        if (_finished)
+        if (_simulationFinished)
           break;
       }
 
       _view.UpdateState(_previousState, _state, blendingFactor);
 
-      if (_finished)
+      if (_simulationFinished)
         _ui.ShowResultDialog(_state.Scores);
+
+      return false;
     }
 
     public void Dispose() {
       _view.Dispose();
       _ui.Dispose();
     }
-
-    void ILevelUIListener.PauseCLicked() => _paused = true;
-    void ILevelUIListener.ResumeCLicked() => _paused = false;
-
-    void ILevelUIListener.ExitCLicked() => _exitListener.Exit();
   }
 }

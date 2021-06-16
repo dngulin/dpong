@@ -4,33 +4,27 @@ using DPong.Level.Data;
 using DPong.StateTracker;
 
 namespace DPong.Meta.Screens.HotSeatGame {
-  public class HotSeatGameScreen : GameState<DPong>, ILevelExitListener {
+  public class HotSeatGameScreen : GameState<DPong> {
     private readonly LocalLevel _level;
-
-    private bool _pendingExit;
 
     public HotSeatGameScreen(LevelSettings levelSettings, IInputSource[] inputSources, DPong game) {
       var levelViewFactory = new LevelViewFactory(game.Assets, game.Ui);
-      _level = new LocalLevel(levelSettings, inputSources, levelViewFactory, this);
+      _level = new LocalLevel(levelSettings, inputSources, levelViewFactory);
     }
-
-    void ILevelExitListener.Exit() => _pendingExit = true;
 
     public override void Start(DPong game) {
     }
 
     public override Transition Tick(DPong game, float dt) {
-      if (_pendingExit)
+      var finished = _level.Tick(dt);
+      if (finished)
         return Transition.Pop();
 
-      _level.Tick(dt);
       return Transition.None();
     }
 
     public override void Pause(DPong game) => throw new NotSupportedException();
-
     public override void Resume(DPong game) => throw new NotSupportedException();
-
     public override void Finish(DPong game) => _level.Dispose();
   }
 }

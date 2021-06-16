@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace DPong.Level.Debugging {
-  public class LocalLevelCompositionRoot : MonoBehaviour, ILevelExitListener {
+  public class LocalLevelCompositionRoot : MonoBehaviour {
     [SerializeField] private Canvas _canvas;
 
     [SerializeField] private int _simulationFrameRate = 30;
@@ -35,20 +35,21 @@ namespace DPong.Level.Debugging {
       var rInputSrc = new KeyboardInputSource(Keyboard.current, Key.UpArrow, Key.DownArrow);
       var inputs = new IInputSource[] {lInputSrc, rInputSrc};
 
-      _level = new LocalLevel(levelInfo, inputs, viewFactory, this);
+      _level = new LocalLevel(levelInfo, inputs, viewFactory);
     }
 
     private void Update() {
       Time.timeScale = _timeScale;
-      _level?.Tick(Time.deltaTime);
-    }
 
-    void ILevelExitListener.Exit() => Destroy(gameObject);
+      var finished = _level.Tick(Time.deltaTime);
+      if (finished)
+        Destroy(gameObject);
+    }
 
     private void OnDestroy()
     {
-      _level?.Dispose();
-      _assetLoader?.Dispose();
+      _level.Dispose();
+      _assetLoader.Dispose();
     }
 
     private LevelSettings CreateLevelInfo() {
