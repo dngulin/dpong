@@ -17,9 +17,9 @@ namespace DPong.StateTracker {
       }
 
       public static Transition None() => new Transition(TransitionType.None, null);
-      public static Transition Push(GameState<TGame> ctx) => new Transition(TransitionType.Push, ctx);
+      public static Transition Push(GameState<TGame> state) => new Transition(TransitionType.Push, state);
       public static Transition Pop() => new Transition(TransitionType.Pop, null);
-      public static Transition Replace(GameState<TGame> ctx) => new Transition(TransitionType.Replace, ctx);
+      public static Transition Replace(GameState<TGame> state) => new Transition(TransitionType.Replace, state);
     }
   }
 }
