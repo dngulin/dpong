@@ -1,5 +1,5 @@
 namespace DPong.Meta.Screens.HotSeatMenu {
-  public enum IntentType {
+  public enum HotSeatMenuEventType {
     Back,
     Play,
     NickChanged,

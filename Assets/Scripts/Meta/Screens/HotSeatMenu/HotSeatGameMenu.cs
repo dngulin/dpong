@@ -6,13 +6,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace DPong.Meta.Screens.HotSeatMenu {
-  public interface IHotSeatMenuListener {
-    void PlayClicked();
-    void BackClicked();
-    void NickNameChanged(Side side, string nick);
-    void InputSrcChanged(Side side, int srcIndex);
-  }
-
   public class HotSeatGameMenu : SimpleMenu {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _backButton;
@@ -23,15 +16,17 @@ namespace DPong.Meta.Screens.HotSeatMenu {
     [SerializeField] private Dropdown _leftSources;
     [SerializeField] private Dropdown _rightSources;
 
-    public void Init(IHotSeatMenuListener listener) {
-      _playButton.onClick.AddListener(listener.PlayClicked);
-      _backButton.onClick.AddListener(listener.BackClicked);
+    public readonly Queue<HotSeatMenuEvent> Events = new Queue<HotSeatMenuEvent>();
 
-      _leftName.onEndEdit.AddListener(nick => listener.NickNameChanged(Side.Left, nick));
-      _rightName.onEndEdit.AddListener(nick => listener.NickNameChanged(Side.Right, nick));
+    private void Awake() {
+      _playButton.onClick.AddListener(() => Events.Enqueue(HotSeatMenuEvent.Play()));
+      _backButton.onClick.AddListener(() => Events.Enqueue(HotSeatMenuEvent.Back()));
 
-      _leftSources.onValueChanged.AddListener(index => listener.InputSrcChanged(Side.Left, index));
-      _rightSources.onValueChanged.AddListener(index => listener.InputSrcChanged(Side.Right, index));
+      _leftName.onEndEdit.AddListener(nick => Events.Enqueue(HotSeatMenuEvent.NickChanged(Side.Left, nick)));
+      _rightName.onEndEdit.AddListener(nick => Events.Enqueue(HotSeatMenuEvent.NickChanged(Side.Right, nick)));
+
+      _leftSources.onValueChanged.AddListener(index => Events.Enqueue(HotSeatMenuEvent.InputSrcChanged(Side.Left, index)));
+      _rightSources.onValueChanged.AddListener(index => Events.Enqueue(HotSeatMenuEvent.InputSrcChanged(Side.Right, index)));
     }
 
     public void SetPlayerName(Side side, string playerName) {

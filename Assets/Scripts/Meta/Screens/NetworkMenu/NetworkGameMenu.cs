@@ -4,14 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace DPong.Meta.Screens.NetworkMenu {
-  public interface INetworkGameMenuListener {
-    void PlayClicked();
-    void BackClicked();
-    void PlayerNameChanged(string name);
-    void InputSourceChanged(int srcIndex);
-    void ServerAddressChanged(string address);
-  }
-
   public class NetworkGameMenu : SimpleMenu {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _backButton;
@@ -21,14 +13,16 @@ namespace DPong.Meta.Screens.NetworkMenu {
 
     [SerializeField] private InputField _serverAddress;
 
-    public void Init(INetworkGameMenuListener listener) {
-      _playButton.onClick.AddListener(listener.PlayClicked);
-      _backButton.onClick.AddListener(listener.BackClicked);
+    public readonly Queue<NetworkMenuEvent> Events = new Queue<NetworkMenuEvent>();
 
-      _playerName.onEndEdit.AddListener(listener.PlayerNameChanged);
-      _inputSources.onValueChanged.AddListener(listener.InputSourceChanged);
+    private void Awake() {
+      _playButton.onClick.AddListener(() => Events.Enqueue(NetworkMenuEvent.Play()));
+      _backButton.onClick.AddListener(() => Events.Enqueue(NetworkMenuEvent.Back()));
 
-      _serverAddress.onEndEdit.AddListener(listener.ServerAddressChanged);
+      _playerName.onEndEdit.AddListener(nick => Events.Enqueue(NetworkMenuEvent.NickChanged(nick)));
+      _inputSources.onValueChanged.AddListener(index => Events.Enqueue(NetworkMenuEvent.InputSrcChanged(index)));
+
+      _serverAddress.onEndEdit.AddListener(address => Events.Enqueue(NetworkMenuEvent.ServerAddressChanged(address)));
     }
 
     public void SetPlayerName(string playerName) => _playerName.text = playerName;

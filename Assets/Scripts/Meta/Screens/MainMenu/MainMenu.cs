@@ -3,21 +3,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace DPong.Meta.Screens.MainMenu {
-  public interface IMainMenuListener {
-    void OnHotSeatClicked();
-    void OnNetworkClicked();
-    void OnExitGameClicked();
-  }
-
   public class MainMenu : SimpleMenu {
     [SerializeField] private Button _hotSeatButton;
     [SerializeField] private Button _networkButton;
     [SerializeField] private Button _exitGameButton;
 
-    public void Init(IMainMenuListener listener) {
-      _hotSeatButton.onClick.AddListener(listener.OnHotSeatClicked);
-      _networkButton.onClick.AddListener(listener.OnNetworkClicked);
-      _exitGameButton.onClick.AddListener(listener.OnExitGameClicked);
+    private MainMenuEvent _pendingEvent;
+
+    public MainMenuEvent GetEvent() {
+      var evt = _pendingEvent;
+      _pendingEvent = MainMenuEvent.None;
+      return evt;
+    }
+
+    private void Awake() {
+      _hotSeatButton.onClick.AddListener(() => _pendingEvent = MainMenuEvent.HotSeatMenu);
+      _networkButton.onClick.AddListener(() => _pendingEvent = MainMenuEvent.NetworkMenu);
+      _exitGameButton.onClick.AddListener(() => _pendingEvent = MainMenuEvent.Exit);
     }
   }
 }

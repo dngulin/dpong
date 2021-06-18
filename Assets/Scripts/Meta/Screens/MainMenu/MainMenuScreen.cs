@@ -6,36 +6,22 @@ using DPong.UI;
 using Object = UnityEngine.Object;
 
 namespace DPong.Meta.Screens.MainMenu {
-  public class MainMenuScreen : GameState<DPong>, IMainMenuListener {
-    private enum Intent {
-      None,
-      HotSeatMenu,
-      NetworkMenu,
-      Exit
-    }
-
+  public class MainMenuScreen : GameState<DPong> {
     private MainMenu _menu;
-    private Intent _intent;
-
-    void IMainMenuListener.OnHotSeatClicked() => _intent = Intent.HotSeatMenu;
-    void IMainMenuListener.OnNetworkClicked() => _intent = Intent.NetworkMenu;
-    void IMainMenuListener.OnExitGameClicked() => _intent = Intent.Exit;
 
     public override void Start(DPong game) {
       var prefab = game.Assets.LoadFromPrefab<MainMenu>("Assets/Content/Meta/Prefabs/MainMenu.prefab");
       _menu = game.Ui.Instantiate(prefab, UILayer.Background, true);
-      _menu.Init(this);
     }
 
     public override Transition Tick(DPong game, float dt) {
-      var intent = _intent;
-      _intent = Intent.None;
+      var evt = _menu.GetEvent();
 
-      switch (intent) {
-        case Intent.None: return Transition.None();
-        case Intent.HotSeatMenu: return Transition.Push(new HotSeatMenuScreen(game.Save));
-        case Intent.NetworkMenu: return Transition.Push(new NetworkMenuScreen(game.Save));
-        case Intent.Exit: return Transition.Pop();
+      switch (evt) {
+        case MainMenuEvent.None: return Transition.None();
+        case MainMenuEvent.HotSeatMenu: return Transition.Push(new HotSeatMenuScreen(game.Save));
+        case MainMenuEvent.NetworkMenu: return Transition.Push(new NetworkMenuScreen(game.Save));
+        case MainMenuEvent.Exit: return Transition.Pop();
         default:
           throw new ArgumentOutOfRangeException();
       }
