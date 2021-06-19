@@ -2,7 +2,7 @@ using DPong.Localization;
 using NGIS.Message.Server;
 using NGIS.Session.Client;
 
-namespace DPong.Meta.Screens.NetworkMenu {
+namespace DPong.Meta.Screens.NetworkGame {
   public static class MessageConverter {
     public static string GetErrorMessage(SessionError error, ServerErrorId? serverErrorId = null) {
       switch (error) {

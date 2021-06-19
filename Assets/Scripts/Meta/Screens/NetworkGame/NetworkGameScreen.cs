@@ -1,7 +1,6 @@
 using System;
 using DPong.InputSource.Data;
 using DPong.Level;
-using DPong.Meta.Screens.NetworkMenu;
 using DPong.StateTracker;
 using NGIS.Message.Server;
 using NGIS.Session.Client;

@@ -1,7 +1,6 @@
 using System;
 using DPong.InputSource.Data;
 using DPong.Meta.Screens.NetworkGame;
-using DPong.Meta.Screens.NetworkMenu;
 using DPong.StateTracker;
 using DPong.UI;
 using NGIS.Session.Client;
