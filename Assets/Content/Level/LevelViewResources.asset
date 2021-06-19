@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: LevelViewResources
   m_EditorClassIdentifier: 
   Board: {fileID: 2927947536039105377, guid: 85211e506bf01df8cbc47056bf0b036b, type: 3}
-  Blocker: {fileID: -5471283645542145513, guid: 7eb35a05dc386b5c3aed060c86616d50,
-    type: 3}
+  Paddle: {fileID: -5471283645542145513, guid: 7eb35a05dc386b5c3aed060c86616d50, type: 3}
   Ball: {fileID: 8344957222465555934, guid: 90b71445a0d258a3b9b890224e5e6dcf, type: 3}

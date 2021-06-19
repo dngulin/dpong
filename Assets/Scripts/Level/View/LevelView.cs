@@ -25,8 +25,8 @@ namespace DPong.Level.View {
 
       _board = UObj.Instantiate(res.Board, _viewRoot).Configured(settings.PlayerLeft, settings.PlayerRight);
       _ball = UObj.Instantiate(res.Ball, _viewRoot);
-      _paddleLeft = UObj.Instantiate(res.paddle, _viewRoot).Configured(Side.Left);
-      _paddleRight = UObj.Instantiate(res.paddle, _viewRoot).Configured(Side.Right);
+      _paddleLeft = UObj.Instantiate(res.Paddle, _viewRoot).Configured(Side.Left);
+      _paddleRight = UObj.Instantiate(res.Paddle, _viewRoot).Configured(Side.Right);
 
       var viewState = initialState.ToViewState();
 
