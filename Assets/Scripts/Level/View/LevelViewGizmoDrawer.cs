@@ -52,8 +52,8 @@ namespace DPong.Level.View {
       var ballRadius = _settings.Ball.Radius.ToFloat();
       Gizmos.DrawWireSphere(state.Ball.Position, ballRadius);
 
-      Gizmos.DrawWireCube(state.Blockers[0].Position, ToVector(_settings.Blocker.Size));
-      Gizmos.DrawWireCube(state.Blockers[1].Position, ToVector(_settings.Blocker.Size));
+      Gizmos.DrawWireCube(state.Paddles[0].Position, ToVector(_settings.Paddle.Size));
+      Gizmos.DrawWireCube(state.Paddles[1].Position, ToVector(_settings.Paddle.Size));
     }
 
     private static Vector2 ToVector(in FxRectSize rect) {

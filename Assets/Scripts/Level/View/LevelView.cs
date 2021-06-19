@@ -11,8 +11,8 @@ namespace DPong.Level.View {
 
     private readonly BoardView _board;
     private readonly BallView _ball;
-    private readonly BlockerView _blockerLeft;
-    private readonly BlockerView _blockerRight;
+    private readonly PaddleView _paddleLeft;
+    private readonly PaddleView _paddleRight;
 
 #if UNITY_EDITOR
     private readonly LevelViewGizmoDrawer _gizmoDrawer;
@@ -25,8 +25,8 @@ namespace DPong.Level.View {
 
       _board = UObj.Instantiate(res.Board, _viewRoot).Configured(settings.PlayerLeft, settings.PlayerRight);
       _ball = UObj.Instantiate(res.Ball, _viewRoot);
-      _blockerLeft = UObj.Instantiate(res.Blocker, _viewRoot).Configured(Side.Left);
-      _blockerRight = UObj.Instantiate(res.Blocker, _viewRoot).Configured(Side.Right);
+      _paddleLeft = UObj.Instantiate(res.paddle, _viewRoot).Configured(Side.Left);
+      _paddleRight = UObj.Instantiate(res.paddle, _viewRoot).Configured(Side.Right);
 
       var viewState = initialState.ToViewState();
 
@@ -71,8 +71,8 @@ namespace DPong.Level.View {
       if (near.Ball.FreezeCooldown <= 0 && far.Ball.FreezeCooldown <= 0)
         near.Ball.Position = Vector2.Lerp(near.Ball.Position, far.Ball.Position, t);
 
-      near.Blockers[0].Position = Vector2.Lerp(near.Blockers[0].Position, far.Blockers[0].Position, t);
-      near.Blockers[1].Position = Vector2.Lerp(near.Blockers[1].Position, far.Blockers[1].Position, t);
+      near.Paddles[0].Position = Vector2.Lerp(near.Paddles[0].Position, far.Paddles[0].Position, t);
+      near.Paddles[1].Position = Vector2.Lerp(near.Paddles[1].Position, far.Paddles[1].Position, t);
 
       ApplyState(near, true);
     }
@@ -80,8 +80,8 @@ namespace DPong.Level.View {
     private void ApplyState(in LevelViewState state, bool interpolated) {
       _board.SetScore(state.Scores.Left, state.Scores.Right);
       _ball.SetPosition(state.Ball.Position);
-      _blockerLeft.SetPosition(state.Blockers[0].Position);
-      _blockerRight.SetPosition(state.Blockers[1].Position);
+      _paddleLeft.SetPosition(state.Paddles[0].Position);
+      _paddleRight.SetPosition(state.Paddles[1].Position);
 
 #if UNITY_EDITOR
       if (!interpolated)

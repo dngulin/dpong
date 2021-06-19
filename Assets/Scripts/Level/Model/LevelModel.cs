@@ -10,7 +10,7 @@ namespace DPong.Level.Model {
 
     private readonly ScoreMechanic _score;
     private readonly PaceMechanic _pace;
-    private readonly BlockersMechanic _blockers;
+    private readonly PaddlesMechanic _paddles;
     private readonly BallMechanic _ball;
     private readonly CollisionsMechanic _collisions;
 
@@ -19,7 +19,7 @@ namespace DPong.Level.Model {
 
       _score = new ScoreMechanic(settings.HitPoints);
       _pace = new PaceMechanic(settings.Pace);
-      _blockers = new BlockersMechanic(settings.Blocker, settings.Board.Size, settings.Simulation.TickDuration);
+      _paddles = new PaddlesMechanic(settings.Paddle, settings.Board.Size, settings.Simulation.TickDuration);
       _ball = new BallMechanic(settings.Ball, settings.Simulation.TickDuration);
       _collisions = new CollisionsMechanic(settings.Board);
     }
@@ -30,7 +30,7 @@ namespace DPong.Level.Model {
         Pace = _pace.Default,
         Scores = _score.InitialState,
         Ball = _ball.InitialState,
-        Blockers = _blockers.InitialState
+        Paddles = _paddles.InitialState
       };
     }
 
@@ -38,7 +38,7 @@ namespace DPong.Level.Model {
       if (_score.IsLevelCompleted(state.Scores))
         return true;
 
-      var (lBlocker, rBlocker) = _blockers.Move(ref state, leftKeys, rightKeys);
+      var (lBlocker, rBlocker) = _paddles.Move(ref state, leftKeys, rightKeys);
       var ballMoved = _ball.TryMove(ref state.Ball, ref state.Random, state.Pace);
 
       if (ballMoved) {

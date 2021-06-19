@@ -10,17 +10,17 @@ namespace DPong.Level.State {
     FxVec2 Position;
   }
 
-  struct BlockerState {
+  struct PaddleState {
     FxVec2 Position;
   }
 
-  array BlockerState2 BlockerState[2];
+  array PaddleState2 PaddleState[2];
 
   struct LevelState {
     FxNum Pace;
     ScoresState Scores;
     FxRandomState Random;
     BallState Ball;
-    BlockerState2 Blockers;
+    PaddleState2 Paddles;
   }
 }
