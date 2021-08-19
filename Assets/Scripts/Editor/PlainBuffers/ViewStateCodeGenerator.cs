@@ -25,7 +25,9 @@ namespace DPong.Editor.PlainBuffers {
 
         using (var forBlock = methodBlock.Sub($"for (var i = 0; i < {arrayType.Name}.Length; i++)")) {
           var castMethod = GetCastingMethodName(arrayType.ItemType);
-          forBlock.WriteLine(castMethod == null ?"result[i] = value[i];" : $"result[i] = value[i].{castMethod}();");
+          forBlock.WriteLine(castMethod == null ?
+            "result.RefAt(i) = value.RefReadonlyAt(i);" :
+            $"result.RefAt(i) = value.RefReadonlyAt(i).{castMethod}();");
         }
 
         methodBlock.WriteLine("return result;");

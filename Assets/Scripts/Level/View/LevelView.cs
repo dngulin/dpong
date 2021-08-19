@@ -71,8 +71,8 @@ namespace DPong.Level.View {
       if (near.Ball.FreezeCooldown <= 0 && far.Ball.FreezeCooldown <= 0)
         near.Ball.Position = Vector2.Lerp(near.Ball.Position, far.Ball.Position, t);
 
-      near.Paddles[0].Position = Vector2.Lerp(near.Paddles[0].Position, far.Paddles[0].Position, t);
-      near.Paddles[1].Position = Vector2.Lerp(near.Paddles[1].Position, far.Paddles[1].Position, t);
+      near.Paddles.Left.Position = Vector2.Lerp(near.Paddles.Left.Position, far.Paddles.Left.Position, t);
+      near.Paddles.Right.Position = Vector2.Lerp(near.Paddles.Right.Position, far.Paddles.Right.Position, t);
 
       ApplyState(near, true);
     }
@@ -80,8 +80,8 @@ namespace DPong.Level.View {
     private void ApplyState(in LevelViewState state, bool interpolated) {
       _board.SetScore(state.Scores.Left, state.Scores.Right);
       _ball.SetPosition(state.Ball.Position);
-      _paddleLeft.SetPosition(state.Paddles[0].Position);
-      _paddleRight.SetPosition(state.Paddles[1].Position);
+      _paddleLeft.SetPosition(state.Paddles.Left.Position);
+      _paddleRight.SetPosition(state.Paddles.Right.Position);
 
 #if UNITY_EDITOR
       if (!interpolated)

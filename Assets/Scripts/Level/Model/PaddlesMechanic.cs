@@ -10,7 +10,7 @@ namespace DPong.Level.Model {
     private readonly FxNum _maxPaddleDeviation;
     private readonly FxRectSize _paddleRect;
 
-    public readonly PaddleState2 InitialState;
+    public readonly PaddlesState InitialState;
 
     public PaddlesMechanic(PaddleSettings paddle, in FxRectSize boardSize, in FxNum tickDuration) {
       _tickDuration = tickDuration;
@@ -21,18 +21,18 @@ namespace DPong.Level.Model {
 
       var blockerPos = new FxVec2(boardSize.Width >> 1, 0);
 
-      InitialState = new PaddleState2();
-      InitialState[0].Position = -blockerPos;
-      InitialState[1].Position = blockerPos;
+      InitialState = new PaddlesState();
+      InitialState.Left.Position = -blockerPos;
+      InitialState.Right.Position = blockerPos;
     }
 
     public (BounceObj, BounceObj) Move(ref LevelState state, Keys leftKeys, Keys rightKeys) {
-      var dl = Move(ref state.Paddles[0].Position, state.Pace, leftKeys);
-      var dr = Move(ref state.Paddles[1].Position, state.Pace, rightKeys);
+      var dl = Move(ref state.Paddles.Left.Position, state.Pace, leftKeys);
+      var dr = Move(ref state.Paddles.Right.Position, state.Pace, rightKeys);
 
       return (
-        GetPaddleBounceObj(state.Paddles[0].Position, (FxVec2.Left * 20 - dl).Normalized()),
-        GetPaddleBounceObj(state.Paddles[1].Position, (FxVec2.Right * 20 - dr).Normalized())
+        GetPaddleBounceObj(state.Paddles.Left.Position, (FxVec2.Left * 20 - dl).Normalized()),
+        GetPaddleBounceObj(state.Paddles.Right.Position, (FxVec2.Right * 20 - dr).Normalized())
         );
     }
 
